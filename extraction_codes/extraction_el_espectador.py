@@ -1,3 +1,7 @@
+# ======================================================
+# Librerías
+# ======================================================
+
 import json
 import re
 import html
@@ -397,7 +401,7 @@ def obtener_articulos():
 # MAIN
 # ======================================================
 
-def extraction():
+def extraer_el_espectador():
 
     articulos = obtener_articulos()
 
@@ -467,7 +471,7 @@ def extraction():
 
     df.to_csv(
 
-        "Data/el_espectador_migracion_venezolana.csv",
+        "Data/dataset_migracion_venezolana_todos_los_codigos_de_extraccion.csv",
 
         index=False,
 
@@ -494,12 +498,3 @@ def extraction():
 
     return df
 
-# ======================================================
-# EJECUCIÓN
-# ======================================================
-
-df = extraction()
-
-print(
-    df.head()
-)
