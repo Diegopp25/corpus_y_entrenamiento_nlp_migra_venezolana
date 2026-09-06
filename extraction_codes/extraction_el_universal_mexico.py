@@ -1,270 +1,398 @@
-from selenium import webdriver
-from selenium. webdriver.chrome.options import Options
-from selenium. webdriver.common.by import By
-import pandas as pd
-import time
 import re
-
-
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-import requests
 import json
+import html
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
 
 
-# ==========================
-# CONFIGURACIÓN
-# ==========================
-options = Options()
-options.add_argument("--start-maximized")
-options.add_argument("--disable-notifications")
-driver = webdriver.Chrome(options=options)
-
-url = "https://www.eluniversal.com.mx/buscador/?query=migraci%C3%B3n+venezolana"
-driver.get(url)
-
-print("⏳ Esperando carga inicial...")
-time.sleep(10)
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/139.0 Safari/537.36"
+    )
+}
 
 
-def extraction():
+PALABRAS_CLAVE = [
+    "venezol",
+    "venezuela",
+    "migrante",
+    "migrantes",
+    "migración",
+    "migraciones",
+    "migratorio",
+    "migratorios",
+    "refugiado",
+    "refugiados",
+    "desplazado",
+    "desplazados"
+]
 
-    print("\n" + "=" * 70)
-    print("EL UNIVERSAL - MIGRACIÓN VENEZOLANA")
-    print("=" * 70)
 
-    # ==========================
-    # CARGAR MÁS RESULTADOS
-    # ==========================
+def limpiar_html_texto(texto):
 
-    for _ in range(10):
+    if not texto:
+        return ""
 
-        try:
+    texto = html.unescape(texto)
 
-            boton = driver.find_element(
-                By.XPATH,
-                "//*[contains(text(),'Mostrar más')]"
-            )
+    soup = BeautifulSoup(
+        texto,
+        "html.parser"
+    )
 
-            driver.execute_script(
-                "arguments[0].click();",
-                boton
-            )
+    return soup.get_text(
+        " ",
+        strip=True
+    )
 
-            time.sleep(3)
 
-        except:
-            break
+def es_relevante(texto):
 
-    # ==========================
-    # OBTENER ENLACES
-    # ==========================
+    texto = texto.lower()
 
-    print("🔍 Buscando artículos...")
+    return any(
+        palabra in texto
+        for palabra in PALABRAS_CLAVE
+    )
 
-    try:
 
-        resultados = driver.find_element(
-            By.ID,
-            "resultdata"
-        )
+def obtener_urls_el_universal():
 
-        enlaces = resultados.find_elements(
-            By.TAG_NAME,
-            "a"
-        )
-
-    except:
-
-        enlaces = driver.find_elements(
-            By.TAG_NAME,
-            "a"
-        )
+    secciones = [
+        "/mundo",
+        "/nacion",
+        "/estados"
+    ]
 
     urls = set()
 
-    for enlace in enlaces:
+    for seccion in secciones:
+
+        feed_url = (
+            "https://www.eluniversal.com.mx/"
+            "pf/api/v3/content/fetch/"
+            "story-feed-by-section"
+        )
+
+        params = {
+            "query": json.dumps({
+                "section": seccion,
+                "size": 100
+            }),
+            "_website": "eluniversal"
+        }
 
         try:
 
-            href = enlace.get_attribute("href")
-
-            texto = enlace.text.strip()
-
-            if not href:
-                continue
-
-            if "eluniversal.com.mx" not in href:
-                continue
-
-            if "/buscador/" in href:
-                continue
-
-            if len(texto) < 15:
-                continue
-
-            urls.add(href)
-
-        except:
-            continue
-
-    urls = list(urls)
-
-    print(f"✅ URLs encontradas: {len(urls)}")
-
-    # ==========================
-    # LISTAS
-    # ==========================
-
-    titulos = []
-    categorias = []
-    autores = []
-    fechas = []
-    cuerpos = []
-    links = []
-
-    # ==========================
-    # RECORRER ARTÍCULOS
-    # ==========================
-
-    for i, url in enumerate(urls, start=1):
-
-        print(f"\n[{i}/{len(urls)}]")
-        print(url)
-
-        try:
-
-            driver.get(url)
-
-            time.sleep(3)
-
-            # ------------------
-            # TÍTULO
-            # ------------------
-
-            try:
-                titulo = driver.find_element(
-                    By.CSS_SELECTOR,
-                    'meta[property="og:title"]'
-                ).get_attribute("content")
-            except:
-                titulo = ""
-
-            # ------------------
-            # CATEGORÍA
-            # ------------------
-
-            try:
-                categoria = driver.find_element(
-                    By.CSS_SELECTOR,
-                    'meta[name="category"]'
-                ).get_attribute("content")
-            except:
-                categoria = ""
-
-            # ------------------
-            # AUTOR
-            # ------------------
-
-            try:
-                autor = driver.find_element(
-                    By.CSS_SELECTOR,
-                    'meta[property="autor"]'
-                ).get_attribute("content")
-            except:
-                autor = ""
-
-            # ------------------
-            # FECHA
-            # ------------------
-
-            try:
-                fecha = driver.find_element(
-                    By.CSS_SELECTOR,
-                    'meta[name="fecha_publicacion"]'
-                ).get_attribute("content")
-            except:
-                fecha = ""
-
-            # ------------------
-            # CUERPO
-            # ------------------
-
-            parrafos = driver.find_elements(
-                By.CSS_SELECTOR,
-                "article p"
+            response = requests.get(
+                feed_url,
+                headers=HEADERS,
+                params=params,
+                timeout=30
             )
 
-            if not parrafos:
+            response.raise_for_status()
 
-                parrafos = driver.find_elements(
-                    By.TAG_NAME,
-                    "p"
+            data = response.json()
+
+            for item in data.get(
+                "content_elements",
+                []
+            ):
+
+                canonical_url = item.get(
+                    "canonical_url"
                 )
 
-            cuerpo = " ".join(
+                if canonical_url:
 
-                p.text.strip()
-
-                for p in parrafos
-
-                if len(p.text.strip()) > 40
-
-            )
-
-            titulos.append(titulo)
-            categorias.append(categoria)
-            autores.append(autor)
-            fechas.append(fecha)
-            cuerpos.append(cuerpo)
-            links.append(url)
+                    urls.add(
+                        "https://www.eluniversal.com.mx"
+                        + canonical_url
+                    )
 
         except Exception as e:
 
-            print(f"❌ Error: {e}")
+            print(
+                f"Error sección "
+                f"{seccion}: {e}"
+            )
 
-    # ==========================
-    # DATAFRAME
-    # ==========================
+    urls = sorted(urls)
 
-    df = pd.DataFrame({
-
-        "Titulo": titulos,
-        "Categoria": categorias,
-        "Autor": autores,
-        "Fecha": fechas,
-        "URL": links,
-        "Cuerpo": cuerpos
-
-    })
-
-    # ==========================
-    # LIMPIEZA
-    # ==========================
-
-    df = df[
-        df["Categoria"].notna()
-    ]
-
-    df = df[
-        df["Categoria"].astype(str).str.strip() != ""
-    ]
-
-    df = df.drop_duplicates(
-        subset=["URL"]
+    print(
+        f"URLs encontradas: "
+        f"{len(urls)}"
     )
 
-    print("\n✅ Registros finales:", len(df))
+    return urls
+
+
+def extraer_datos_articulo(url):
+
+    try:
+
+        response = requests.get(
+            url,
+            headers=HEADERS,
+            timeout=30
+        )
+
+        response.raise_for_status()
+
+        html_text = response.text
+
+        patron = re.search(
+            r"Fusion\.globalContent=(.*?);Fusion\.globalContentConfig",
+            html_text,
+            re.DOTALL
+        )
+
+        if not patron:
+
+            print(
+                f"No se encontró "
+                f"Fusion.globalContent: {url}"
+            )
+
+            return None
+
+        json_text = patron.group(1)
+
+        data = json.loads(
+            json_text
+        )
+
+        titulo = (
+            data.get(
+                "headlines",
+                {}
+            ).get(
+                "basic",
+                ""
+            )
+        )
+
+        subtitulo = (
+            data.get(
+                "subheadlines",
+                {}
+            ).get(
+                "basic",
+                ""
+            )
+        )
+
+        fecha = data.get(
+            "publish_date",
+            ""
+        )
+
+        autor = ""
+
+        autores = (
+            data.get(
+                "credits",
+                {}
+            ).get(
+                "by",
+                []
+            )
+        )
+
+        if autores:
+
+            autor = autores[0].get(
+                "name",
+                ""
+            )
+
+        seccion = (
+            data.get(
+                "taxonomy",
+                {}
+            )
+            .get(
+                "primary_section",
+                {}
+            )
+            .get(
+                "name",
+                ""
+            )
+        )
+
+        keywords = (
+            data.get(
+                "taxonomy",
+                {}
+            ).get(
+                "seo_keywords",
+                []
+            )
+        )
+
+        tags = (
+            data.get(
+                "taxonomy",
+                {}
+            ).get(
+                "tags",
+                []
+            )
+        )
+
+        keywords_texto = ", ".join(
+            keywords
+        )
+
+        tags_texto = ", ".join(
+            tag.get(
+                "text",
+                ""
+            )
+            for tag in tags
+        )
+
+        contenido = []
+
+        for elemento in data.get(
+            "content_elements",
+            []
+        ):
+
+            if (
+                elemento.get(
+                    "type"
+                )
+                == "text"
+            ):
+
+                texto = limpiar_html_texto(
+                    elemento.get(
+                        "content",
+                        ""
+                    )
+                )
+
+                if texto:
+
+                    contenido.append(
+                        texto
+                    )
+
+        cuerpo = "\n\n".join(
+            contenido
+        )
+
+        return {
+            "titulo": titulo,
+            "subtitulo": subtitulo,
+            "autor": autor,
+            "fecha": fecha,
+            "seccion": seccion,
+            "keywords": keywords_texto,
+            "tags": tags_texto,
+            "texto": cuerpo,
+            "url": url
+        }
+
+    except Exception as e:
+
+        print(
+            f"Error en {url}: {e}"
+        )
+
+        return None
+
+
+def extraer_el_universal(limite=None):
+
+    urls = obtener_urls_el_universal()
+
+    noticias = []
+
+    for i, url in enumerate(
+        urls,
+        start=1
+    ):
+
+        print(
+            f"[{i}/{len(urls)}] {url}"
+        )
+
+        resultado = extraer_datos_articulo(
+            url
+        )
+
+        if not resultado:
+            continue
+
+        texto_validacion = " ".join([
+            resultado["titulo"],
+            resultado["subtitulo"],
+            resultado["texto"],
+            resultado["keywords"],
+            resultado["tags"]
+        ])
+
+        if es_relevante(
+            texto_validacion
+        ):
+
+            print(
+                "✓ Noticia relevante"
+            )
+
+            noticias.append(
+                resultado
+            )
+
+            if (
+                limite
+                and len(noticias)
+                >= limite
+            ):
+                break
+
+    df = pd.DataFrame(
+        noticias
+    )
+
+    if not df.empty:
+
+        df.drop_duplicates(
+            subset=["url"],
+            inplace=True
+        )
 
     return df
 
-# ============================================
-# EJECUCIÓN
-# ============================================
 
-df = extraction()
+if __name__ == "__main__":
 
-print(df.head())
+    df = extraer_el_universal(
+        limite=5
+    )
 
-#driver.quit()
+    print(
+        "\nRESULTADOS:"
+    )
+
+    print(
+        df[[
+            "titulo",
+            "fecha",
+            "url"
+        ]]
+    )
+
+    print(
+        f"\nNoticias obtenidas: "
+        f"{len(df)}"
+    )
+
+extraer_el_universal(limite=5)
