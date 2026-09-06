@@ -1,3 +1,5 @@
+
+
 import re
 import json
 import time
@@ -18,9 +20,7 @@ HEADERS = {
 }
 
 
-# ==========================
-# EXTRACCIÓN ARTÍCULO
-# ==========================
+
 
 # ==========================
 # BÚSQUEDA
@@ -73,7 +73,9 @@ def obtener_resultados_busqueda():
 
     return resultados[:200]
 
-
+# ==========================
+# EXTRACCIÓN ARTÍCULO
+# ==========================
 
 def extraer_texto_articulo(url):
 
@@ -289,13 +291,13 @@ def extraer_texto_articulo(url):
         cuerpo = "\n".join(texto)
 
         return {
-            "titulo": titulo,
-            "url": url,
-            "texto": cuerpo,
-            "fecha": fecha,
-            "autor": autor,
-            "medio": "El Heraldo",
-            "pais": "Colombia"
+            "Titulo": titulo,
+            "URL": url,
+            "Cuerpo": cuerpo,
+            "Fecha": fecha,
+            "Autor": autor,
+            "Pais": "Colombia",
+            "Medio": "El Heraldo"
         }
 
     except Exception as e:
@@ -310,79 +312,66 @@ def extraer_texto_articulo(url):
 # PROCESO PRINCIPAL
 # ==========================
 
-urls = obtener_resultados_busqueda()
 
-print("\nPrimeros enlaces encontrados:\n")
+def extraer_el_heraldo():
 
-for item in urls[:5]:
+    urls = obtener_resultados_busqueda()
 
-    print(item["url"])
+    print("\nPrimeros enlaces encontrados:\n")
 
-noticias = []
+    for item in urls[:5]:
+        print(item["URL"])
 
-for i, item in enumerate(urls, start=1):
+    noticias = []
 
-    print(
-        f"\n[{i}/{len(urls)}] {item['url']}"
-    )
-
-    resultado = extraer_texto_articulo(
-        item["url"]
-    )
-
-    if resultado:
-
-        longitud = len(
-            resultado["texto"]
-        )
+    for i, item in enumerate(urls, start=1):
 
         print(
-            "Título:",
-            resultado["titulo"][:80]
+            f"\n[{i}/{len(urls)}] {item['URL']}"
         )
 
-        print(
-            "Autor:",
-            resultado["autor"]
+        resultado = extraer_texto_articulo(
+            item["URL"]
         )
 
-        print(
-            "Fecha:",
-            resultado["fecha"]
+        if resultado:
+
+            longitud = len(
+                resultado["Cuerpo"]
+            )
+
+            print(
+                "Título:",
+                resultado["Titulo"][:80]
+            )
+
+            print(
+                "Autor:",
+                resultado["Autor"]
+            )
+
+            print(
+                "Fecha:",
+                resultado["Fecha"]
+            )
+
+            print(
+                "Caracteres:",
+                longitud
+            )
+
+            noticias.append(
+                resultado
+            )
+
+        time.sleep(1)
+
+    df.to_csv(
+            "Data/el_heraldo_colombia_migracion_venezolana.csv",
+            index=False,
+            encoding="utf-8-sig"
         )
 
-        print(
-            "Caracteres:",
-            longitud
-        )
+    df = pd.DataFrame(noticias)
+    return df
 
-        noticias.append(
-            resultado
-        )
-
-    time.sleep(1)
-
-print(
-    "\nNoticias válidas:",
-    len(noticias)
-)
-
-df = pd.DataFrame(
-    noticias
-)
-
-df.to_csv(
-    "Data/elheraldo_migracion_venezolana.csv",
-    index=False,
-    encoding="utf-8-sig"
-)
-
-print(
-    "\nCSV guardado como:",
-    "elheraldo_migracion_venezolana.csv"
-)
-
-print(
-    "\nColumnas:",
-    list(df.columns)
-)

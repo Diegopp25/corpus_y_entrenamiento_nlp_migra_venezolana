@@ -280,13 +280,13 @@ def extraer_articulo(url):
         # -------------------------
 
         return {
-            "fecha": fecha,
-            "autor": autor,
-            "pais": "México",
-            "medio": "El Heraldo de México",
-            "titulo": titulo,
-            "cuerpo": cuerpo,
-            "url": url
+            "Titulo": titulo,
+            "URL": url,
+            "Cuerpo": cuerpo,
+            "Fecha": fecha,
+            "Autor": autor,
+            "Pais": "México",
+            "Medio": "El Heraldo de México",
         }
 
     except Exception as e:
@@ -296,64 +296,47 @@ def extraer_articulo(url):
 
         return None
 
+def extraer_el_heraldo_mexico():
 
-# ============================================================
-# MAIN
-# ============================================================
+    print("Extrayendo URLs...")
 
-print("Extrayendo URLs...")
+    urls = set()
 
-urls = set()
+    urls.update(obtener_urls_primera_pagina())
+    urls.update(obtener_urls_ajax())
 
-urls.update(obtener_urls_primera_pagina())
+    urls = sorted(urls)
 
-urls.update(obtener_urls_ajax())
+    print(f"\nTotal URLs únicas: {len(urls)}")
 
-urls = sorted(urls)
+    registros = []
 
-print(f"\nTotal URLs únicas: {len(urls)}")
+    for i, url in enumerate(urls, start=1):
 
-# ============================================================
-# EXTRAER ARTÍCULOS
-# ============================================================
+        print(f"[{i}/{len(urls)}]")
 
-registros = []
+        articulo = extraer_articulo(url)
 
-for i, url in enumerate(urls, start=1):
+        if articulo:
+            registros.append(articulo)
 
-    print(f"[{i}/{len(urls)}]")
+        time.sleep(0.3)
 
-    articulo = extraer_articulo(url)
+    df = pd.DataFrame(registros)
 
-    if articulo:
-        registros.append(articulo)
+    df = df.drop_duplicates(
+        subset=["url"]
+    ).reset_index(drop=True)
 
-    time.sleep(0.3)
+    
+    df.to_csv(
+            "Data/el_heraldo_mexico_migracion_venezolana.csv",
+            index=False,
+            encoding="utf-8-sig"
+        )
 
-# ============================================================
-# DATAFRAME
-# ============================================================
+    
+    print("\nListo.")
+    print("Artículos:", len(df))
 
-df = pd.DataFrame(registros)
-
-df = df.drop_duplicates(
-    subset=["url"]
-)
-
-# ============================================================
-# CSV
-# ============================================================
-
-archivo_salida = (
-    "Data/heraldo_mexico_migracion_venezolana.csv"
-)
-
-df.to_csv(
-    archivo_salida,
-    index=False,
-    encoding="utf-8-sig"
-)
-
-print("\nListo.")
-print("Artículos:", len(df))
-print("Archivo:", archivo_salida)
+    return df

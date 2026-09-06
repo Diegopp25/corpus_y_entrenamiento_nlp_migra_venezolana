@@ -470,30 +470,9 @@ def extraer_el_espectador():
     )
 
     df.to_csv(
-
-        "Data/dataset_migracion_venezolana_todos_los_codigos_de_extraccion.csv",
-
+        "Data/el_espectador_colombia_migracion_venezolana.csv",
         index=False,
-
         encoding="utf-8-sig"
-
-    )
-
-    print(
-        "\n✅ Archivo guardado:"
-    )
-
-    print(
-        "el_espectador_migracion_venezolana.csv"
-    )
-
-    print(
-        f"Noticias: {len(df)}"
-    )
-
-    print(
-        f"Con cuerpo: "
-        f"{(df['Cuerpo'].str.len() > 0).sum()}"
     )
 
     return df
