@@ -1,15 +1,16 @@
 from extraction_codes.extraction_el_espectador import extraer_el_espectador
 from extraction_codes.extraction_el_heraldo import extraer_el_heraldo
 from extraction_codes.extraction_el_heraldo_mexico import extraer_el_heraldo_mexico
+from extraction_codes.extraction_el_milenio_mexico import extraer_milenio_mexico
 
 import pandas as pd
 
-# Extracción
+# Extracción: para hacer extracción completa quitar el "limite=5"
 
 df_elespectador = extraer_el_espectador(limite=5)
 df_elheraldo = extraer_el_heraldo(limite=5)
 df_elheraldo_mexico = extraer_el_heraldo_mexico(limite=5)
-
+df_elmilenio_mexico = extraer_milenio_mexico(limite=5)
 # Inspección rápida
 
 print(df_elespectador.head())
@@ -22,9 +23,10 @@ df_total = pd.concat(
     [
         df_elespectador,
         df_elheraldo,
-        df_elheraldo_mexico
+        df_elheraldo_mexico,
+        df_elmilenio_mexico
     ],
-    ignore_index=True
+    ignore_index=True 
 )
 
 # CSV final único
