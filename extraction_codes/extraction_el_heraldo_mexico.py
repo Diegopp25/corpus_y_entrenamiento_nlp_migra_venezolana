@@ -296,7 +296,7 @@ def extraer_articulo(url):
 
         return None
 
-def extraer_el_heraldo_mexico():
+def extraer_el_heraldo_mexico(limite=None):
 
     print("Extrayendo URLs...")
 
@@ -306,6 +306,11 @@ def extraer_el_heraldo_mexico():
     urls.update(obtener_urls_ajax())
 
     urls = sorted(urls)
+
+    
+    if limite is not None:
+        urls = urls[:limite]
+
 
     print(f"\nTotal URLs únicas: {len(urls)}")
 
@@ -325,7 +330,7 @@ def extraer_el_heraldo_mexico():
     df = pd.DataFrame(registros)
 
     df = df.drop_duplicates(
-        subset=["url"]
+        subset=["URL"]
     ).reset_index(drop=True)
 
     

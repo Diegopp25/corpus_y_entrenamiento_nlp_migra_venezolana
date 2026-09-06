@@ -11,7 +11,13 @@ from bs4 import BeautifulSoup
 # CONFIGURACIÓN
 # ==========================
 
-QUERY = "migración venezolana"
+QUERIES = [
+    "migración venezolana",
+    "migrantes venezolanos",
+    "migrantes venezolanas",
+    "migrante venezolano",
+    "migrante venezolana"
+]
 QUERYLY_KEY = "5a632fcb9cec48db"
 BASE_URL = "https://www.elheraldo.co"
 
@@ -25,53 +31,67 @@ HEADERS = {
 # ==========================
 # BÚSQUEDA
 # ==========================
-
 def obtener_resultados_busqueda():
-
-    params = {
-        "queryly_key": QUERYLY_KEY,
-        "query": QUERY,
-        "endindex": 0,
-        "batchsize": 200,
-        "showfaceted": "true"
-    }
-
-    r = requests.get(
-        "https://api.queryly.com/json.aspx",
-        params=params,
-        headers=HEADERS,
-        timeout=30
-    )
-
-    print("Status búsqueda:", r.status_code)
-
-    texto = r.text
-
-    titulos = re.findall(
-        r'"title":"([^"]+)"',
-        texto
-    )
-
-    links = re.findall(
-        r'"link":"([^"]+)"',
-        texto
-    )
 
     resultados = []
 
-    for titulo, link in zip(titulos, links):
+    for query in QUERIES:
 
-        if not link.startswith("http"):
-            link = BASE_URL + link
+        print(f"\nBuscando: {query}")
 
-        resultados.append({
-            "titulo_busqueda": titulo,
-            "url": link
-        })
+        params = {
+            "queryly_key": QUERYLY_KEY,
+            "query": query,
+            "endindex": 0,
+            "batchsize": 200,
+            "showfaceted": "true"
+        }
+
+        r = requests.get(
+            "https://api.queryly.com/json.aspx",
+            params=params,
+            headers=HEADERS,
+            timeout=30
+        )
+
+        print("Status búsqueda:", r.status_code)
+
+        texto = r.text
+
+        titulos = re.findall(
+            r'"title":"([^"]+)"',
+            texto
+        )
+
+        links = re.findall(
+            r'"link":"([^"]+)"',
+            texto
+        )
+
+        for titulo, link in zip(titulos, links):
+
+            if not link.startswith("http"):
+                link = BASE_URL + link
+
+            resultados.append({
+                "titulo_busqueda": titulo,
+                "url": link
+            })
+
+    # Eliminar duplicados por URL
+    urls_vistas = set()
+    resultados_unicos = []
+
+    for item in resultados:
+
+        if item["url"] not in urls_vistas:
+            urls_vistas.add(item["url"])
+            resultados_unicos.append(item)
 
     print("Resultados encontrados:", len(resultados))
+    print("Resultados únicos:", len(resultados_unicos))
 
-    return resultados[:200]
+    return resultados_unicos
 
 # ==========================
 # EXTRACCIÓN ARTÍCULO
@@ -313,25 +333,28 @@ def extraer_texto_articulo(url):
 # ==========================
 
 
-def extraer_el_heraldo():
+def extraer_el_heraldo(limite=None):
 
     urls = obtener_resultados_busqueda()
+    if limite is not None:
+        urls = urls[:limite]
 
+    
     print("\nPrimeros enlaces encontrados:\n")
 
     for item in urls[:5]:
-        print(item["URL"])
+        print(item["url"])
 
     noticias = []
 
     for i, item in enumerate(urls, start=1):
 
         print(
-            f"\n[{i}/{len(urls)}] {item['URL']}"
+            f"\n[{i}/{len(urls)}] {item['url']}"
         )
 
         resultado = extraer_texto_articulo(
-            item["URL"]
+            item["url"]
         )
 
         if resultado:
@@ -366,12 +389,15 @@ def extraer_el_heraldo():
 
         time.sleep(1)
 
-    df.to_csv(
-            "Data/el_heraldo_colombia_migracion_venezolana.csv",
-            index=False,
-            encoding="utf-8-sig"
-        )
 
     df = pd.DataFrame(noticias)
+
+    df.to_csv(
+                "Data/el_heraldo_colombia_migracion_venezolana.csv",
+                index=False,
+                encoding="utf-8-sig"
+            )
+
+
     return df
 

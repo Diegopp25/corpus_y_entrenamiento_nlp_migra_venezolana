@@ -401,9 +401,12 @@ def obtener_articulos():
 # MAIN
 # ======================================================
 
-def extraer_el_espectador():
+def extraer_el_espectador(limite=None):
 
     articulos = obtener_articulos()
+
+    if limite is not None:
+        articulos = articulos[:limite]
 
     print(
         f"\n✅ Artículos encontrados: "

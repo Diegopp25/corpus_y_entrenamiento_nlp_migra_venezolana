@@ -6,9 +6,9 @@ import pandas as pd
 
 # Extracción
 
-df_elespectador = extraer_el_espectador()
-df_elheraldo = extraer_el_heraldo()
-df_elheraldo_mexico = extraer_el_heraldo_mexico()
+df_elespectador = extraer_el_espectador(limite=5)
+df_elheraldo = extraer_el_heraldo(limite=5)
+df_elheraldo_mexico = extraer_el_heraldo_mexico(limite=5)
 
 # Inspección rápida
 
@@ -31,7 +31,7 @@ df_total = pd.concat(
 
 df_total.to_csv(
     "Data/dataset_migracion_venezolana.csv",
-    index=False,
+    index=True,
     encoding="utf-8-sig"
 )
 
