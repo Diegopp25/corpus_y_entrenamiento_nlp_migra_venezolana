@@ -49,7 +49,7 @@ def limpiar_texto(texto):
 def obtener_resultados_queryly(
     query,
     queryly_key=QUERYLY_KEY,
-    batchsize=80,
+    batchsize=81,
 ):
     """
     Devuelve una lista con todos los resultados encontrados.

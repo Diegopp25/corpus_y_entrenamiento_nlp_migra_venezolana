@@ -1,32 +1,32 @@
 ﻿ID_Autor,Autor
 AutorID_1,Manuel Santiago Sánchez González
-AutorID_2,Juan David Cardozo Maglioni
+AutorID_2,Juan Diego Valencia Martínez
 AutorID_3,Juan Felipe Useche Chacón
 AutorID_4,Gabriel Salazar López
-AutorID_5,Deivis Ramírez Miranda
-AutorID_6,Margarita Briceño Delgado
-AutorID_7,Salud Hernández-Mora
+AutorID_5,Juan David Cardozo Maglioni
+AutorID_6,Deivis Ramírez Miranda
+AutorID_7,Margarita Briceño Delgado
 AutorID_8,Milagros Palomares
-AutorID_9,Esteban Felipe Feria Quintero
-AutorID_10,Javier Barragán
-AutorID_11,Camilo Eduardo Velásquez
+AutorID_9,Salud Hernández-Mora
+AutorID_10,Esteban Felipe Feria Quintero
+AutorID_11,Javier Barragán
 AutorID_12,Francisco Javier Bernal Gutiérrez
 AutorID_13,Javier Barragán Ramos
 AutorID_14,Europa Press|Juan David Cardozo Maglioni
-AutorID_15,Andrés Felipe Romero
-AutorID_16,Juan Francisco Valbuena Gaitán
-AutorID_17,Ana Blas
-AutorID_18,Geraldine Sofía Zambrano Calderón
-AutorID_19,Carolina Avendaño Pabón
-AutorID_20,Miguel Rojas
+AutorID_15,Camilo Eduardo Velásquez
+AutorID_16,Andrés Felipe Romero
+AutorID_17,Juan Francisco Valbuena Gaitán
+AutorID_18,Ana Blas
+AutorID_19,Geraldine Sofía Zambrano Calderón
+AutorID_20,Carolina Avendaño Pabón
 AutorID_21,David Alejandro Rojas García
 AutorID_22,Cinthya Castaño
 AutorID_23,Martha Uribe Jaramillo
 AutorID_24,Felipe Arteaga
 AutorID_25,Juliana Gil Gutiérrez
 AutorID_26,Carlos Eduardo González Forero
-AutorID_27,Proyecto Migración Venezuela
-AutorID_28,Nicolás Méndez Galvis
+AutorID_27,Nicolás Méndez Galvis
+AutorID_28,Proyecto Migración Venezuela
 AutorID_29,Cristina Castro
 AutorID_30,Francisco Argüello
 AutorID_31,Javier Contreras
@@ -37,57 +37,58 @@ AutorID_35,Martín Elías Pacheco Cogollo
 AutorID_36,Cristian Felipe Cubillos Contreras
 AutorID_37,Esteban Jurado Pedraza
 AutorID_38,Juliana Liceth Castro Calderón
-AutorID_39,Carolina Flechas Anzola
-AutorID_40,Karen Bohórquez Contreras
-AutorID_41,Nelson David García Pedraza
-AutorID_42,Esteban Feria
-AutorID_43,Javier Molina Castillo
+AutorID_39,Karen Bohórquez Contreras
+AutorID_40,Nelson David García Pedraza
+AutorID_41,Esteban Feria
+AutorID_42,Javier Molina Castillo
+AutorID_43,Carolina Flechas Anzola
 AutorID_44,Debbie Sallete Cardona Gámez
 AutorID_45,Angélica María Benavides Gómez
 AutorID_46,Manuel Pastrán
-AutorID_47,Alejandro Domínguez
-AutorID_48,Agencia AP
-AutorID_49,Carlos Zaid
-AutorID_50,Ramón Bragaña
-AutorID_51,Jhonatan González
-AutorID_52,Agencia EFE
-AutorID_53,Agencia Reuters
-AutorID_54,Abraham Jiménez
-AutorID_55,Agencia AFP
-AutorID_56,Daniela Pacheco
-AutorID_57,Agencia EFE y AFP
-AutorID_58,Wendoline Adame
-AutorID_59,Isis Rábago
-AutorID_60,Wilmer Gil López
-AutorID_61,Pedro Domínguez
-AutorID_62,Gaspar Vela
-AutorID_63,Redacción
-AutorID_64,Ángel Domínguez
-AutorID_65,Alejandro Reyes
-AutorID_66,Óscar Rodríguez
-AutorID_67,César Cubero
-AutorID_68,Nexos
-AutorID_69,Lucía Cisneros
-AutorID_70,Azucena Rangel
-AutorID_71,AFP
-AutorID_72,Armando Moreno
-AutorID_73,Reynaldo Gutiérrez
-AutorID_74,Blanca Elizabeth Carmona
-AutorID_75,Agustín Gutiérrez Canet
-AutorID_76,Anahy Meza y Antonio Hernández
-AutorID_77,Said Betanzos
-AutorID_78,Leonardo Lugo
-AutorID_79,Jannet López Ponce
-AutorID_80,Blanca Carmona
-AutorID_81,Silvia Arellano
-AutorID_82,Marco Flores
-AutorID_83,Julio Navarro Cárdenas
-AutorID_84,Rafael López Méndez
-AutorID_85,Antonio López
-AutorID_86,Ángel Hernández
-AutorID_87,Marco A. Flores
-AutorID_88,César Velázquez
-AutorID_89,Milenio Digital
-AutorID_90,Editorial Milenio
-AutorID_91,Jaime Zambrano
-AutorID_92,Jesús Alberto García
+AutorID_47,Alejandro Cheyne
+AutorID_48,Alejandro Domínguez
+AutorID_49,Agencia AP
+AutorID_50,Carlos Zaid
+AutorID_51,Ramón Bragaña
+AutorID_52,Jhonatan González
+AutorID_53,Agencia EFE
+AutorID_54,Agencia Reuters
+AutorID_55,Abraham Jiménez López
+AutorID_56,Agencia AFP
+AutorID_57,Daniela Pacheco
+AutorID_58,Agencia EFE y AFP
+AutorID_59,Wendoline Adame
+AutorID_60,Isis Rábago
+AutorID_61,Wilmer Gil López
+AutorID_62,Pedro Domínguez
+AutorID_63,Gaspar Vela
+AutorID_64,Redacción
+AutorID_65,Ángel Domínguez
+AutorID_66,Alejandro Reyes
+AutorID_67,Óscar Rodríguez
+AutorID_68,César Cubero
+AutorID_69,Nexos
+AutorID_70,Lucía Cisneros
+AutorID_71,Azucena Rangel
+AutorID_72,AFP
+AutorID_73,Armando Moreno
+AutorID_74,Reynaldo Gutiérrez
+AutorID_75,Blanca Elizabeth Carmona
+AutorID_76,Agustín Gutiérrez Canet
+AutorID_77,Anahy Meza y Antonio Hernández
+AutorID_78,Said Betanzos
+AutorID_79,Leonardo Lugo
+AutorID_80,Jannet López Ponce
+AutorID_81,Blanca Carmona
+AutorID_82,Silvia Arellano
+AutorID_83,Marco Flores
+AutorID_84,Julio Navarro Cárdenas
+AutorID_85,Rafael López Méndez
+AutorID_86,Antonio López
+AutorID_87,Ángel Hernández
+AutorID_88,Marco A. Flores
+AutorID_89,César Velázquez
+AutorID_90,Milenio Digital
+AutorID_91,Editorial Milenio
+AutorID_92,Jaime Zambrano
+AutorID_93,Jesús Alberto García
