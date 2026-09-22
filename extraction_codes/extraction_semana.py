@@ -234,13 +234,7 @@ def extraer_semana(query="migrantes venezolanos"):
 
     df = pd.DataFrame(noticias)
 
-    df.to_csv(
 
-        "Data/semana_colombia_migracion_venezolana.csv",
-        index = False,
-        encoding="utf-8-sig"
-
-    )
 
     return df
 

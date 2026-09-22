@@ -402,11 +402,6 @@ def extraer_milenio_mexico(limite=None):
             fix_author
         )
 
-    df.to_csv(
-        "Data/el_milenio_mexico_migracion_venezolana.csv",
-        index=False,
-        encoding="utf-8-sig"
-    )
 
     print("\nListo.")
     print(
