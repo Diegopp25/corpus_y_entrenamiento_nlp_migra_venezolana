@@ -1,7 +1,7 @@
 import pandas as pd
 import labelbox as lb
 
-def enviar_a_labelbox():
+def enviar_a_labelbox(df):
 
     # =====================================
     # CONFIGURACIÓN
@@ -21,13 +21,6 @@ def enviar_a_labelbox():
     dataset = client.create_dataset(
         name="Noticias_Migracion"
     )
-
-    # =====================================
-    # LEER CSV
-    # =====================================
-
-    df = pd.read_csv(CSV_PATH)
-
 
     # =====================================
     # CONSTRUIR DATA ROWS
