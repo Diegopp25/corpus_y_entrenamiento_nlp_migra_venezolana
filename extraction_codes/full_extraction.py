@@ -26,16 +26,8 @@ def extraer_data_completa(x):
         ignore_index=True 
     )
 
-
-    # CSV final único
-
-    df_total.to_csv(
-        "Data/dataset_migracion_venezolana.csv",
-        index=True,
-        encoding="utf-8-sig"
-    )
-
     print(f"\n✅ Registros totales: {len(df_total)}")
-    print("✅ Archivo: Data/dataset_migracion_venezolana.csv")
+
+    return df_total
 
 
