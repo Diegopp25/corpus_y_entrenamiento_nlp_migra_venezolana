@@ -26,8 +26,14 @@ def extraer_data_completa(x):
         ignore_index=True 
     )
 
+    df.to_csv(
+        "LandingStage/dataset_crudo_migracion_venezolana.csv",
+        index=False,
+        encoding="utf-8-sig"
+    )
+
     print(f"\n✅ Registros totales: {len(df_total)}")
 
-    return df_total
+    
 
 
