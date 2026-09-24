@@ -1,5 +1,5 @@
-from extraction_codes.extraction_semana import extraer_semana
-from extraction_codes.extraction_el_milenio_mexico import extraer_milenio_mexico
+from Extraction.extraction_semana import extraer_semana
+from Extraction.extraction_el_milenio_mexico import extraer_milenio_mexico
 
 import pandas as pd
 
@@ -26,7 +26,7 @@ def extraer_data_completa(x):
         ignore_index=True 
     )
 
-    df.to_csv(
+    df_total.to_csv(
         "LandingStage/dataset_crudo_migracion_venezolana.csv",
         index=False,
         encoding="utf-8-sig"
@@ -34,6 +34,8 @@ def extraer_data_completa(x):
 
     print(f"\n✅ Registros totales: {len(df_total)}")
 
+
+extraer_data_completa(None)  # Cambiar el valor de x para ajustar el límite de registros a extraer
     
 
 
