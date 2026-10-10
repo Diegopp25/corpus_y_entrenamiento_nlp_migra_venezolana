@@ -1,0 +1,11 @@
+torch
+transformers>=4.40
+sentencepiece
+protobuf
+emoji          # lo usa el tokenizador de RoBERTuito
+pandas>=2.0
+numpy
+scikit-learn
+scipy
+matplotlib
+tqdm
