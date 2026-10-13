@@ -47,3 +47,5 @@ def enviar_a_labelbox(df):
 
     print("Dataset cargado correctamente")
     print(f"Total registros: {len(data_rows)}")
+
+
