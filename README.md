@@ -7,18 +7,23 @@ Para ello, el proyecto consiste en la recopilación, procesamiento y análisis d
 
 ## Estructura del repositorio
 
+```text
 CulturalBias
-│
 ├── Extraction
 │   ├── Scrapers para fuentes colombianas
 │   ├── Scrapers para fuentes mexicanas
-│   └── full_extraction.py # ejecuta todos los scrappers y almacena los datos en un CSV
+│   └── full_extraction.py
+│       └── Ejecuta todos los procesos de extracción y almacena los datos en CSV
 │
 ├── Transformation
-│   ├── LandindStage # Archivos CSV con datos brutos y procesados
+│   ├── LandindStage
+│   │   └── Archivos CSV con datos brutos y procesados
 │   └── Preparación de datos para entrenamiento
 │
-├── check_robots.py       # Verifica si los sitios web permiten extracción automatizada de su contenido
-├── .gitignore            
-├── LICENSE.txt           # Licencia del proyecto
-└── README.md             
+├── check_robots.py
+│   └── Verifica si los sitios web permiten extracción automatizada de contenido
+│
+├── .gitignore
+├── LICENSE.txt
+└── README.md
+```
