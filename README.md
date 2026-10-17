@@ -1,2 +1,24 @@
 # cultural_bias
-Cultural Bias
+
+Cultural Bias tiene como finalidad el entrenamiento y evaluación de modelos de procesamiento de lenguaje natural destinados a detectar patrones de sesgo cultural en la cobertura mediática de la migración venezolana.
+
+
+Para ello, el proyecto consiste en la recopilación, procesamiento y análisis de noticias relacionadas con este fenómeno en Colombia y México, con el propósito de construir un corpus lingüístico especializado.
+
+## Estructura del repositorio
+
+CulturalBias
+│
+├── Extraction
+│   ├── Scrapers para fuentes colombianas
+│   ├── Scrapers para fuentes mexicanas
+│   └── full_extraction.py # ejecuta todos los scrappers y almacena los datos en un CSV
+│
+├── Transformation
+│   ├── LandindStage # Archivos CSV con datos brutos y procesados
+│   └── Preparación de datos para entrenamiento
+│
+├── check_robots.py       # Verifica si los sitios web permiten extracción automatizada de su contenido
+├── .gitignore            
+├── LICENSE.txt           # Licencia del proyecto
+└── README.md             
