@@ -25,3 +25,7 @@ print("Reforma:")
 chekear_robots("https://www.reforma.com/robots.txt", "https://busquedas.reforma.com/buscar/reforma/pages/default.aspx")
 print("El Sol de México:")
 chekear_robots("https://oem.com.mx/robots.txt", "https://oem.com.mx")
+print("La Jornada:")
+chekear_robots("https://www.jornada.com.mx/robots.txt", "https://www.jornada.com.mx")
+print("La Crónica:")
+chekear_robots("https://www.cronica.com.mx/robots.txt", "https://www.cronica.com.mx") #promising
