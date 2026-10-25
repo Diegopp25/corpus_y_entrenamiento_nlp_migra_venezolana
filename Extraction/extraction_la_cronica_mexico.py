@@ -23,7 +23,7 @@ SEARCH_TERM = "migración venezolana en México"
 PAIS = "México"
 MEDIO = "La Crónica de Hoy"
 
-MAX_PAGES = 50
+MAX_PAGES = 5000
 
 HEADERS = {
     "User-Agent": (
@@ -71,12 +71,34 @@ def fix_author(author):
 
 def get_article_author(soup):
 
+    # Selector específico de La Crónica
+    node = soup.select_one(
+        ".b-byline__names"
+    )
+
+    if node:
+
+        autor = clean_text(
+            node.get_text(
+                " ",
+                strip=True
+            )
+        )
+
+        autor = re.sub(
+            r"<\s*br\s*/?\s*>",
+            "",
+            autor,
+            flags=re.IGNORECASE
+        )
+
+        return clean_text(autor)
+
+    # Fallbacks genéricos
     selectors = [
 
         ".author-post",
-
         ".post-author",
-
         ".author",
 
         '[itemprop="author"]',
@@ -93,72 +115,52 @@ def get_article_author(soup):
 
         if node:
 
-            txt = clean_text(
+            autor = clean_text(
                 node.get_text(
                     " ",
                     strip=True
                 )
             )
 
-            txt = re.sub(
-                r"^Por\s+",
+            autor = re.sub(
+                r"<\s*br\s*/?\s*>",
                 "",
-                txt
+                autor,
+                flags=re.IGNORECASE
             )
 
-            if txt:
-                return txt
-
-    for tag in soup.select(
-        'script[type="application/ld+json"]'
-    ):
-
-        try:
-
-            data = json.loads(
-                tag.string
-            )
-
-            if isinstance(data, dict):
-
-                author = data.get(
-                    "author"
-                )
-
-                if isinstance(
-                    author,
-                    dict
-                ):
-
-                    name = author.get(
-                        "name"
-                    )
-
-                    if name:
-                        return clean_text(
-                            name
-                        )
-
-        except Exception:
-
-            pass
+            return clean_text(autor)
 
     return ""
 
+    # Selector específico de La Crónica
 
-# ======================================================
-# FECHA
-# ======================================================
+    node = soup.select_one(
+        ".b-byline__names"
+    )
 
-def get_article_date(soup):
+    if node:
+
+        autor = clean_text(
+            node.get_text(
+                " ",
+                strip=True
+            )
+        )
+
+        return autor
+
+    # Fallbacks genéricos
 
     selectors = [
 
-        ".date-post",
+        ".author-post",
+        ".post-author",
+        ".author",
 
-        "time",
+        '[itemprop="author"]',
 
-        '[itemprop="datePublished"]'
+        '[rel="author"]'
 
     ]
 
@@ -168,27 +170,39 @@ def get_article_date(soup):
             selector
         )
 
-        if not node:
-            continue
+        if node:
 
-        if node.has_attr(
-            "datetime"
-        ):
-
-            return clean_text(
-                node["datetime"]
-            )
-
-        fecha = clean_text(
-            node.get_text(
-                " ",
-                strip=True
-            )
+            autor = re.sub(
+            r"<\s*br\s*/?\s*>",
+            "",
+            autor,
+            flags=re.IGNORECASE
         )
 
-        if fecha:
+        autor = clean_text(autor)
 
-            return fecha
+    return ""
+    
+# ======================================================
+# FECHA
+# ======================================================
+
+def get_article_date(soup):
+
+    node = soup.select_one(
+        "time.c-date.b-date"
+    )
+
+    if not node:
+        return ""
+
+    fecha = node.get(
+        "datetime"
+    )
+
+    if fecha:
+
+        return fecha[:10]
 
     return ""
 
@@ -501,7 +515,7 @@ def get_search_results():
 # ======================================================
 
 def extraer_cronica_mexico(
-    limite=None
+    limite=5
 ):
 
     resultados = (
