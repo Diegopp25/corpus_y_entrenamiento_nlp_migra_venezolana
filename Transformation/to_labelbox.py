@@ -1,5 +1,9 @@
 import pandas as pd
 import labelbox as lb
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def enviar_a_labelbox(df):
 
@@ -7,10 +11,16 @@ def enviar_a_labelbox(df):
     # CONFIGURACIÓN
     # =====================================
 
-    API_KEY = "lbx_zQcvCsJmScIYkgTlacTLBCeRlS4Aam1PXfWquIdrweI"
-
+    API_KEY = os.getenv("LABELBOX_API_KEY")
     CSV_PATH = "Data/dataset_migracion_venezolana_limpio_estandarizado.csv"
 
+    df = pd.read_csv(CSV_PATH)
+
+    enviar_a_labelbox(
+        df=df,
+        api_key=API_KEY,
+        csv_path=CSV_PATH
+    )
     # =====================================
     # CONECTAR A LABELBOX
     # =====================================
