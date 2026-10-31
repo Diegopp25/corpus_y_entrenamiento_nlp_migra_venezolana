@@ -19,7 +19,7 @@ migrantes venezolanos**, como base para detectar sesgo cultural.
   fragmentos que mencionan migrantes (`results/<run>/target/`) y (2) incluye `mdeberta_nli_target`,
   un modelo NLI con hipótesis sobre cómo se presenta a los migrantes. Si estas aproximaciones bastan es
   una pregunta empírica: la responde la evaluación contra etiquetas manuales.
-- **Sin etiquetas humanas solo se mide acuerdo entre modelos, no exactitud.**
+- **Acuerdo entre modelos no es exactitud:** para saber cuál acierta hay que evaluar contra las etiquetas humanas (`evaluate_gold`).
 - **Sentimiento no es sesgo cultural.** Aun midiendo bien el tono, el sesgo también está en el encuadre
   (víctima, amenaza, carga...); por eso la guía incluye una columna `encuadre`.
 - Ninguno de los modelos se entrenó con prensa. Cinco vienen de tuits o reseñas de productos y cine.
@@ -70,27 +70,42 @@ python -m sentiment_benchmark.run_models --models robertuito,xlmr_twitter --devi
 python -m sentiment_benchmark.analyze                        # results/full/target
 python -m sentiment_benchmark.analyze --run full             # tono general
 
-# 3) Etiquetar y evaluar (leer annotations/GUIA_ETIQUETADO.md)
-python -m sentiment_benchmark.make_annotation_sample --n 60  # ya viene una muestra generada
-python -m sentiment_benchmark.annotator_agreement a.csv b.csv   # si anotan dos personas
-python -m sentiment_benchmark.evaluate_gold                  # contra full/target
-python -m sentiment_benchmark.evaluate_gold --run full       # comparar con tono general
+# 3) Evaluar contra las etiquetas del proyecto (ver "Etiquetas del proyecto")
+python -m sentiment_benchmark.check_labels ruta/dataset_migracion_venezolana_labeled.csv
+python -m sentiment_benchmark.evaluate_gold --gold ruta/dataset_migracion_venezolana_labeled.csv
+python -m sentiment_benchmark.evaluate_gold --gold ruta/... --run full   # comparar con tono general
 ```
 
 Si un modelo falla (por ejemplo, retirado del Hub), se registra en `run_summary.json` y se continúa
 con los demás. Los resultados ya calculados se reutilizan; usa `--force` para recalcular.
 
-## Etiquetado manual
+## Etiquetas del proyecto (`dataset_migracion_venezolana_labeled.csv`)
 
-Etiquetas: `negativo`, `neutro`, `positivo`, `no_aplica` (nota que no trata de migrantes
-venezolanos) y, opcional, `encuadre`. La guía con reglas para los casos difíciles es
-`annotations/GUIA_ETIQUETADO.md`; es una propuesta que conviene ajustar con una prueba piloto de
-~10 notas. La muestra incluye el cuerpo completo de 60 notas (30 por medio). Con ~60 notas los
-intervalos de confianza del macro-F1 serán anchos: un par de puntos entre modelos no significa nada.
+El CSV etiquetado (columna `sentimiento` = tono de la noticia hacia los migrantes venezolanos, más
+siete columnas temáticas 0/1) se usa directamente:
 
-`evaluate_gold` excluye las `no_aplica` de la evaluación y escribe además `gold_tone_by_medio.csv`:
-la distribución del tono según las personas por medio (Semana = Colombia, Milenio = México), que es la
-base para comparar sesgo entre países. Con ~30 notas por medio, trátalo como exploración, no como conclusión.
+```bash
+# 1) ANTES de evaluar: ¿las etiquetas están unidas al texto correcto?
+python -m sentiment_benchmark.check_labels ruta/dataset_migracion_venezolana_labeled.csv
+# 2) Evaluar (la unión es por URL; los IDs de este módulo empiezan en articulo_0 y los del CSV en articulo_1)
+python -m sentiment_benchmark.evaluate_gold --gold ruta/dataset_migracion_venezolana_labeled.csv --medios Milenio
+```
+
+**Aviso (28 oct 2026):** `check_labels` da un AUC medio de 0.81 para Milenio (coherente) y 0.40 para
+Semana (sin relación con el texto), y al leer los títulos de Semana junto a sus etiquetas hay
+desajustes claros (p. ej. una nota sobre Uber y motos etiquetada "Positivo, Integración social").
+Hasta aclararlo, evalúa solo con `--medios Milenio`. Causa probable, sin confirmar: las etiquetas se
+hicieron sobre una versión anterior del scrape de Semana (la API devuelve resultados que cambian) y se
+unieron por ID a la versión actual. Solución: re-exportar de Labelbox incluyendo el texto de cada nota
+y unir por texto o URL, no por número.
+
+## Qué hace `evaluate_gold`
+
+Compara cada modelo con las etiquetas humanas (`negativo`, `neutro`, `positivo`; las `no_aplica`, si
+las hubiera, se excluyen) y ordena por macro-F1 con intervalo de confianza. También escribe
+`gold_tone_by_medio.csv`: la distribución del tono según las personas por medio (Semana = Colombia,
+Milenio = México). Con ~80 notas por medio y solo 6 positivas en Milenio, trátalo como exploración.
+`annotator_agreement.py` calcula el kappa entre dos anotadores si algún día se tienen sus archivos por separado.
 
 ## Salidas (`results/<full|limit_N|dummy>[/target]/`, ignoradas por git)
 
@@ -108,6 +123,9 @@ base para comparar sesgo entre países. Con ~30 notas por medio, trátalo como e
 
 - **Tokenizador de RoBERTuito:** puede pedir el paquete `emoji` (está en `requirements.txt`).
 - **`beto`:** si su repositorio ya no existe, fallará y se omitirá.
+- **`xlmr_twitter` y el tokenizador:** su repo solo trae un archivo SentencePiece y `transformers` puede fallar al convertirlo (error "Converting from SentencePiece and Tiktoken failed"). El código ya usa como respaldo el tokenizador de `FacebookAI/xlm-roberta-base`, que comparte vocabulario. Si aun así falla, instala `sentencepiece` y `protobuf`.
+- **Python 3.14:** es muy reciente y varias librerías de ML aún no lo soportan bien (PyTorch avisa de ello). Si aparecen errores raros, usa un entorno virtual con Python 3.11 o 3.12.
+- **`--limit N`:** guarda en `results/limit_N/`, así que para analizar esa prueba usa `python -m sentiment_benchmark.analyze --run limit_20/target`.
 - **Etiquetas `LABEL_0`:** si algún modelo cambiara a etiquetas genéricas, `labels.py` lanza un error claro
   y hay que añadir un `label_map` en su `ModelSpec`.
 - **Memoria/tiempo:** los modelos NLI hacen tres pasadas por fragmento. Baja `--batch-size` si falta memoria.

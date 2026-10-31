@@ -9,8 +9,6 @@ ROOT = PACKAGE_DIR.parent
 
 DATA_CSV = ROOT / "Data" / "dataset_migracion_venezolana.csv"
 RESULTS_DIR = PACKAGE_DIR / "results"
-ANNOTATIONS_DIR = PACKAGE_DIR / "annotations"
-ANNOTATION_SAMPLE_CSV = ANNOTATIONS_DIR / "annotation_sample.csv"
 
 # Clases canónicas: todos los modelos se convierten a este orden.
 CLASSES = ["negativo", "neutro", "positivo"]

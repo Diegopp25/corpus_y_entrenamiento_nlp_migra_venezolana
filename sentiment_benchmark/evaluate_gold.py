@@ -1,11 +1,15 @@
 """Evalúa cada modelo contra tus etiquetas manuales (tono HACIA los migrantes) y los ordena.
 
 Uso:
-    python -m sentiment_benchmark.evaluate_gold                       # results/full/target
-    python -m sentiment_benchmark.evaluate_gold --run full            # tono general de la nota
-    python -m sentiment_benchmark.evaluate_gold --gold ruta/mi_gold.csv
+    python -m sentiment_benchmark.evaluate_gold --gold ruta/dataset_..._labeled.csv            # results/full/target
+    python -m sentiment_benchmark.evaluate_gold --gold ruta/dataset_..._labeled.csv --run full # tono general de la nota
+    python -m sentiment_benchmark.evaluate_gold --gold ruta/dataset_..._labeled.csv --medios Milenio
 
-El CSV debe tener `article_id` y `label_manual` (negativo/neutro/positivo/no_aplica).
+El CSV debe tener la etiqueta (`label_manual` o `sentimiento`: negativo/neutro/positivo/no_aplica,
+en cualquier capitalización) y una forma de identificar la nota: la columna `URL` (recomendado) o
+`article_id`/`ID`. Con `URL` la unión es por texto y no depende de cómo se numeraron las notas
+(aquí los IDs empiezan en articulo_0 y los del CSV etiquetado en articulo_1: unir por ID las
+desplazaría una fila). `--medios` restringe la evaluación a esos medios.
 Las notas `no_aplica` se excluyen de la evaluación (un modelo no puede saber que la nota no trata
 de migrantes), pero se cuentan. Con pocas notas los intervalos de confianza serán anchos.
 
@@ -24,16 +28,26 @@ import pandas as pd  # noqa: E402
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score  # noqa: E402
 
 from sentiment_benchmark.analyze import INK, MUTED, SURFACE, load_predictions  # noqa: E402
-from sentiment_benchmark.config import ANNOTATION_SAMPLE_CSV, CLASSES, DATA_CSV, RESULTS_DIR  # noqa: E402
+from sentiment_benchmark.config import CLASSES, DATA_CSV, RESULTS_DIR  # noqa: E402
 from sentiment_benchmark.data import load_corpus  # noqa: E402
 from sentiment_benchmark.labels import NO_APLICA, normalize_gold  # noqa: E402
 from sentiment_benchmark.metrics import bootstrap_ci, macro_f1, majority_vote  # noqa: E402
 
 
-def load_gold(path) -> pd.DataFrame:
+def load_gold(path, corpus: pd.DataFrame | None = None) -> pd.DataFrame:
     g = pd.read_csv(path)
-    if "label_manual" not in g.columns or "article_id" not in g.columns:
-        raise SystemExit("El CSV necesita las columnas `article_id` y `label_manual`.")
+    g = g.rename(columns={"sentimiento": "label_manual", "ID": "article_id"})
+    if "label_manual" not in g.columns:
+        raise SystemExit("El CSV necesita una columna `label_manual` o `sentimiento`.")
+    if "URL" in g.columns and corpus is not None:
+        url_to_id = corpus.set_index("URL")["article_id"]
+        g["article_id"] = g["URL"].map(url_to_id)
+        lost = int(g["article_id"].isna().sum())
+        if lost:
+            print(f"AVISO: {lost} filas del CSV etiquetado no están (por URL) en el corpus y se omiten.")
+        g = g[g["article_id"].notna()].copy()
+    elif "article_id" not in g.columns:
+        raise SystemExit("El CSV necesita la columna `URL` o `article_id`.")
     g = g[g["label_manual"].notna() & (g["label_manual"].astype(str).str.strip() != "")].copy()
     g["gold"] = g["label_manual"].map(normalize_gold)
     bad = g[g["gold"].isna()]
@@ -69,13 +83,21 @@ def plot_ranking(table: pd.DataFrame, path) -> None:
 def main(argv: list[str] | None = None) -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--run", default="full/target")
-    p.add_argument("--gold", default=str(ANNOTATION_SAMPLE_CSV))
+    p.add_argument("--gold", required=True, help="CSV etiquetado (con URL y sentimiento/label_manual)")
     p.add_argument("--data", default=str(DATA_CSV))
     p.add_argument("--n-boot", type=int, default=1000)
+    p.add_argument("--medios", default="", help="Evaluar solo estos medios (coma), p. ej. Milenio")
     args = p.parse_args(argv)
 
     run_dir = RESULTS_DIR / args.run
-    gold_all = load_gold(args.gold).join(load_corpus(args.data).set_index("article_id")[["Medio", "Pais"]])
+    corpus = load_corpus(args.data)
+    gold_all = load_gold(args.gold, corpus).join(corpus.set_index("article_id")[["Medio", "Pais"]])
+    if args.medios:
+        keep = [m.strip() for m in args.medios.split(",") if m.strip()]
+        gold_all = gold_all[gold_all["Medio"].isin(keep)]
+        if gold_all.empty:
+            raise SystemExit(f"Ninguna nota etiquetada pertenece a {keep}.")
+        print(f"Evaluando solo: {', '.join(keep)} ({len(gold_all)} notas etiquetadas)")
 
     # Qué dijeron las personas, por medio (incluye no_aplica)
     tone = pd.crosstab(gold_all["Medio"], gold_all["gold"])

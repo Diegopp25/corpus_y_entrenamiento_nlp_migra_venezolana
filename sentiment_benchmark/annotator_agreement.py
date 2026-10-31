@@ -5,16 +5,17 @@ Uso:
 
 Cada CSV debe tener `article_id` y `label_manual`. Se comparan solo las notas etiquetadas
 por ambos. Un kappa bajo indica que la guía es ambigua: ajústala antes de seguir etiquetando.
-Escribe annotations/desacuerdos.csv.
+Escribe la lista de desacuerdos en desacuerdos.csv (cambia la ruta con --out).
 """
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 import pandas as pd
 from sklearn.metrics import cohen_kappa_score
 
-from sentiment_benchmark.config import ANNOTATIONS_DIR, CLASSES
+from sentiment_benchmark.config import CLASSES
 from sentiment_benchmark.labels import NO_APLICA, normalize_gold
 
 
@@ -32,6 +33,7 @@ def main(argv: list[str] | None = None) -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("file_a")
     p.add_argument("file_b")
+    p.add_argument("--out", default="desacuerdos.csv")
     args = p.parse_args(argv)
 
     a, b = _load(args.file_a, "a"), _load(args.file_b, "b")
@@ -45,8 +47,7 @@ def main(argv: list[str] | None = None) -> None:
     print("(referencia habitual: <0.40 bajo, 0.40-0.60 moderado, 0.60-0.80 bueno, >0.80 muy bueno)")
     print(pd.crosstab(m["label_a"], m["label_b"], rownames=["A"], colnames=["B"]).to_string())
     diff = m[m["label_a"] != m["label_b"]]
-    out = ANNOTATIONS_DIR / "desacuerdos.csv"
-    out.parent.mkdir(parents=True, exist_ok=True)
+    out = Path(args.out)
     diff.to_csv(out, index=False, encoding="utf-8-sig")
     print(f"\n{len(diff)} desacuerdos -> {out}")
 
