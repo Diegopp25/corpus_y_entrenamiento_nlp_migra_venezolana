@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.vscode/
+
+# Modelos entrenados
+*.pt
+*.pth
+*.ckpt
+
+.venv*/
+__pycache__/
+*.pt

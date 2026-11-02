@@ -1,0 +1,4 @@
+Debe haber una versión de pre procesamiento para el investigador que haga labelling, y luego se hace un nuevo pre procesamiento.
+
+Sobre la organización del repo: tngo muchas dudas sobre qué debe ser confidencial y qué no. Por ello, tengo confusión sobre 
+el preprocesamiento. Por ejemplo ¿Qué hago con la data anonimizada? 

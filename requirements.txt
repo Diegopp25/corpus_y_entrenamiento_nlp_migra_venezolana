@@ -1,0 +1,12 @@
+urllib.robotparser
+argparse
+html
+spacy>=3.8.0
+torch
+transformers
+datasets
+accelerate
+scikit-learn
+pandas
+numpy
+gradio

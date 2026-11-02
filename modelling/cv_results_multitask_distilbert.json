@@ -1,0 +1,38 @@
+{
+  "config": {
+    "text_column": "Cuerpo",
+    "max_len": 512,
+    "epochs": 15,
+    "lr_encoder": 2e-05,
+    "lr_heads": 0.001,
+    "freeze_layers": 0,
+    "n_folds": 5,
+    "seeds": [
+      42
+    ]
+  },
+  "per_seed": [
+    {
+      "seed": 42,
+      "epoch": 12,
+      "sent_macro_f1_pooled": 0.4309144028889252,
+      "sent_macro_f1_folds_mean": 0.4253105590850689,
+      "sent_macro_f1_folds_std": 0.06747894707904704,
+      "multi_macro_f1_thr05_pooled": 0.31156579238311766,
+      "multi_macro_f1_tuned_pooled": 0.38098494798085936,
+      "multi_micro_f1_tuned_pooled": 0.5143603133159269,
+      "multi_macro_f1_tuned_folds_mean": 0.3772124446131059,
+      "multi_macro_f1_tuned_folds_std": 0.03193854762181149
+    }
+  ],
+  "thresholds": {
+    "Acceso_a_servicios": 0.2,
+    "Empleo_y_economía": 0.3,
+    "Integración_social": 0.2,
+    "Otros": 0.49999999999999994,
+    "Politica_migratoria": 0.2,
+    "Seguridad": 0.2,
+    "Transito_migratorio": 0.39999999999999997
+  },
+  "final_epochs": 12
+}
