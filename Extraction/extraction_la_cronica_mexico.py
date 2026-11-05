@@ -14,6 +14,8 @@ from playwright.sync_api import (
     sync_playwright
 )
 
+
+ROOT_DIR = "C:/Users/diego/ScrappingPI2"
 # ======================================================
 # CONFIG
 # ======================================================
@@ -515,7 +517,7 @@ def get_search_results():
 # ======================================================
 
 def extraer_cronica_mexico(
-    limite=5
+    limite=None
 ):
 
     resultados = (
@@ -607,7 +609,7 @@ if __name__ == "__main__":
     )
 
     df.to_csv(
-        "cronica_mexico.csv",
+        ROOT_DIR + "/Data/cronica_mexico.csv",
         index=False,
         encoding="utf-8-sig"
     )

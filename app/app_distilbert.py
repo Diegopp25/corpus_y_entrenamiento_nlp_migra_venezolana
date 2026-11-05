@@ -24,13 +24,13 @@ MODELLING_DIR = PROJECT_ROOT / "modelling"
 sys.path.insert(0, str(MODELLING_DIR))
 from text_utils import basic_clean
 
-MODEL_DIR = MODELLING_DIR / "models" / "multitask_distilbert"
+MODEL_DIR = MODELLING_DIR / "models" / "multitask_beto_headtail"
 
 # ==========================================================
 # CONFIG  (mantener igual que en el entrenamiento)
 # ==========================================================
 
-MODEL_NAME = "dccuchile/distilbert-base-spanish-uncased"
+MODEL_NAME = "dccuchile/bert-base-spanish-wwm-cased"
 MAX_LEN = 512
 
 

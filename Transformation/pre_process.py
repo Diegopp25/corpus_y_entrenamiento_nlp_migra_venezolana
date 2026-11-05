@@ -23,12 +23,11 @@ class PreprocessingPipeline:
         return df
 
     def remove_null_rows(self, df):
-        return df.dropna(how="any").reset_index(drop=True)
+        return df.dropna(how='any')
 
     def remove_duplicate_articles(self, df):
         return (
-            df.drop_duplicates(subset=["Cuerpo"])
-              .reset_index(drop=True)
+            df.drop_duplicates(subset=["Cuerpo"]).reset_index(drop=True)
         )
 
     def fix_html_entities(self, df):
@@ -39,25 +38,20 @@ class PreprocessingPipeline:
         )
 
         df.loc[mask, "Cuerpo"] = (
-            df.loc[mask, "Cuerpo"]
-            .apply(html.unescape)
+            df.loc[mask, "Cuerpo"].apply(html.unescape)
         )
 
         return df
 
     def remove_shortest_article(self, df):
         lengths = (
-            df["Cuerpo"]
-            .fillna("")
-            .str.split()
-            .str.len()
+            df["Cuerpo"].fillna("").str.split().str.len()
         )
 
         idx_min = lengths.idxmin()
 
         return (
-            df.drop(idx_min)
-              .reset_index(drop=True)
+            df.drop(idx_min).reset_index(drop=True)
         )
 
     def standardize_dates(self, df):
@@ -104,6 +98,39 @@ class PreprocessingPipeline:
 
         return df
 
+    def anonymize_URL(
+            self,
+            df,
+            URL_output_path=None
+        ):
+            unique_URLs = df["URL"].unique()
+    
+            URL_df = pd.DataFrame({
+                "ID_URL": [
+                    f"URLID_{i}"
+                    for i in range(1, len(unique_URLs) + 1)
+                ],
+                "URL": unique_URLs
+            })
+    
+            self.URL_map = dict(
+                zip(
+                    URL_df["URL"],
+                    URL_df["ID_URL"]
+                )
+            )
+    
+            df["URL"] = df["URL"].map(self.URL_map)
+    
+            if URL_output_path:
+                URL_df.to_csv(
+                    URL_output_path,
+                    index=False,
+                    encoding="utf-8-sig"
+                )
+    
+            return df
+
     def reorder_columns(self, df):
         if "sentimiento" not in df.columns:
             return df
@@ -121,7 +148,8 @@ class PreprocessingPipeline:
     def run(
         self,
         df,
-        authors_output_path=None
+        authors_output_path=None,
+        URL_output_path=None
     ):
         print("1. Agregando ID...")
         df = self.add_article_id(df)
@@ -146,8 +174,12 @@ class PreprocessingPipeline:
             df,
             authors_output_path
         )
-
-        print("8. Reordenando columnas...")
+        print("8. Anonimizando URLs...")
+        df = self.anonymize_URL(
+            df,
+            URL_output_path
+        )
+        print("9. Reordenando columnas...")
         df = self.reorder_columns(df)
 
         print(f"Pipeline finalizado. Registros: {len(df)}")

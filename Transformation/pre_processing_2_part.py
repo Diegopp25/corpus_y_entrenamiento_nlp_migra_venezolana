@@ -13,8 +13,8 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
 # Archivos de entrada y salida
-INPUT_FILE = ROOT_DIR / "Data" / "dataset_migracion_venezolana_labeled.csv"
-OUTPUT_FILE = ROOT_DIR / "Data" / "dataset_preprocessed.csv"
+INPUT_FILE = ROOT_DIR / "data" / "dataset_migracion_venezolana_labeled.csv"
+OUTPUT_FILE = ROOT_DIR / "data" / "dataset_preprocessed.csv"
 
 TEXT_COLUMN = "Cuerpo"
 

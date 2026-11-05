@@ -27,3 +27,8 @@ CulturalBias
 ├── LICENSE.txt
 └── README.md
 ```
+
+## Instalación 
+
+pip install -r requirements.txt
+python -m spacy download es_core_news_md

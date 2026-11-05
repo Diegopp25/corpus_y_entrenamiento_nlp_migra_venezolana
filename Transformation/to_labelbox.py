@@ -12,7 +12,7 @@ def enviar_a_labelbox(df):
     # =====================================
 
     API_KEY = os.getenv("LABELBOX_API_KEY")
-    CSV_PATH = "Data/dataset_migracion_venezolana_limpio_estandarizado.csv"
+    CSV_PATH = "data/dataset_migracion_venezolana_limpio_estandarizado.csv"
 
     df = pd.read_csv(CSV_PATH)
 
