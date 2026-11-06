@@ -1,14 +1,23 @@
-urllib.robotparser
-argparse
-html
-spacy>=3.8.0
+# Extracción web
+requests
+beautifulsoup4
+playwright
+
+# Datos, preprocesamiento y modelado
+numpy
+pandas
+scikit-learn
+spacy
 torch
 transformers
-datasets
-accelerate
-scikit-learn
-pandas
-numpy
+tqdm
+
+# Aplicación, etiquetado y notebooks
 gradio
-matplotlib
 labelbox
+python-dotenv
+matplotlib
+ipykernel
+
+# Pruebas
+pytest

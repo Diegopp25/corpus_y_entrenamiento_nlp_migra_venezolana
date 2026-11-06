@@ -30,5 +30,13 @@ CulturalBias
 
 ## Instalación 
 
-pip install -r requirements.txt
-python -m spacy download es_core_news_md
+```powershell
+python -m pip install -r requirements.txt
+python -m spacy download es_core_news_lg
+python -m playwright install chromium
+```
+
+El proyecto carga `es_core_news_lg` en el preprocesamiento. Si se usa PyTorch
+con GPU, instala la compilación compatible con la versión de CUDA y el equipo
+desde el selector oficial de PyTorch; la instalación de `torch` puede variar
+según el hardware.
