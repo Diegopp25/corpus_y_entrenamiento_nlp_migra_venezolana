@@ -207,6 +207,36 @@ Desde `api/`:
 
 ---
 
+## Ejemplos en PowerShell (Windows)
+
+Windows PowerShell 5.1 codifica el cuerpo como ANSI cuando se pasa un `string`,
+así que las tildes llegan como bytes inválidos y FastAPI responde
+`{"detail":"There was an error parsing the body"}`. Convierte el JSON a bytes
+UTF-8 (o pásalo con `-InFile`):
+
+```powershell
+$json = @{
+  text = "La ola de inseguridad en la frontera preocupa a los habitantes de Cúcuta."
+  title = "Crece la preocupación por seguridad"
+} | ConvertTo-Json
+$body = [System.Text.Encoding]::UTF8.GetBytes($json)
+Invoke-RestMethod -Method Post -Uri http://localhost:8000/v1/analyze `
+  -ContentType "application/json; charset=utf-8" -Body $body | ConvertTo-Json -Depth 4
+```
+
+Alternativas sin problemas de codificación: abre <http://localhost:8000/docs>
+(Swagger UI) o usa Python/httpx:
+
+```powershell
+.\.venv\Scripts\python.exe -c "import httpx; r=httpx.post('http://127.0.0.1:8000/v1/analyze', json={'text':'La ola de inseguridad en la frontera preocupa a los habitantes de Cúcuta.'}); print(r.status_code, r.json()['sentiment'])"
+```
+
+> Para una prueba representativa usa el **cuerpo completo** de una noticia: los
+> modelos se entrenaron con noticias completas y con textos cortos la confianza
+> es baja (el API lo reporta en `meta.warnings`).
+
+---
+
 ## Ejemplos curl
 
 ```bash

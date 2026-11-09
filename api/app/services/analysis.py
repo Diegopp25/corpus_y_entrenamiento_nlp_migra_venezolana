@@ -189,13 +189,14 @@ class AnalysisService:
         for warning in prediction.warnings:
             if warning not in warnings:
                 warnings.append(warning)
-        if count_words(text) < _MIN_WORDS:
-            short = (
+        if count_words(text) < _MIN_WORDS and not any(
+            "Texto corto" in warning for warning in warnings
+        ):
+            warnings.insert(
+                0,
                 "Texto corto (menos de 30 palabras): el modelo se entrenó con "
-                "noticias completas y el resultado es orientativo."
+                "noticias completas y el resultado es orientativo.",
             )
-            if short not in warnings:
-                warnings.insert(0, short)
 
         frames: list[FrameScore] = []
         for frame_id in FRAME_IDS:
