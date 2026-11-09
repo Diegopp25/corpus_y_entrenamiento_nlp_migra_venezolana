@@ -600,11 +600,11 @@ Response `200` — `NewsArticle` (con `preAnalyzedResult`):
 | `snippet` | string | Resumen / meta descripción. |
 | `fullText` | string | Cuerpo limpio de la noticia. |
 | `author` | string | Autor si se detecta. |
-| `date` | string | Fecha tal como aparece en la página (texto, no ISO). |
+| `date` | string | Fecha normalizada `YYYY-MM-DD` (vacía si la página no declara una fecha parseable: `article:published_time`, JSON-LD `datePublished`, `<time datetime>` o RSS `pubDate`). |
 | `media` | string | Nombre del medio (catálogo o dominio). |
 | `country` | string | País inferido o forzado. |
 | `url` | string | URL canónica. |
-| `category` | string | Categoría heurística (encuadre dominante o sección). |
+| `category` | string | Sección declarada por la página (`article:section` / JSON-LD `articleSection`) o del request; cadena vacía si no hay. |
 | `preAnalyzedResult` | `TextAnalysisResult` \| null | Análisis completo (mismo contrato de `/v1/analyze`; `meta.source="scraper"`). |
 
 Códigos: `200`; `401`; `403` (`robots_denied`); `404` (`not_found` si la página
@@ -628,10 +628,30 @@ frontend (`ScrapedSiteSummary`), más `generatedAt`.
 | `totalAnalyzed` | int | Noticias analizadas. |
 | `averageSentiment` | `{negativo, neutro, positivo}` | Promedio en porcentaje (0–100) de los scores de sentimiento de los artículos analizados; puede no sumar exactamente 100 por redondeo. |
 | `topFrames` | `{frame, percentage}[]` | Porcentaje medio de cada encuadre, ordenado de mayor a menor. |
-| `biasTendency` | string | Texto de tendencia de sesgo según el encuadre dominante y el país. |
-| `hypothesisMatch` | string | `Confirmada (Sesgo esperado)` \| `Parcial` \| `No concluyente`. |
+| `biasTendency` | string | Texto de tendencia de sesgo según el encuadre dominante (o el país si no hay análisis). Valores posibles en la tabla siguiente. |
+| `hypothesisMatch` | string | `Confirmada (Sesgo esperado)` \| `Parcial` \| `No concluyente` (regla abajo). |
 | `articles` | `NewsArticle[]` | Artículos con `preAnalyzedResult`. |
 | `generatedAt` | ISO 8601 \| null | Momento de generación (solo lo agrega el API). |
+
+Valores de `biasTendency` según el encuadre dominante:
+
+| Encuadre dominante | `biasTendency` |
+| --- | --- |
+| `seguridad` | `Enfoque Punitivo / Seguridad y Alerta Ciudadana` |
+| `politica_migratoria` | `Enfoque Institucional / Política Migratoria` |
+| `empleo_economia`, `transito_migratorio` | `Enfoque de Integración Laboral y Tránsito Migratorio` |
+| `integracion_social` | `Enfoque de Integración Social y Convivencia` |
+| `acceso_servicios` | `Enfoque de Acceso a Servicios y Derechos` |
+| `otros` | `Enfoque de Derechos Humanos y Cooperación` |
+| sin artículos analizados | `Enfoque Neutro / Informativo Institucional` (o el texto esperado del país) |
+
+`hypothesisMatch` se calcula con la hipótesis del proyecto:
+
+- `Confirmada (Sesgo esperado)`: el encuadre dominante pertenece a los esperados
+  del país —Colombia: `seguridad`, `politica_migratoria`; México:
+  `empleo_economia`, `transito_migratorio`;
+- `Parcial`: alguno de esos encuadres aparece en el top 3 pero no es el dominante;
+- `No concluyente`: no hay encuadre dominante, país desconocido o no coincide.
 
 Ejemplo (abreviado a un artículo y dos encuadres):
 
@@ -646,7 +666,7 @@ Ejemplo (abreviado a un artículo y dos encuadres):
     { "frame": "Seguridad", "percentage": 61.3 },
     { "frame": "Política migratoria", "percentage": 48.9 }
   ],
-  "biasTendency": "Enfoque Punitivo / Seguridad y Orden Público",
+  "biasTendency": "Enfoque Punitivo / Seguridad y Alerta Ciudadana",
   "hypothesisMatch": "Confirmada (Sesgo esperado)",
   "articles": [
     {
