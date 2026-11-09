@@ -292,9 +292,13 @@ class JobManager:
             articles=articles,
             analyses=analyses,
         )
+        # El estado "completed" lo marca ``_run`` en la MISMA actualización que
+        # adjunta el resumen; si aquí se marcara antes, un GET podría observar
+        # status=completed con summary=null (carrera real detectada por el
+        # frontend). Por eso este último paso se anuncia aún como "analyzing".
         announce(
             STEP_COMPLETED,
-            "completed",
+            "analyzing",
             (
                 f"Resumen generado: {summary.total_analyzed} noticias analizadas "
                 f"de {summary.site_name}"
