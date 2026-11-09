@@ -1,11 +1,17 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { SAMPLE_NEWS_SITES } from "../data/sampleNewsWebsites"
 import {
   scrapeNewsSite,
   exportCorpusToCSV,
   exportCorpusToJSON,
 } from "../services/newsScraperService"
-import type { ScrapedSiteSummary, ScrapingProgress, NewsArticle } from "../types"
+import { describeApiError, getSourcePresets, isAbortError } from "../services/api"
+import type {
+  NewsArticle,
+  ScrapedSiteSummary,
+  ScrapingProgress,
+  SourcePreset,
+} from "../types"
 import { FramesBarChart } from "./FramesBarChart"
 import { SentimentGauge } from "./SentimentGauge"
 import { CulturalBiasCard } from "./CulturalBiasCard"
@@ -23,6 +29,36 @@ interface WebsiteScraperProps {
   onSendToAnalyzer?: (text: string) => void
 }
 
+/**
+ * Presets locales de respaldo (solo presentación: nombre/dominio/bandera).
+ * Los artículos ya no se usan: el contenido real sale del job de rastreo.
+ * Se reemplazan por `GET /v1/sources/presets` cuando el API responde.
+ */
+const FALLBACK_PRESETS: SourcePreset[] = SAMPLE_NEWS_SITES.map(site => ({
+  id: site.id,
+  name: site.name,
+  domain: site.domain,
+  country: site.country,
+  category: site.category,
+  description: site.description,
+  flag: site.flag,
+  logoText: site.logoText,
+  accentColor: site.accentColor,
+}))
+
+const STATUS_LABELS: Record<ScrapingProgress["status"], string> = {
+  idle: "En espera",
+  queued: "En cola",
+  connecting: "Conectando",
+  crawling: "Rastreando noticias",
+  cleaning: "Limpiando contenido",
+  analyzing: "Analizando con BETO",
+  completed: "Completado",
+  error: "Error",
+}
+
+const TOTAL_STEPS = 5
+
 export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer }) => {
   const [urlInput, setUrlInput] = useState<string>("eltiempo.com")
   const [maxArticles, setMaxArticles] = useState<number>(3)
@@ -30,34 +66,76 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
   const [progress, setProgress] = useState<ScrapingProgress | null>(null)
   const [scrapedData, setScrapedData] = useState<ScrapedSiteSummary | null>(null)
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [presets, setPresets] = useState<SourcePreset[]>(FALLBACK_PRESETS)
+  const [presetsFromApi, setPresetsFromApi] = useState<boolean>(false)
+  const abortRef = useRef<AbortController | null>(null)
+
+  // Carga los medios indexados reales del API; si falla, usa la lista local.
+  useEffect(() => {
+    let alive = true
+    getSourcePresets()
+      .then(data => {
+        if (!alive) return
+        if (Array.isArray(data) && data.length > 0) {
+          setPresets(data)
+          setPresetsFromApi(true)
+        }
+      })
+      .catch(() => {
+        /* el API puede no estar disponible aún; se conserva la lista local */
+      })
+    return () => {
+      alive = false
+    }
+  }, [])
+
+  // Cancela el polling si el componente se desmonta.
+  useEffect(() => () => abortRef.current?.abort(), [])
 
   const handleStartScrape = async (overrideUrl?: string) => {
     const targetUrl = (overrideUrl || urlInput).trim()
-    if (!targetUrl) return
+    if (!targetUrl || isScraping) return
+
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
 
     setIsScraping(true)
     setSelectedArticle(null)
+    setScrapedData(null)
+    setErrorMessage(null)
+    setProgress({
+      status: "queued",
+      currentStep: 0,
+      totalSteps: TOTAL_STEPS,
+      message: `Solicitando rastreo de ${targetUrl.replace(/^https?:\/\//, "")} al API…`,
+      articlesFoundCount: 0,
+    })
 
     try {
       const summary = await scrapeNewsSite({
         url: targetUrl,
         maxArticles,
         onProgress: p => setProgress(p),
+        signal: controller.signal,
       })
       setScrapedData(summary)
       if (summary.articles.length > 0) {
         setSelectedArticle(summary.articles[0])
       }
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      if (isAbortError(error)) return
+      setErrorMessage(describeApiError(error))
     } finally {
+      if (abortRef.current === controller) abortRef.current = null
       setIsScraping(false)
     }
   }
 
   const handleSelectPreset = (siteUrl: string) => {
     setUrlInput(siteUrl)
-    handleStartScrape(siteUrl)
+    void handleStartScrape(siteUrl)
   }
 
   const handleDownloadCSV = () => {
@@ -84,6 +162,25 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
     URL.revokeObjectURL(url)
   }
 
+  const colombiaPresets = presets.filter(
+    preset => preset.country === "Colombia",
+  )
+  const mexicoPresets = presets.filter(
+    preset => preset.country === "México" || preset.country === "Mexico",
+  )
+  const otherPresets = presets.filter(
+    preset =>
+      preset.country !== "Colombia" &&
+      preset.country !== "México" &&
+      preset.country !== "Mexico",
+  )
+  const generatedAtLabel = scrapedData?.generatedAt
+    ? new Intl.DateTimeFormat("es-CO", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date(scrapedData.generatedAt))
+    : null
+
   return (
     <div className="max-w-4xl mx-auto w-full flex flex-col gap-7">
       {/* Search and configuration Card */}
@@ -95,6 +192,9 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
               Portal de Noticias a Analizar
             </h2>
           </div>
+          <span className="text-[11px] text-slate-500">
+            Rastreo y análisis reales vía API
+          </span>
         </div>
 
         {/* Input box */}
@@ -109,7 +209,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
               placeholder="eltiempo.com, semana.com, eluniversal.com.mx..."
               disabled={isScraping}
               onKeyDown={e => {
-                if (e.key === "Enter") handleStartScrape()
+                if (e.key === "Enter") void handleStartScrape()
               }}
             />
           </div>
@@ -139,7 +239,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
             <button
               type="button"
               className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold py-3 px-5 rounded-xl text-sm inline-flex items-center justify-center gap-2 shadow-lg shadow-orange-500/35 hover:shadow-orange-500/50 transition-all whitespace-nowrap disabled:opacity-45 disabled:cursor-not-allowed"
-              onClick={() => handleStartScrape()}
+              onClick={() => void handleStartScrape()}
               disabled={!urlInput.trim() || isScraping}
             >
               {isScraping ? (
@@ -157,18 +257,43 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
           </div>
         </div>
 
+        {/* Error de rastreo / conexión con el API */}
+        {errorMessage && (
+          <div
+            role="alert"
+            className="mb-5 rounded-xl border border-red-500/35 bg-red-500/10 px-4 py-3 text-[13px] leading-relaxed text-red-200"
+          >
+            <p className="font-semibold">No se pudo completar el rastreo</p>
+            <p className="break-words text-red-200/90">{errorMessage}</p>
+            <button
+              type="button"
+              className="mt-2 text-[11.5px] font-semibold text-red-200 underline decoration-red-400/50 hover:text-white"
+              onClick={() => void handleStartScrape()}
+            >
+              Reintentar con la misma URL
+            </button>
+          </div>
+        )}
+
         {/* Preset Outlets Quick Selector */}
         <div className="border-t border-white/[0.07] pt-4 flex flex-col gap-3.5">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            O selecciona un medio indexado:
-          </span>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              O selecciona un medio indexado:
+            </span>
+            <span className="text-[11px] text-slate-500">
+              {presetsFromApi
+                ? "Medios del API (solo rellenan la URL; el contenido se rastrea en vivo)"
+                : "Lista local de respaldo (el contenido se rastrea en vivo)"}
+            </span>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <span className="text-xs font-semibold text-slate-300">
                 Medios de Colombia:
               </span>
               <div className="flex flex-wrap gap-2">
-                {SAMPLE_NEWS_SITES.filter(s => s.country === "Colombia").map(site => (
+                {colombiaPresets.map(site => (
                   <button
                     key={site.id}
                     type="button"
@@ -179,6 +304,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
                     }`}
                     onClick={() => handleSelectPreset(site.domain)}
                     disabled={isScraping}
+                    title={site.description}
                   >
                     <span>{site.flag}</span>
                     <span>{site.name}</span>
@@ -192,7 +318,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
                 Medios de México:
               </span>
               <div className="flex flex-wrap gap-2">
-                {SAMPLE_NEWS_SITES.filter(s => s.country === "México").map(site => (
+                {mexicoPresets.map(site => (
                   <button
                     key={site.id}
                     type="button"
@@ -203,6 +329,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
                     }`}
                     onClick={() => handleSelectPreset(site.domain)}
                     disabled={isScraping}
+                    title={site.description}
                   >
                     <span>{site.flag}</span>
                     <span>{site.name}</span>
@@ -211,15 +338,34 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
               </div>
             </div>
           </div>
+          {otherPresets.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {otherPresets.map(site => (
+                <button
+                  key={site.id}
+                  type="button"
+                  className="bg-white/[0.035] hover:bg-white/[0.07] border border-white/[0.07] hover:border-white/[0.16] rounded-lg px-3 py-1.5 inline-flex items-center gap-2 text-xs text-slate-200 transition-all"
+                  onClick={() => handleSelectPreset(site.domain)}
+                  disabled={isScraping}
+                  title={site.description}
+                >
+                  <span>{site.flag}</span>
+                  <span>{site.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Live Scraping Stepper & Progress */}
         {isScraping && progress && (
           <div className="mt-5 bg-[#0b0e17] border border-white/[0.07] rounded-xl p-4 animate-enter">
-            <div className="flex items-center gap-2.5 mb-3 text-xs sm:text-[13.5px]">
+            <div className="flex items-center gap-2.5 mb-3 text-xs sm:text-[13.5px] flex-wrap">
               <RefreshCwIcon size={15} className="animate-spin" color="#3b82f6" />
               <span className="font-bold text-blue-400">
-                Paso {progress.currentStep} de {progress.totalSteps}:
+                {progress.currentStep > 0
+                  ? `Paso ${progress.currentStep} de ${progress.totalSteps}:`
+                  : "Preparando el rastreo:"}
               </span>
               <span className="text-slate-300 truncate">{progress.message}</span>
             </div>
@@ -227,11 +373,15 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
               <div
                 className="h-full bg-blue-500 rounded-full transition-all duration-300"
                 style={{
-                  width: `${(progress.currentStep / progress.totalSteps) * 100}%`,
+                  width: `${
+                    progress.totalSteps > 0
+                      ? (progress.currentStep / progress.totalSteps) * 100
+                      : 0
+                  }%`,
                 }}
               />
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap items-center gap-1.5">
               <span
                 className={`text-[11px] px-2.5 py-0.5 rounded border ${
                   progress.currentStep >= 1
@@ -257,7 +407,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
                     : "bg-white/[0.04] text-slate-500 border-white/[0.06]"
                 }`}
               >
-                3. Limpieza RF03
+                3. Limpieza
               </span>
               <span
                 className={`text-[11px] px-2.5 py-0.5 rounded border ${
@@ -277,6 +427,13 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
               >
                 5. Métricas
               </span>
+              <span className="ml-auto text-[11px] text-slate-500">
+                Estado: {STATUS_LABELS[progress.status] ?? progress.status} ·{" "}
+                {progress.articlesFoundCount} encontradas
+                {typeof progress.articlesAnalyzedCount === "number"
+                  ? ` · ${progress.articlesAnalyzedCount} analizadas`
+                  : ""}
+              </span>
             </div>
           </div>
         )}
@@ -292,7 +449,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
                 <span className="bg-white/[0.06] text-slate-200 text-xs font-semibold px-2.5 py-1 rounded-md">
                   {scrapedData.country === "Colombia"
                     ? "🇨🇴 Colombia"
-                    : scrapedData.country === "México"
+                    : scrapedData.country === "México" || scrapedData.country === "Mexico"
                       ? "🇲🇽 México"
                       : "🌐 Internacional"}
                 </span>
@@ -332,6 +489,13 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
               </div>
             </div>
 
+            {generatedAtLabel && (
+              <p className="mb-4 -mt-2 text-[11px] text-slate-500">
+                Rastreo real generado el {generatedAtLabel}. Los artículos y métricas de
+                esta vista provienen del job del API, no de datos de ejemplo.
+              </p>
+            )}
+
             {/* Metrics cards row */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
               <div className="bg-[#0c0f18]/80 border border-white/[0.06] rounded-xl p-3.5 flex flex-col gap-1">
@@ -341,7 +505,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
                 <span className="text-2xl font-extrabold text-white">
                   {scrapedData.totalAnalyzed}
                 </span>
-                <span className="text-[11px] text-slate-400">Extraídas y limpias</span>
+                <span className="text-[11px] text-slate-400">Extraídas y analizadas</span>
               </div>
 
               <div className="bg-[#0c0f18]/80 border border-white/[0.06] rounded-xl p-3.5 flex flex-col gap-1">
@@ -371,7 +535,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
                   {scrapedData.topFrames[0]?.frame || "General"}
                 </span>
                 <span className="text-[11px] text-slate-400">
-                  {scrapedData.topFrames[0]?.percentage}% de presencia
+                  {scrapedData.topFrames[0]?.percentage ?? 0}% de presencia
                 </span>
               </div>
 
@@ -398,7 +562,8 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
                   Noticias Recopiladas ({scrapedData.articles.length})
                 </h3>
                 <span className="text-xs text-slate-500">
-                  Haz clic para inspeccionar cada artículo
+                  Haz clic para inspeccionar cada artículo. Verifica su pertinencia
+                  temática: el crawler del API puede incluir noticias no relacionadas.
                 </span>
               </div>
 
@@ -519,7 +684,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
 
                   <div className="bg-[#10131d]/85 backdrop-blur-md border border-white/[0.08] rounded-2xl p-4 sm:p-5">
                     <h4 className="text-xs font-semibold text-white uppercase tracking-wider mb-2">
-                      Texto Completo Limpio (RF03)
+                      Texto Extraído por el API
                     </h4>
                     <p className="text-xs text-slate-300 leading-relaxed max-h-48 overflow-y-auto pr-1">
                       {selectedArticle.fullText}

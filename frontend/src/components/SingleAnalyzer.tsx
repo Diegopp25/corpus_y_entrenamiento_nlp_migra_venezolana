@@ -1,7 +1,12 @@
 import React, { useState, useRef } from "react"
 import type { TextAnalysisResult } from "../types"
 import { PRELOADED_EXAMPLES } from "../data/sampleNewsWebsites"
-import { analyzeNewsText } from "../services/nlpAnalyzer"
+import {
+  analyzeNewsText,
+  collectAnalysisWarnings,
+  formatAnalysisDate,
+} from "../services/nlpAnalyzer"
+import { describeApiError, isAbortError } from "../services/api"
 import { SentimentGauge } from "./SentimentGauge"
 import { FramesBarChart } from "./FramesBarChart"
 import { CulturalBiasCard } from "./CulturalBiasCard"
@@ -26,11 +31,12 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
   const [text, setText] = useState<string>(defaultText)
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false)
   const [analysisResult, setAnalysisResult] = useState<TextAnalysisResult | null>(null)
-  const [loadingStepText, setLoadingStepText] = useState<string>("Tokenizando texto...")
+  const [loadingStepText, setLoadingStepText] = useState<string>("Enviando texto al API...")
   const [loadingProgress, setLoadingProgress] = useState<number>(20)
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [dragFileName, setDragFileName] = useState<string | null>(null)
   const [highlightMode, setHighlightMode] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previousInitialText, setPreviousInitialText] = useState(initialText)
 
@@ -39,53 +45,69 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
     setPreviousInitialText(initialText)
     setText(initialText)
     setAnalysisResult(null)
+    setErrorMessage(null)
   }
 
-  const handleAnalyze = () => {
-    if (!text.trim()) return
+  const handleAnalyze = async () => {
+    const cleanText = text.trim()
+    if (!cleanText || isAnalyzing) return
 
     setIsAnalyzing(true)
     setAnalysisResult(null)
+    setErrorMessage(null)
     setLoadingProgress(20)
-    setLoadingStepText("Normalizando texto y tokenizando léxico en español...")
+    setLoadingStepText("Normalizando texto y enviándolo al motor BETO del API...")
 
-    setTimeout(() => {
-      setLoadingProgress(50)
-      setLoadingStepText(
-        "Calculando probabilidades de sentimiento con arquitectura BETO...",
-      )
-    }, 450)
+    // Mensajes de espera mientras el API responde: no sustituyen datos reales.
+    const secondStep = window.setTimeout(() => {
+      setLoadingProgress(55)
+      setLoadingStepText("Ejecutando modelos BETO de sentimiento y encuadres...")
+    }, 700)
+    const thirdStep = window.setTimeout(() => {
+      setLoadingProgress(85)
+      setLoadingStepText("Calculando el diagnóstico de sesgo cultural...")
+    }, 1600)
 
-    setTimeout(() => {
-      setLoadingProgress(80)
-      setLoadingStepText("Evaluando los 7 encuadres temáticos y sesgo cultural...")
-    }, 950)
-
-    setTimeout(() => {
-      setLoadingProgress(100)
-      setLoadingStepText("Finalizando diagnóstico...")
-      const result = analyzeNewsText(text, {
-        title: dragFileName || "Noticia analizada",
+    try {
+      const result = await analyzeNewsText(cleanText, {
+        ...(dragFileName ? { title: dragFileName } : {}),
       })
+      setLoadingProgress(100)
+      setLoadingStepText("Análisis completado con datos del API.")
       setAnalysisResult(result)
+    } catch (error) {
+      if (!isAbortError(error)) {
+        setErrorMessage(describeApiError(error))
+      }
+    } finally {
+      window.clearTimeout(secondStep)
+      window.clearTimeout(thirdStep)
       setIsAnalyzing(false)
-    }, 1450)
+    }
   }
 
   const handleClear = () => {
     setText("")
     setAnalysisResult(null)
     setDragFileName(null)
+    setErrorMessage(null)
   }
 
   const handleReturnToEdit = () => {
     setAnalysisResult(null)
+    setErrorMessage(null)
   }
 
   const handleSelectExample = (exText: string) => {
     setText(exText)
     setDragFileName(null)
     setAnalysisResult(null)
+    setErrorMessage(null)
+  }
+
+  const handleTextChange = (value: string) => {
+    setText(value)
+    if (errorMessage) setErrorMessage(null)
   }
 
   // Drag and drop handlers
@@ -123,6 +145,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
         setText(content)
         setDragFileName(file.name)
         setAnalysisResult(null)
+        setErrorMessage(null)
       }
     }
     reader.readAsText(file)
@@ -130,6 +153,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
 
   const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0
   const charCount = text.length
+  const warnings = analysisResult ? collectAnalysisWarnings(analysisResult) : []
 
   return (
     <div className="max-w-4xl mx-auto w-full flex flex-col gap-7">
@@ -170,6 +194,26 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
             </div>
           </div>
 
+          {errorMessage && (
+            <div
+              role="alert"
+              className="mb-3 rounded-xl border border-red-500/35 bg-red-500/10 px-4 py-3 text-[13px] leading-relaxed text-red-200 flex items-start gap-2.5"
+            >
+              <span className="mt-0.5 size-2 shrink-0 rounded-full bg-red-400" />
+              <div className="min-w-0">
+                <p className="font-semibold text-red-200">No se pudo analizar la noticia</p>
+                <p className="text-red-200/90 break-words">{errorMessage}</p>
+                <p className="mt-1 text-[11.5px] text-red-300/70">
+                  Revisa que el API esté corriendo en{" "}
+                  <span className="font-mono">
+                    {import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}
+                  </span>
+                  .
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Dropzone wrapping Textarea */}
           <div
             className={`relative rounded-xl transition-all ${
@@ -192,7 +236,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
               className="w-full bg-[#0c0e15] text-slate-100 border border-white/[0.08] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 rounded-xl p-4 sm:p-4.5 text-[14.5px] leading-relaxed resize-y min-h-[140px] outline-none transition-all placeholder:text-slate-600"
               rows={5}
               value={text}
-              onChange={e => setText(e.target.value)}
+              onChange={e => handleTextChange(e.target.value)}
               placeholder="Escribe o pega aquí el cuerpo de una noticia sobre migración venezolana, o arrastra un archivo..."
             />
           </div>
@@ -212,7 +256,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
               type="button"
               className="flex-1 bg-white/[0.05] hover:bg-white/[0.09] text-slate-300 hover:text-white border border-white/[0.08] hover:border-white/[0.18] py-3 px-4 rounded-xl text-sm font-semibold inline-flex items-center justify-center gap-2 transition-all disabled:opacity-35 disabled:cursor-not-allowed"
               onClick={handleClear}
-              disabled={!text}
+              disabled={!text || isAnalyzing}
             >
               <Trash2Icon size={15} />
               <span>Limpiar</span>
@@ -222,7 +266,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
               type="button"
               className="flex-[1.5] bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold py-3 px-5 rounded-xl text-[14.5px] inline-flex items-center justify-center gap-2 shadow-lg shadow-orange-500/35 hover:shadow-orange-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-45 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
               onClick={handleAnalyze}
-              disabled={!text.trim()}
+              disabled={!text.trim() || isAnalyzing}
             >
               <SparklesIcon size={16} />
               <span>Analizar noticia</span>
@@ -256,7 +300,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
         </div>
       )}
 
-      {/* 2. LOADING STATE: Sleek neural analyzing screen while computing */}
+      {/* 2. LOADING STATE: Neural analyzing screen while the API responds */}
       {isAnalyzing && (
         <div className="bg-gradient-to-b from-[#141826]/90 to-[#0e111b]/90 backdrop-blur-md border border-orange-500/25 rounded-3xl p-10 sm:p-12 text-center shadow-2xl shadow-orange-500/10 flex flex-col items-center justify-center animate-enter">
           <div className="w-16 h-16 rounded-full bg-orange-500/10 border border-orange-500/35 flex items-center justify-center mb-5 shadow-lg shadow-orange-500/25">
@@ -283,7 +327,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
                   : "bg-white/[0.04] text-slate-500 border-white/[0.06]"
               }`}
             >
-              1. Tokenización
+              1. Envío al API
             </span>
             <span
               className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-all ${
@@ -310,7 +354,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
                   : "bg-white/[0.04] text-slate-500 border-white/[0.06]"
               }`}
             >
-              4. Sesgo Cultural
+              4. Sesgo cultural
             </span>
           </div>
         </div>
@@ -393,10 +437,31 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
             <div className="flex items-center gap-2 text-[11.5px] text-slate-500 flex-wrap">
               <span>{wordCount} palabras analizadas</span>
               <span className="opacity-40">•</span>
-              <span>Modelo: BETO Spanish Fine-Tuned</span>
+              <span>Modelo: {analysisResult.modelUsed}</span>
               <span className="opacity-40">•</span>
-              <span>Tiempo de lectura: ~{analysisResult.readingTimeSeconds}s</span>
+              <span>
+                Analizado: {formatAnalysisDate(analysisResult.dateAnalyzed)}
+              </span>
+              {analysisResult.country && (
+                <>
+                  <span className="opacity-40">•</span>
+                  <span>País: {analysisResult.country}</span>
+                </>
+              )}
             </div>
+
+            {warnings.length > 0 && (
+              <div className="rounded-xl border border-amber-500/25 bg-amber-500/[0.07] px-4 py-3 text-[12px] leading-relaxed text-amber-200/90">
+                <p className="font-semibold text-amber-200 mb-1">
+                  Avisos del motor de análisis
+                </p>
+                <ul className="list-disc list-inside space-y-0.5">
+                  {warnings.map(warning => (
+                    <li key={warning}>{warning}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Grid with Sentiment and Frames */}
@@ -408,7 +473,7 @@ export const SingleAnalyzer: React.FC<SingleAnalyzerProps> = ({ initialText }) =
           {/* Full-width Cultural Bias Diagnostic */}
           <CulturalBiasCard
             bias={analysisResult.culturalBias}
-            mediaName={analysisResult.mediaName}
+            mediaName={analysisResult.mediaName ?? undefined}
           />
         </div>
       )}
