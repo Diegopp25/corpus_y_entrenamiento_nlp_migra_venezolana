@@ -1,0 +1,14 @@
+# Dependencias del API (sin los modelos de lenguaje: ver requirements-models.txt)
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.7
+pydantic-settings>=2.4
+httpx>=0.27
+python-dotenv>=1.0
+
+# Extracción de noticias
+beautifulsoup4>=4.12
+lxml>=5.2
+
+# Extracción de contenido principal (opcional pero recomendada)
+trafilatura>=1.9

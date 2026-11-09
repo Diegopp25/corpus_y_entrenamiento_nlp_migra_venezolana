@@ -14,3 +14,21 @@ __pycache__/
 .venv*/
 __pycache__/
 *.pt
+# API
+api/.venv/
+api/data/
+api/models/
+api/.env
+api/.pytest_cache/
+api/**/__pycache__/
+
+# Artefactos temporales de pruebas y pip
+api/pytest-of-*/
+api/pip-*/
+api/api-docs-*/
+api/.tmp_*.py
+.tmp_*
+
+
+api/api-*/
+api/tmp*

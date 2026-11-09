@@ -1,0 +1,180 @@
+{
+  "generatedAt": "2026-11-09T19:21:49.060829Z",
+  "sampleSize": 156,
+  "engine": "bert_pair",
+  "models": [
+    {
+      "modelName": "BETO-migra-ve (sentimiento + encuadres)",
+      "architecture": "BERT base español (BETO) afinado · clasificador de 3 clases de sentimiento",
+      "role": "sentiment",
+      "accuracy": 0.7885,
+      "precision": 0.7679,
+      "recall": 0.7919,
+      "f1Score": 0.7768,
+      "samples": 156,
+      "isBest": true
+    },
+    {
+      "modelName": "BETO-migra-ve (sentimiento + encuadres)",
+      "architecture": "BERT base español (BETO) afinado · 7 salidas multi-etiqueta (sigmoide)",
+      "role": "frames",
+      "accuracy": 0.0449,
+      "precision": 0.2892,
+      "recall": 0.3841,
+      "f1Score": 0.3239,
+      "samples": 156,
+      "isBest": false
+    }
+  ],
+  "sentiment": {
+    "accuracy": 0.7885,
+    "macroF1": 0.7768,
+    "macroPrecision": 0.7679,
+    "macroRecall": 0.7919,
+    "perClass": {
+      "Negativo": {
+        "precision": 0.7556,
+        "recall": 0.7727,
+        "f1": 0.764,
+        "support": 44
+      },
+      "Neutro": {
+        "precision": 0.8732,
+        "recall": 0.7848,
+        "f1": 0.8267,
+        "support": 79
+      },
+      "Positivo": {
+        "precision": 0.675,
+        "recall": 0.8182,
+        "f1": 0.7397,
+        "support": 33
+      }
+    },
+    "confusionMatrix": {
+      "labels": [
+        "Negativo",
+        "Neutro",
+        "Positivo"
+      ],
+      "matrix": [
+        [
+          34,
+          7,
+          3
+        ],
+        [
+          7,
+          62,
+          10
+        ],
+        [
+          4,
+          2,
+          27
+        ]
+      ]
+    },
+    "samples": 156
+  },
+  "frames": [
+    {
+      "frame": "Acceso a servicios",
+      "frameId": "acceso_servicios",
+      "precision": 0.5556,
+      "recall": 0.6667,
+      "f1": 0.6061,
+      "support": 45,
+      "threshold": 0.5
+    },
+    {
+      "frame": "Tránsito migratorio",
+      "frameId": "transito_migratorio",
+      "precision": 0.2586,
+      "recall": 0.283,
+      "f1": 0.2703,
+      "support": 53,
+      "threshold": 0.5
+    },
+    {
+      "frame": "Seguridad",
+      "frameId": "seguridad",
+      "precision": 0.1406,
+      "recall": 0.225,
+      "f1": 0.1731,
+      "support": 40,
+      "threshold": 0.5
+    },
+    {
+      "frame": "Integración social",
+      "frameId": "integracion_social",
+      "precision": 0.2564,
+      "recall": 0.3704,
+      "f1": 0.303,
+      "support": 27,
+      "threshold": 0.5
+    },
+    {
+      "frame": "Política migratoria",
+      "frameId": "politica_migratoria",
+      "precision": 0.7059,
+      "recall": 0.9796,
+      "f1": 0.8205,
+      "support": 98,
+      "threshold": 0.45
+    },
+    {
+      "frame": "Empleo y economía",
+      "frameId": "empleo_economia",
+      "precision": 0.0408,
+      "recall": 0.069,
+      "f1": 0.0513,
+      "support": 29,
+      "threshold": 0.5
+    },
+    {
+      "frame": "Otros",
+      "frameId": "otros",
+      "precision": 0.0247,
+      "recall": 0.1667,
+      "f1": 0.043,
+      "support": 12,
+      "threshold": 0.5
+    }
+  ],
+  "confusionMatrix": {
+    "labels": [
+      "Negativo",
+      "Neutro",
+      "Positivo"
+    ],
+    "matrix": [
+      [
+        34,
+        7,
+        3
+      ],
+      [
+        7,
+        62,
+        10
+      ],
+      [
+        4,
+        2,
+        27
+      ]
+    ]
+  },
+  "thresholds": {
+    "acceso_servicios": 0.5,
+    "transito_migratorio": 0.5,
+    "seguridad": 0.5,
+    "integracion_social": 0.5,
+    "politica_migratoria": 0.45,
+    "empleo_economia": 0.5,
+    "otros": 0.5
+  },
+  "available": true,
+  "message": "Evaluación real sobre los 156 artículos del corpus etiquetado completo con texto crudo (columna Cuerpo) usando el motor de producción BertPairEngine en CPU (latencia media 942 ms/artículo). Al no disponerse del split de entrenamiento del modelo, las métricas pueden estar influidas por solapamiento con los datos de entrenamiento: no son una estimación limpia fuera de muestra. Sentimiento: accuracy 0.788, macro-F1 0.777. Encuadres: política de umbral en el grid 0.20-0.95 (persistido en thresholds.json): se maximiza F1 sujeto a precisión>=0.50 y recall>=0.20; si ningún umbral cumple ambas se prioriza la precisión (mayor precisión, desempate por mayor F1) y si ni así se alcanza precisión 0.50 el umbral queda en 0.50 por defecto. Las métricas macro a umbral 0.50 aparecen en models[]. Fallbacks documentados: Tránsito migratorio: sin punto de operación con precisión>=0.5; se prioriza precisión, pero la precisión máxima del grid es 0.34 < 0.50, así que el umbral queda en 0.50 por defecto (P 0.26, R 0.28, F1 0.27); Seguridad: sin punto de operación con precisión>=0.5; se prioriza precisión, pero la precisión máxima del grid es 0.26 < 0.50, así que el umbral queda en 0.50 por defecto (P 0.14, R 0.23, F1 0.17); Integración social: sin punto de operación con precisión>=0.5; se prioriza precisión, pero la precisión máxima del grid es 0.33 < 0.50, así que el umbral queda en 0.50 por defecto (P 0.26, R 0.37, F1 0.30); Empleo y economía: sin punto de operación con precisión>=0.5; se prioriza precisión, pero la precisión máxima del grid es 0.20 < 0.50, así que el umbral queda en 0.50 por defecto (P 0.04, R 0.07, F1 0.05); Otros: sin punto de operación con precisión>=0.5; se prioriza precisión, pero la precisión máxima del grid es 0.08 < 0.50, así que el umbral queda en 0.50 por defecto (P 0.02, R 0.17, F1 0.04)."
+}

@@ -1,0 +1,72 @@
+# =============================================================================
+# docker-compose del API (ejecutar desde la carpeta api/)
+#
+#   Copy-Item .env.example .env      # la primera vez
+#   docker compose up --build        # CPU (léxico o pesos ya montados)
+#   docker compose up --build -d     # en segundo plano
+#
+# Con GPU (requiere NVIDIA Container Toolkit y un build con INSTALL_MODELS=1):
+#   $env:INSTALL_MODELS=1; docker compose build
+#   docker compose up
+# =============================================================================
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # 0 = solo API (sin torch/transformers); 1 = incluye requirements-models.txt
+        INSTALL_MODELS: "${INSTALL_MODELS:-0}"
+    image: migra-nlp-api:latest
+    container_name: migra-nlp-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Las rutas del .env local (p. ej. C:\...) no existen dentro del contenedor:
+      # estas variables tienen prioridad y apuntan a los volúmenes montados.
+      NLP_DATABASE_PATH: /app/data/api.db
+      NLP_ARTIFACTS_DIR: /app/artifacts
+      NLP_CORPUS_CSV_PATH: /app/corpus/dataset_migracion_venezolana_labeled.csv
+      NLP_SENTIMENT_MODEL_DIR: /app/models/bert-sentiment
+      NLP_FRAMES_MODEL_DIR: /app/models/bert-frames
+      NLP_MULTITASK_MODEL_DIR: /app/models/multitask_beto
+      NLP_THRESHOLDS_PATH: /app/artifacts/thresholds.json
+      NLP_EVALUATION_PATH: /app/artifacts/evaluation.json
+      NLP_LEXICON_PATH: /app/app/resources/lexicon.json
+      NLP_DEVICE: "${NLP_DEVICE:-cpu}"
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      # Pesos BETO (montados en solo lectura). Estructura esperada:
+      #   api/models/bert-sentiment/   (model.safetensors + tokenizer.json, ...)
+      #   api/models/bert-frames/
+      #   api/models/multitask_beto/   (model.pt + sentiment_classes.json)
+      - ./models:/app/models:ro
+      # Artefactos regenerables (thresholds.json, evaluation.json)
+      - ./artifacts:/app/artifacts
+      # SQLite persistente (api.db + WAL)
+      - ./data:/app/data
+      # Corpus etiquetado (solo lectura) para /v1/dashboard/corpus
+      - ../Data:/app/corpus:ro
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - "-c"
+        - "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/v1/health', timeout=3).status == 200 else 1)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+    # GPU opcional: descomenta si construiste con INSTALL_MODELS=1 y tienes
+    # NVIDIA Container Toolkit. Requiere también NLP_DEVICE=cuda en .env.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
