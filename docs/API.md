@@ -600,7 +600,7 @@ Response `200` — `NewsArticle` (con `preAnalyzedResult`):
 | `snippet` | string | Resumen / meta descripción. |
 | `fullText` | string | Cuerpo limpio de la noticia. |
 | `author` | string | Autor si se detecta. |
-| `date` | string | Fecha normalizada `YYYY-MM-DD` (vacía si la página no declara una fecha parseable: `article:published_time`, JSON-LD `datePublished`, `<time datetime>` o RSS `pubDate`). |
+| `date` | string | Fecha normalizada `YYYY-MM-DD`. Se toma de la página (`article:published_time`, JSON-LD `datePublished` o `<time datetime>`); en escaneos de sitio, si la página no declara fecha se usa el `pubDate` del feed/sitemap como respaldo. Vacía si no se detecta (en `analyze-url` suelto no hay respaldo de feed). |
 | `media` | string | Nombre del medio (catálogo o dominio). |
 | `country` | string | País inferido o forzado. |
 | `url` | string | URL canónica. |
@@ -643,7 +643,7 @@ Valores de `biasTendency` según el encuadre dominante:
 | `integracion_social` | `Enfoque de Integración Social y Convivencia` |
 | `acceso_servicios` | `Enfoque de Acceso a Servicios y Derechos` |
 | `otros` | `Enfoque de Derechos Humanos y Cooperación` |
-| sin artículos analizados | `Enfoque Neutro / Informativo Institucional` (o el texto esperado del país) |
+| sin artículos analizados | Texto esperado del país si se conoce —Colombia: `Enfoque Punitivo / Seguridad y Alerta Ciudadana`; México: `Enfoque de Integración Laboral y Tránsito Migratorio`—; si el país es desconocido: `Enfoque Neutro / Informativo Institucional` |
 
 `hypothesisMatch` se calcula con la hipótesis del proyecto:
 

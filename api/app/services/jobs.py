@@ -40,6 +40,7 @@ from .scraper import (
     ScraperError,
     build_news_article,
     build_summary,
+    normalize_date,
 )
 from .site_catalog import domain_from_url
 from .store import Store
@@ -246,6 +247,9 @@ class JobManager:
                         entry.url,
                         respect_robots=respect,
                         country=target_country,
+                        date_hint=(
+                            normalize_date(entry.published) if entry.published else None
+                        ),
                     )
                 )
             except (FetchError, ScraperError) as exc:

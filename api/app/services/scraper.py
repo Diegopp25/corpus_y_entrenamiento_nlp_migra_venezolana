@@ -1167,13 +1167,20 @@ class NewsScraper:
         respect_robots: bool | None = None,
         country: str | None = None,
         category: str = "",
+        date_hint: str | None = None,
     ) -> ExtractedArticle:
+        """Descarga y extrae una noticia.
+
+        ``date_hint`` permite usar la fecha del feed/sitemap como respaldo
+        cuando la página del artículo no declara una fecha parseable.
+        """
         response = self.fetch_html(url, respect_robots=respect_robots)
         return self.extract_from_html(
             response.text,
             url=response.url or url,
             country=country,
             category=category,
+            date_hint=date_hint,
         )
 
     def extract_from_html(
@@ -1183,6 +1190,7 @@ class NewsScraper:
         url: str,
         country: str | None = None,
         category: str = "",
+        date_hint: str | None = None,
     ) -> ExtractedArticle:
         info = self._parse_page_info(html, url)
         body = self._extract_body(html, url)
@@ -1209,7 +1217,7 @@ class NewsScraper:
             title=info.title or _title_from_url(canonical),
             text=text,
             author=info.author,
-            date=info.date,
+            date=info.date or normalize_date(date_hint),
             media=media,
             country=resolved_country,
             category=category or info.category,

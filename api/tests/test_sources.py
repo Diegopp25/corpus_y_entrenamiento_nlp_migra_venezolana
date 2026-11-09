@@ -40,6 +40,9 @@ MEXICO_URL = f"{MEXICO_SITE}/2026/11/07/venezolanos-empleo-norte-mexico"
 SITEMAP_ARTICLE = f"{SITE}/2026/11/08/venezolanos-llegan-a-bogota-tras-cruce"
 
 
+NO_DATE_URL = f"{SITE}/2026/11/05/noticia-sin-fecha-en-la-pagina"
+
+
 def fixture_text(name: str) -> str:
     return (FIXTURES / name).read_text(encoding="utf-8")
 
@@ -319,6 +322,18 @@ def test_article_extraction(settings):
     assert count_words(article.text) >= MIN_BODY_WORDS
     assert "inseguridad" in article.text.lower()
     assert article.snippet
+
+
+def test_article_date_falls_back_to_feed_hint(settings):
+    pages = {
+        f"{SITE}/robots.txt": fixture_text("robots_allow.txt"),
+        NO_DATE_URL: fixture_text("article_sin_fecha.html"),
+    }
+    scraper = NewsScraper(settings, fetcher=FakeFetcher(pages))
+    with_hint = scraper.extract(NO_DATE_URL, date_hint="2026-11-05")
+    assert with_hint.date == "2026-11-05"
+    without_hint = scraper.extract(NO_DATE_URL)
+    assert without_hint.date == ""
 
 
 def test_mexico_article_infers_country(settings):
