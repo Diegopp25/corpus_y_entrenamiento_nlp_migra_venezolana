@@ -1,0 +1,8 @@
+# Modelos reentrenados (~440 MB cada uno): no se versionan.
+models/
+# Logs y cachés de ejecución
+*.log
+__pycache__/
+*.pyc
+# Salidas temporales de pruebas de humo
+_smoke*/
