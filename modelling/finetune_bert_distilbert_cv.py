@@ -7,8 +7,7 @@ BETO multitarea para dataset_migracion_venezolana_labeled.csv
 Mejoras respecto al script anterior:
 
 - BETO (bert-base-spanish-wwm-cased)
-- Oversampling solo en train
-- Sin pos_weight
+- Pesos de clase para sentimiento y pos_weight para labels multilabel
 - Early stopping
 - Threshold óptimo por etiqueta
 - Macro F1 como métrica principal
@@ -183,12 +182,6 @@ def parse_args():
         default=42
     )
 
-    p.add_argument(
-        "--max_growth",
-        type=float,
-        default=3.0
-    )
-
     return p.parse_args()
 
 
@@ -307,6 +300,31 @@ def describe(df, name):
         f"sentimiento={dict(s)} | "
         f"labels={l}"
     )
+
+
+def compute_loss_weights(train_df):
+    sentiment_counts = np.bincount(
+        train_df["sent_id"].to_numpy(dtype=int),
+        minlength=len(SENT2ID),
+    )
+    present_classes = sentiment_counts > 0
+    sentiment_weights = np.zeros(len(SENT2ID), dtype=np.float32)
+    sentiment_weights[present_classes] = (
+        len(train_df)
+        / (present_classes.sum() * sentiment_counts[present_classes])
+    )
+
+    labels = train_df[LABEL_COLS].to_numpy(dtype=np.float64)
+    positives = labels.sum(axis=0)
+    negatives = len(train_df) - positives
+    pos_weights = np.ones(len(LABEL_COLS), dtype=np.float32)
+    has_both_classes = (positives > 0) & (negatives > 0)
+    pos_weights[has_both_classes] = (
+        negatives[has_both_classes] / positives[has_both_classes]
+    )
+
+    return sentiment_weights, pos_weights
+
 
 # =========================================================
 # DATASET
@@ -440,76 +458,6 @@ def collate_fn(batch):
 
 
 # =========================================================
-# OVERSAMPLING
-# =========================================================
-
-def random_oversample_sentiment(
-    train_df,
-    max_growth=3.0,
-    seed=42
-):
-
-    counts = (
-        train_df[SENT_COL]
-        .value_counts()
-    )
-
-    target = counts.max()
-
-    pieces = []
-
-    rng = np.random.default_rng(seed)
-
-    for sentiment in counts.index:
-
-        subset = (
-            train_df[
-                train_df[SENT_COL]
-                == sentiment
-            ]
-        )
-
-        cur = len(subset)
-
-        desired = min(
-            target,
-            int(cur * max_growth)
-        )
-
-        if desired > cur:
-
-            extra_idx = rng.choice(
-                subset.index,
-                desired - cur,
-                replace=True,
-            )
-
-            subset = pd.concat(
-                [
-                    subset,
-                    train_df.loc[extra_idx]
-                ],
-                axis=0
-            )
-
-        pieces.append(subset)
-
-    out = pd.concat(
-        pieces,
-        axis=0
-    )
-
-    out = (
-        out.sample(
-            frac=1,
-            random_state=seed
-        )
-        .reset_index(drop=True)
-    )
-
-    return out
-
-
 # =========================================================
 # MODELO
 # =========================================================
@@ -842,13 +790,18 @@ def train_one_fold(
     model,
     train_loader,
     val_loader,
+    train_df,
     device,
     args,
 ):
 
-    ce = nn.CrossEntropyLoss()
-
-    bce = nn.BCEWithLogitsLoss()
+    sentiment_weights, label_pos_weights = compute_loss_weights(train_df)
+    ce = nn.CrossEntropyLoss(
+        weight=torch.as_tensor(sentiment_weights, device=device)
+    )
+    bce = nn.BCEWithLogitsLoss(
+        pos_weight=torch.as_tensor(label_pos_weights, device=device)
+    )
 
     enc_params = []
     head_params = []
@@ -1254,22 +1207,7 @@ def main():
 
         describe(
             train_df,
-            f"fold {fold} train (antes de balancear)"
-        )
-
-        train_df = (
-            random_oversample_sentiment(
-                train_df,
-                max_growth=
-                args.max_growth,
-                seed=
-                args.seed,
-            )
-        )
-
-        describe(
-            train_df,
-            f"fold {fold} train (balanceado)"
+            f"fold {fold} train"
         )
 
         describe(
@@ -1324,6 +1262,7 @@ def main():
             model,
             train_loader,
             val_loader,
+            train_df,
             device,
             args,
         )
@@ -1440,18 +1379,8 @@ def main():
         "\nEntrenando modelo final..."
     )
 
-    final_df = (
-        random_oversample_sentiment(
-            df,
-            max_growth=
-            args.max_growth,
-            seed=
-            args.seed,
-        )
-    )
-
     final_ds = NewsDataset(
-        final_df,
+        df,
         tokenizer,
         args.max_len
     )
@@ -1473,10 +1402,12 @@ def main():
         .to(device)
     )
 
-    ce = nn.CrossEntropyLoss()
-
-    bce = (
-        nn.BCEWithLogitsLoss()
+    sentiment_weights, label_pos_weights = compute_loss_weights(df)
+    ce = nn.CrossEntropyLoss(
+        weight=torch.as_tensor(sentiment_weights, device=device)
+    )
+    bce = nn.BCEWithLogitsLoss(
+        pos_weight=torch.as_tensor(label_pos_weights, device=device)
     )
 
     optimizer = (

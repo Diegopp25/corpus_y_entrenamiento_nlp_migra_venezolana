@@ -1,0 +1,39 @@
+{
+  "model_label": "DistilBERT español",
+  "model_name": "dccuchile/distilbert-base-spanish-uncased",
+  "data_path": "C:\\Users\\diego\\ScrappingPI2\\data\\dataset_migracion_venezolana_labeled.csv",
+  "seed": 44,
+  "n_folds": 5,
+  "max_len": 512,
+  "cv_seconds": 159.03082509999513,
+  "metrics": [
+    {
+      "task": "sent",
+      "average": "macro",
+      "precision": 0.44541062801932374,
+      "recall": 0.3728423475258918,
+      "f1": 0.3251362291122231
+    },
+    {
+      "task": "sent",
+      "average": "micro",
+      "precision": 0.5192307692307693,
+      "recall": 0.5192307692307693,
+      "f1": 0.5192307692307693
+    },
+    {
+      "task": "label",
+      "average": "macro",
+      "precision": 0.38212724524216596,
+      "recall": 0.9229669143736438,
+      "f1": 0.52498924122838
+    },
+    {
+      "task": "label",
+      "average": "micro",
+      "precision": 0.38924050632911394,
+      "recall": 0.9283018867924528,
+      "f1": 0.5484949832775919
+    }
+  ]
+}

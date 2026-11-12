@@ -1,0 +1,39 @@
+{
+  "model_label": "BETO",
+  "model_name": "dccuchile/bert-base-spanish-wwm-cased",
+  "data_path": "C:\\Users\\diego\\ScrappingPI2\\data\\dataset_migracion_venezolana_labeled.csv",
+  "seed": 44,
+  "n_folds": 5,
+  "max_len": 512,
+  "cv_seconds": 157.13016090000747,
+  "metrics": [
+    {
+      "task": "sent",
+      "average": "macro",
+      "precision": 0.35519480519480523,
+      "recall": 0.34164429101137966,
+      "f1": 0.29576098904860965
+    },
+    {
+      "task": "sent",
+      "average": "micro",
+      "precision": 0.4807692307692308,
+      "recall": 0.4807692307692308,
+      "f1": 0.4807692307692308
+    },
+    {
+      "task": "label",
+      "average": "macro",
+      "precision": 0.3592323702865771,
+      "recall": 0.9504026603050676,
+      "f1": 0.5089715970995539
+    },
+    {
+      "task": "label",
+      "average": "micro",
+      "precision": 0.3697841726618705,
+      "recall": 0.969811320754717,
+      "f1": 0.5354166666666667
+    }
+  ]
+}

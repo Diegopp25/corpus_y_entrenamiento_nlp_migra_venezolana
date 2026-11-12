@@ -1,0 +1,39 @@
+{
+  "model_label": "RoBERTa español",
+  "model_name": "FacebookAI/xlm-roberta-base",
+  "data_path": "C:\\Users\\diego\\ScrappingPI2\\data\\dataset_migracion_venezolana_labeled.csv",
+  "seed": 44,
+  "n_folds": 5,
+  "max_len": 512,
+  "cv_seconds": 453.0204505000147,
+  "metrics": [
+    {
+      "task": "sent",
+      "average": "macro",
+      "precision": 0.1688034188034188,
+      "recall": 0.3333333333333333,
+      "f1": 0.22411347517730495
+    },
+    {
+      "task": "sent",
+      "average": "micro",
+      "precision": 0.5064102564102564,
+      "recall": 0.5064102564102564,
+      "f1": 0.5064102564102564
+    },
+    {
+      "task": "label",
+      "average": "macro",
+      "precision": 0.34761110360529984,
+      "recall": 0.9743298633702017,
+      "f1": 0.4970376428860857
+    },
+    {
+      "task": "label",
+      "average": "micro",
+      "precision": 0.3523035230352303,
+      "recall": 0.9811320754716981,
+      "f1": 0.518444666001994
+    }
+  ]
+}
