@@ -1,0 +1,2203 @@
+{
+  "fold": 2,
+  "n_train": 100,
+  "n_val": 25,
+  "n_test": 31,
+  "ids_test": [
+    "articulo_65",
+    "articulo_80",
+    "articulo_147",
+    "articulo_57",
+    "articulo_77",
+    "articulo_59",
+    "articulo_150",
+    "articulo_122",
+    "articulo_66",
+    "articulo_42",
+    "articulo_126",
+    "articulo_37",
+    "articulo_45",
+    "articulo_24",
+    "articulo_63",
+    "articulo_90",
+    "articulo_40",
+    "articulo_17",
+    "articulo_121",
+    "articulo_76",
+    "articulo_83",
+    "articulo_2",
+    "articulo_1",
+    "articulo_12",
+    "articulo_18",
+    "articulo_56",
+    "articulo_62",
+    "articulo_85",
+    "articulo_97",
+    "articulo_102",
+    "articulo_113"
+  ],
+  "ids_val": [
+    "articulo_10",
+    "articulo_98",
+    "articulo_20",
+    "articulo_92",
+    "articulo_140",
+    "articulo_81",
+    "articulo_141",
+    "articulo_100",
+    "articulo_14",
+    "articulo_154",
+    "articulo_46",
+    "articulo_108",
+    "articulo_155",
+    "articulo_94",
+    "articulo_146",
+    "articulo_106",
+    "articulo_139",
+    "articulo_4",
+    "articulo_8",
+    "articulo_9",
+    "articulo_31",
+    "articulo_91",
+    "articulo_148",
+    "articulo_156",
+    "articulo_159"
+  ],
+  "sentiment": {
+    "true_test": [
+      2,
+      2,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      2,
+      1,
+      2,
+      2,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      2,
+      2,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0
+    ],
+    "test_probs": [
+      [
+        0.383644,
+        0.111308,
+        0.505048
+      ],
+      [
+        0.083223,
+        0.128924,
+        0.787852
+      ],
+      [
+        0.395684,
+        0.198119,
+        0.406197
+      ],
+      [
+        0.267827,
+        0.188822,
+        0.543351
+      ],
+      [
+        0.300736,
+        0.255061,
+        0.444203
+      ],
+      [
+        0.179929,
+        0.184128,
+        0.635943
+      ],
+      [
+        0.20218,
+        0.678177,
+        0.119643
+      ],
+      [
+        0.277889,
+        0.275771,
+        0.44634
+      ],
+      [
+        0.190749,
+        0.513362,
+        0.295889
+      ],
+      [
+        0.398347,
+        0.281087,
+        0.320566
+      ],
+      [
+        0.210797,
+        0.447994,
+        0.341208
+      ],
+      [
+        0.536976,
+        0.211824,
+        0.2512
+      ],
+      [
+        0.224961,
+        0.258959,
+        0.51608
+      ],
+      [
+        0.319174,
+        0.292008,
+        0.388818
+      ],
+      [
+        0.349065,
+        0.304925,
+        0.34601
+      ],
+      [
+        0.099582,
+        0.550713,
+        0.349705
+      ],
+      [
+        0.112854,
+        0.354837,
+        0.532309
+      ],
+      [
+        0.146168,
+        0.263705,
+        0.590126
+      ],
+      [
+        0.186439,
+        0.433543,
+        0.380018
+      ],
+      [
+        0.441148,
+        0.225932,
+        0.332919
+      ],
+      [
+        0.386253,
+        0.362138,
+        0.251608
+      ],
+      [
+        0.505121,
+        0.225165,
+        0.269715
+      ],
+      [
+        0.257618,
+        0.318441,
+        0.423941
+      ],
+      [
+        0.217588,
+        0.217642,
+        0.56477
+      ],
+      [
+        0.143016,
+        0.202564,
+        0.65442
+      ],
+      [
+        0.225796,
+        0.305927,
+        0.468277
+      ],
+      [
+        0.427267,
+        0.152077,
+        0.420656
+      ],
+      [
+        0.376864,
+        0.313182,
+        0.309954
+      ],
+      [
+        0.222878,
+        0.188171,
+        0.588951
+      ],
+      [
+        0.352526,
+        0.294031,
+        0.353443
+      ],
+      [
+        0.330596,
+        0.627373,
+        0.04203
+      ]
+    ],
+    "true_val": [
+      2,
+      0,
+      1,
+      2,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      2,
+      1,
+      1,
+      2,
+      1,
+      1,
+      1,
+      0
+    ],
+    "val_probs": [
+      [
+        0.520802,
+        0.17041,
+        0.308787
+      ],
+      [
+        0.264354,
+        0.200519,
+        0.535127
+      ],
+      [
+        0.216849,
+        0.519581,
+        0.26357
+      ],
+      [
+        0.157273,
+        0.187491,
+        0.655236
+      ],
+      [
+        0.561341,
+        0.342808,
+        0.09585
+      ],
+      [
+        0.274528,
+        0.17636,
+        0.549112
+      ],
+      [
+        0.531711,
+        0.266942,
+        0.201347
+      ],
+      [
+        0.464016,
+        0.273368,
+        0.262616
+      ],
+      [
+        0.349397,
+        0.416701,
+        0.233901
+      ],
+      [
+        0.264633,
+        0.329155,
+        0.406212
+      ],
+      [
+        0.175206,
+        0.288576,
+        0.536218
+      ],
+      [
+        0.375887,
+        0.243032,
+        0.38108
+      ],
+      [
+        0.46155,
+        0.417483,
+        0.120967
+      ],
+      [
+        0.19108,
+        0.450027,
+        0.358893
+      ],
+      [
+        0.402627,
+        0.460492,
+        0.136881
+      ],
+      [
+        0.316858,
+        0.241546,
+        0.441597
+      ],
+      [
+        0.318399,
+        0.432921,
+        0.24868
+      ],
+      [
+        0.111127,
+        0.357563,
+        0.53131
+      ],
+      [
+        0.467105,
+        0.176518,
+        0.356377
+      ],
+      [
+        0.30457,
+        0.26317,
+        0.43226
+      ],
+      [
+        0.265164,
+        0.29826,
+        0.436576
+      ],
+      [
+        0.160078,
+        0.32359,
+        0.516332
+      ],
+      [
+        0.087821,
+        0.871178,
+        0.041001
+      ],
+      [
+        0.227883,
+        0.354896,
+        0.417221
+      ],
+      [
+        0.220526,
+        0.317173,
+        0.462301
+      ]
+    ],
+    "labels": [
+      "Negativo",
+      "Neutro",
+      "Positivo"
+    ]
+  },
+  "frames": {
+    "model_order": [
+      "Acceso_a_servicios",
+      "Empleo_y_economía",
+      "Integración_social",
+      "Otros",
+      "Politica_migratoria",
+      "Seguridad",
+      "Transito_migratorio"
+    ],
+    "canonical_keys": [
+      "acceso_servicios",
+      "transito_migratorio",
+      "seguridad",
+      "integracion_social",
+      "politica_migratoria",
+      "empleo_economia",
+      "otros"
+    ],
+    "canonical_to_model_index": {
+      "acceso_servicios": 0,
+      "empleo_economia": 1,
+      "integracion_social": 2,
+      "otros": 3,
+      "politica_migratoria": 4,
+      "seguridad": 5,
+      "transito_migratorio": 6
+    },
+    "umbrales_thresholds_json_keys": "canonical",
+    "true_test": [
+      [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "test_probs": [
+      [
+        0.521972,
+        0.615226,
+        0.499006,
+        0.435736,
+        0.701549,
+        0.569147,
+        0.517785
+      ],
+      [
+        0.410265,
+        0.549755,
+        0.508117,
+        0.302982,
+        0.630834,
+        0.608357,
+        0.562488
+      ],
+      [
+        0.527251,
+        0.560073,
+        0.509384,
+        0.407227,
+        0.653831,
+        0.529341,
+        0.587258
+      ],
+      [
+        0.371443,
+        0.540098,
+        0.448798,
+        0.3302,
+        0.671305,
+        0.542078,
+        0.609092
+      ],
+      [
+        0.434097,
+        0.515429,
+        0.402161,
+        0.280957,
+        0.633238,
+        0.638187,
+        0.67074
+      ],
+      [
+        0.455743,
+        0.692711,
+        0.577238,
+        0.42958,
+        0.659163,
+        0.591155,
+        0.519425
+      ],
+      [
+        0.462125,
+        0.581751,
+        0.348655,
+        0.312406,
+        0.702593,
+        0.644939,
+        0.660603
+      ],
+      [
+        0.441036,
+        0.557585,
+        0.434661,
+        0.351457,
+        0.672048,
+        0.553163,
+        0.608089
+      ],
+      [
+        0.496268,
+        0.681848,
+        0.472301,
+        0.347082,
+        0.64006,
+        0.623423,
+        0.527682
+      ],
+      [
+        0.450782,
+        0.617232,
+        0.45212,
+        0.493869,
+        0.678665,
+        0.445683,
+        0.571362
+      ],
+      [
+        0.406411,
+        0.518598,
+        0.416852,
+        0.375079,
+        0.640532,
+        0.629024,
+        0.631101
+      ],
+      [
+        0.480863,
+        0.577547,
+        0.474337,
+        0.30108,
+        0.733275,
+        0.415513,
+        0.673182
+      ],
+      [
+        0.417327,
+        0.546169,
+        0.490121,
+        0.322568,
+        0.660349,
+        0.600886,
+        0.593181
+      ],
+      [
+        0.470401,
+        0.606796,
+        0.45133,
+        0.39442,
+        0.667378,
+        0.621006,
+        0.600984
+      ],
+      [
+        0.469115,
+        0.513074,
+        0.426804,
+        0.355815,
+        0.563959,
+        0.683603,
+        0.609327
+      ],
+      [
+        0.450224,
+        0.514253,
+        0.363397,
+        0.31782,
+        0.635189,
+        0.697675,
+        0.569505
+      ],
+      [
+        0.477609,
+        0.611656,
+        0.488825,
+        0.390914,
+        0.642856,
+        0.54604,
+        0.516751
+      ],
+      [
+        0.455903,
+        0.59483,
+        0.449911,
+        0.310333,
+        0.717775,
+        0.523351,
+        0.516661
+      ],
+      [
+        0.451003,
+        0.556102,
+        0.390299,
+        0.324649,
+        0.619859,
+        0.656333,
+        0.626779
+      ],
+      [
+        0.400806,
+        0.441186,
+        0.36548,
+        0.213555,
+        0.635871,
+        0.553282,
+        0.66246
+      ],
+      [
+        0.503361,
+        0.524674,
+        0.36281,
+        0.29929,
+        0.572686,
+        0.519695,
+        0.701799
+      ],
+      [
+        0.421004,
+        0.526651,
+        0.35818,
+        0.252768,
+        0.64746,
+        0.655682,
+        0.575303
+      ],
+      [
+        0.500464,
+        0.537404,
+        0.409281,
+        0.372744,
+        0.66435,
+        0.54854,
+        0.576639
+      ],
+      [
+        0.438876,
+        0.614928,
+        0.470952,
+        0.420481,
+        0.616068,
+        0.663894,
+        0.52555
+      ],
+      [
+        0.461375,
+        0.596056,
+        0.476601,
+        0.41582,
+        0.588578,
+        0.638504,
+        0.565756
+      ],
+      [
+        0.444525,
+        0.442437,
+        0.470001,
+        0.323013,
+        0.604118,
+        0.553733,
+        0.601862
+      ],
+      [
+        0.505632,
+        0.545194,
+        0.472434,
+        0.4635,
+        0.674013,
+        0.492425,
+        0.535493
+      ],
+      [
+        0.445891,
+        0.505605,
+        0.348238,
+        0.299211,
+        0.616974,
+        0.612235,
+        0.702529
+      ],
+      [
+        0.418394,
+        0.556958,
+        0.43954,
+        0.282224,
+        0.685616,
+        0.59013,
+        0.599273
+      ],
+      [
+        0.45533,
+        0.626932,
+        0.464154,
+        0.368445,
+        0.706316,
+        0.50227,
+        0.657112
+      ],
+      [
+        0.626033,
+        0.291103,
+        0.181543,
+        0.129147,
+        0.37486,
+        0.534306,
+        0.686568
+      ]
+    ],
+    "true_val": [
+      [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ]
+    ],
+    "val_probs": [
+      [
+        0.498957,
+        0.390372,
+        0.381217,
+        0.231354,
+        0.609423,
+        0.522484,
+        0.655869
+      ],
+      [
+        0.415112,
+        0.577371,
+        0.518888,
+        0.447978,
+        0.650741,
+        0.574507,
+        0.603927
+      ],
+      [
+        0.432355,
+        0.515684,
+        0.307125,
+        0.311292,
+        0.677511,
+        0.684196,
+        0.581572
+      ],
+      [
+        0.437486,
+        0.512817,
+        0.377167,
+        0.34849,
+        0.535327,
+        0.608718,
+        0.564772
+      ],
+      [
+        0.451488,
+        0.306126,
+        0.207161,
+        0.207919,
+        0.580056,
+        0.69304,
+        0.616422
+      ],
+      [
+        0.495986,
+        0.463013,
+        0.351923,
+        0.299883,
+        0.538122,
+        0.647915,
+        0.649101
+      ],
+      [
+        0.493959,
+        0.474354,
+        0.358089,
+        0.294509,
+        0.536801,
+        0.683468,
+        0.645789
+      ],
+      [
+        0.480793,
+        0.587045,
+        0.495564,
+        0.320772,
+        0.633383,
+        0.505862,
+        0.674943
+      ],
+      [
+        0.470275,
+        0.531012,
+        0.283025,
+        0.24473,
+        0.639325,
+        0.598613,
+        0.550406
+      ],
+      [
+        0.453118,
+        0.631723,
+        0.492946,
+        0.386976,
+        0.629016,
+        0.642472,
+        0.583165
+      ],
+      [
+        0.43914,
+        0.561658,
+        0.507943,
+        0.325472,
+        0.616081,
+        0.543996,
+        0.530897
+      ],
+      [
+        0.468799,
+        0.477589,
+        0.431941,
+        0.304332,
+        0.622437,
+        0.618834,
+        0.609779
+      ],
+      [
+        0.406716,
+        0.403883,
+        0.31166,
+        0.200843,
+        0.549318,
+        0.638871,
+        0.715833
+      ],
+      [
+        0.486238,
+        0.544666,
+        0.392746,
+        0.344812,
+        0.577304,
+        0.668241,
+        0.62701
+      ],
+      [
+        0.470629,
+        0.48104,
+        0.323719,
+        0.227192,
+        0.623991,
+        0.64433,
+        0.696525
+      ],
+      [
+        0.4777,
+        0.538498,
+        0.404504,
+        0.296604,
+        0.579855,
+        0.655927,
+        0.590859
+      ],
+      [
+        0.479735,
+        0.552693,
+        0.381347,
+        0.33535,
+        0.59701,
+        0.630688,
+        0.648055
+      ],
+      [
+        0.491987,
+        0.628871,
+        0.47611,
+        0.438985,
+        0.700428,
+        0.582264,
+        0.525403
+      ],
+      [
+        0.505379,
+        0.582161,
+        0.534711,
+        0.396508,
+        0.623378,
+        0.553817,
+        0.520289
+      ],
+      [
+        0.42347,
+        0.547346,
+        0.477736,
+        0.264919,
+        0.603067,
+        0.572096,
+        0.610111
+      ],
+      [
+        0.552528,
+        0.591979,
+        0.445541,
+        0.303643,
+        0.635893,
+        0.540725,
+        0.596641
+      ],
+      [
+        0.454531,
+        0.563833,
+        0.399267,
+        0.301242,
+        0.703651,
+        0.568044,
+        0.564752
+      ],
+      [
+        0.452874,
+        0.294952,
+        0.244487,
+        0.190864,
+        0.609905,
+        0.547118,
+        0.699081
+      ],
+      [
+        0.460593,
+        0.607195,
+        0.463698,
+        0.380171,
+        0.715016,
+        0.50965,
+        0.577744
+      ],
+      [
+        0.513834,
+        0.59018,
+        0.494139,
+        0.353729,
+        0.597668,
+        0.594296,
+        0.481321
+      ]
+    ],
+    "thresholds_validation": {
+      "acceso_servicios": 0.55,
+      "transito_migratorio": 0.6,
+      "seguridad": 0.65,
+      "integracion_social": 0.45,
+      "politica_migratoria": 0.5,
+      "empleo_economia": 0.5,
+      "otros": 0.5
+    }
+  },
+  "baseline_frames_thresholds_validation": {
+    "acceso_servicios": 0.5,
+    "transito_migratorio": 0.55,
+    "seguridad": 0.6,
+    "integracion_social": 0.45,
+    "politica_migratoria": 0.45,
+    "empleo_economia": 0.45,
+    "otros": 0.5
+  },
+  "reports": {
+    "sentiment_val": {
+      "accuracy": 0.36,
+      "macro_f1": 0.339781,
+      "macro_precision": 0.380342,
+      "macro_recall": 0.41685,
+      "per_class": {
+        "Negativo": {
+          "precision": 0.166667,
+          "recall": 0.142857,
+          "f1": 0.153846,
+          "support": 7
+        },
+        "Neutro": {
+          "precision": 0.666667,
+          "recall": 0.307692,
+          "f1": 0.421053,
+          "support": 13
+        },
+        "Positivo": {
+          "precision": 0.307692,
+          "recall": 0.8,
+          "f1": 0.444444,
+          "support": 5
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "Negativo",
+          "Neutro",
+          "Positivo"
+        ],
+        "matrix": [
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            4,
+            4,
+            5
+          ],
+          [
+            1,
+            0,
+            4
+          ]
+        ]
+      },
+      "support": 25
+    },
+    "sentiment_test": {
+      "accuracy": 0.451613,
+      "macro_f1": 0.454482,
+      "macro_precision": 0.542484,
+      "macro_recall": 0.497354,
+      "per_class": {
+        "Negativo": {
+          "precision": 0.5,
+          "recall": 0.444444,
+          "f1": 0.470588,
+          "support": 9
+        },
+        "Neutro": {
+          "precision": 0.833333,
+          "recall": 0.333333,
+          "f1": 0.47619,
+          "support": 15
+        },
+        "Positivo": {
+          "precision": 0.294118,
+          "recall": 0.714286,
+          "f1": 0.416667,
+          "support": 7
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "Negativo",
+          "Neutro",
+          "Positivo"
+        ],
+        "matrix": [
+          [
+            4,
+            1,
+            4
+          ],
+          [
+            2,
+            5,
+            8
+          ],
+          [
+            2,
+            0,
+            5
+          ]
+        ]
+      },
+      "support": 31
+    },
+    "sentiment_test_baseline": {
+      "accuracy": 0.677419,
+      "macro_f1": 0.64117,
+      "macro_precision": 0.672222,
+      "macro_recall": 0.646561,
+      "per_class": {
+        "Negativo": {
+          "precision": 0.5,
+          "recall": 0.777778,
+          "f1": 0.608696,
+          "support": 9
+        },
+        "Neutro": {
+          "precision": 0.916667,
+          "recall": 0.733333,
+          "f1": 0.814815,
+          "support": 15
+        },
+        "Positivo": {
+          "precision": 0.6,
+          "recall": 0.428571,
+          "f1": 0.5,
+          "support": 7
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "Negativo",
+          "Neutro",
+          "Positivo"
+        ],
+        "matrix": [
+          [
+            7,
+            1,
+            1
+          ],
+          [
+            3,
+            11,
+            1
+          ],
+          [
+            4,
+            0,
+            3
+          ]
+        ]
+      },
+      "support": 31
+    },
+    "frames_val": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 1.0,
+          "recall": 0.142857,
+          "f1": 0.25,
+          "support": 7,
+          "threshold": 0.55,
+          "predicted_positives": 1
+        },
+        "transito_migratorio": {
+          "precision": 0.538462,
+          "recall": 0.7,
+          "f1": 0.608696,
+          "support": 10,
+          "threshold": 0.6,
+          "predicted_positives": 13
+        },
+        "seguridad": {
+          "precision": 0.6,
+          "recall": 0.428571,
+          "f1": 0.5,
+          "support": 7,
+          "threshold": 0.65,
+          "predicted_positives": 5
+        },
+        "integracion_social": {
+          "precision": 0.555556,
+          "recall": 0.833333,
+          "f1": 0.666667,
+          "support": 6,
+          "threshold": 0.45,
+          "predicted_positives": 9
+        },
+        "politica_migratoria": {
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "support": 15,
+          "threshold": 0.5,
+          "predicted_positives": 25
+        },
+        "empleo_economia": {
+          "precision": 0.176471,
+          "recall": 1.0,
+          "f1": 0.3,
+          "support": 3,
+          "threshold": 0.5,
+          "predicted_positives": 17
+        },
+        "otros": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 2,
+          "threshold": 0.5,
+          "predicted_positives": 0
+        }
+      },
+      "macro_precision": 0.495784,
+      "macro_recall": 0.586395,
+      "macro_f1": 0.439337,
+      "micro_f1": 0.566667,
+      "support": 25
+    },
+    "frames_test_at_0.5": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 0.5,
+          "recall": 0.333333,
+          "f1": 0.4,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 6
+        },
+        "transito_migratorio": {
+          "precision": 0.225806,
+          "recall": 1.0,
+          "f1": 0.368421,
+          "support": 7,
+          "threshold": 0.5,
+          "predicted_positives": 31
+        },
+        "seguridad": {
+          "precision": 0.25,
+          "recall": 0.875,
+          "f1": 0.388889,
+          "support": 8,
+          "threshold": 0.5,
+          "predicted_positives": 28
+        },
+        "integracion_social": {
+          "precision": 0.666667,
+          "recall": 0.666667,
+          "f1": 0.666667,
+          "support": 3,
+          "threshold": 0.5,
+          "predicted_positives": 3
+        },
+        "politica_migratoria": {
+          "precision": 0.7,
+          "recall": 1.0,
+          "f1": 0.823529,
+          "support": 21,
+          "threshold": 0.5,
+          "predicted_positives": 30
+        },
+        "empleo_economia": {
+          "precision": 0.321429,
+          "recall": 0.9,
+          "f1": 0.473684,
+          "support": 10,
+          "threshold": 0.5,
+          "predicted_positives": 28
+        },
+        "otros": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 2,
+          "threshold": 0.5,
+          "predicted_positives": 0
+        }
+      },
+      "macro_precision": 0.380557,
+      "macro_recall": 0.682143,
+      "macro_f1": 0.445884,
+      "micro_f1": 0.526882,
+      "support": 31
+    },
+    "frames_test_tuned": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 1.0,
+          "recall": 0.111111,
+          "f1": 0.2,
+          "support": 9,
+          "threshold": 0.55,
+          "predicted_positives": 1
+        },
+        "transito_migratorio": {
+          "precision": 0.4,
+          "recall": 0.857143,
+          "f1": 0.545455,
+          "support": 7,
+          "threshold": 0.6,
+          "predicted_positives": 15
+        },
+        "seguridad": {
+          "precision": 0.8,
+          "recall": 0.5,
+          "f1": 0.615385,
+          "support": 8,
+          "threshold": 0.65,
+          "predicted_positives": 5
+        },
+        "integracion_social": {
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1": 0.333333,
+          "support": 3,
+          "threshold": 0.45,
+          "predicted_positives": 15
+        },
+        "politica_migratoria": {
+          "precision": 0.7,
+          "recall": 1.0,
+          "f1": 0.823529,
+          "support": 21,
+          "threshold": 0.5,
+          "predicted_positives": 30
+        },
+        "empleo_economia": {
+          "precision": 0.321429,
+          "recall": 0.9,
+          "f1": 0.473684,
+          "support": 10,
+          "threshold": 0.5,
+          "predicted_positives": 28
+        },
+        "otros": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 2,
+          "threshold": 0.5,
+          "predicted_positives": 0
+        }
+      },
+      "macro_precision": 0.488776,
+      "macro_recall": 0.624036,
+      "macro_f1": 0.427341,
+      "micro_f1": 0.571429,
+      "support": 31
+    },
+    "frames_test_production_thresholds": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 0.5,
+          "recall": 0.333333,
+          "f1": 0.4,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 6
+        },
+        "transito_migratorio": {
+          "precision": 0.225806,
+          "recall": 1.0,
+          "f1": 0.368421,
+          "support": 7,
+          "threshold": 0.5,
+          "predicted_positives": 31
+        },
+        "seguridad": {
+          "precision": 0.25,
+          "recall": 0.875,
+          "f1": 0.388889,
+          "support": 8,
+          "threshold": 0.5,
+          "predicted_positives": 28
+        },
+        "integracion_social": {
+          "precision": 0.666667,
+          "recall": 0.666667,
+          "f1": 0.666667,
+          "support": 3,
+          "threshold": 0.5,
+          "predicted_positives": 3
+        },
+        "politica_migratoria": {
+          "precision": 0.7,
+          "recall": 1.0,
+          "f1": 0.823529,
+          "support": 21,
+          "threshold": 0.45,
+          "predicted_positives": 30
+        },
+        "empleo_economia": {
+          "precision": 0.321429,
+          "recall": 0.9,
+          "f1": 0.473684,
+          "support": 10,
+          "threshold": 0.5,
+          "predicted_positives": 28
+        },
+        "otros": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 2,
+          "threshold": 0.5,
+          "predicted_positives": 0
+        }
+      },
+      "macro_precision": 0.380557,
+      "macro_recall": 0.682143,
+      "macro_f1": 0.445884,
+      "micro_f1": 0.526882,
+      "support": 31
+    },
+    "frames_test_baseline_at_0.5": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 0.571429,
+          "recall": 0.444444,
+          "f1": 0.5,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 7
+        },
+        "transito_migratorio": {
+          "precision": 0.384615,
+          "recall": 0.714286,
+          "f1": 0.5,
+          "support": 7,
+          "threshold": 0.5,
+          "predicted_positives": 13
+        },
+        "seguridad": {
+          "precision": 0.3125,
+          "recall": 0.625,
+          "f1": 0.416667,
+          "support": 8,
+          "threshold": 0.5,
+          "predicted_positives": 16
+        },
+        "integracion_social": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 3,
+          "threshold": 0.5,
+          "predicted_positives": 1
+        },
+        "politica_migratoria": {
+          "precision": 0.730769,
+          "recall": 0.904762,
+          "f1": 0.808511,
+          "support": 21,
+          "threshold": 0.5,
+          "predicted_positives": 26
+        },
+        "empleo_economia": {
+          "precision": 0.8,
+          "recall": 0.4,
+          "f1": 0.533333,
+          "support": 10,
+          "threshold": 0.5,
+          "predicted_positives": 5
+        },
+        "otros": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 2,
+          "threshold": 0.5,
+          "predicted_positives": 0
+        }
+      },
+      "macro_precision": 0.399902,
+      "macro_recall": 0.441213,
+      "macro_f1": 0.394073,
+      "micro_f1": 0.578125,
+      "support": 31
+    },
+    "frames_test_baseline_tuned": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 0.571429,
+          "recall": 0.444444,
+          "f1": 0.5,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 7
+        },
+        "transito_migratorio": {
+          "precision": 0.428571,
+          "recall": 0.428571,
+          "f1": 0.428571,
+          "support": 7,
+          "threshold": 0.55,
+          "predicted_positives": 7
+        },
+        "seguridad": {
+          "precision": 0.8,
+          "recall": 0.5,
+          "f1": 0.615385,
+          "support": 8,
+          "threshold": 0.6,
+          "predicted_positives": 5
+        },
+        "integracion_social": {
+          "precision": 0.285714,
+          "recall": 0.666667,
+          "f1": 0.4,
+          "support": 3,
+          "threshold": 0.45,
+          "predicted_positives": 7
+        },
+        "politica_migratoria": {
+          "precision": 0.689655,
+          "recall": 0.952381,
+          "f1": 0.8,
+          "support": 21,
+          "threshold": 0.45,
+          "predicted_positives": 29
+        },
+        "empleo_economia": {
+          "precision": 0.666667,
+          "recall": 0.6,
+          "f1": 0.631579,
+          "support": 10,
+          "threshold": 0.45,
+          "predicted_positives": 9
+        },
+        "otros": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 2,
+          "threshold": 0.5,
+          "predicted_positives": 0
+        }
+      },
+      "macro_precision": 0.491719,
+      "macro_recall": 0.513152,
+      "macro_f1": 0.482219,
+      "micro_f1": 0.629032,
+      "support": 31
+    },
+    "frames_test_baseline_production_thresholds": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 0.571429,
+          "recall": 0.444444,
+          "f1": 0.5,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 7
+        },
+        "transito_migratorio": {
+          "precision": 0.384615,
+          "recall": 0.714286,
+          "f1": 0.5,
+          "support": 7,
+          "threshold": 0.5,
+          "predicted_positives": 13
+        },
+        "seguridad": {
+          "precision": 0.3125,
+          "recall": 0.625,
+          "f1": 0.416667,
+          "support": 8,
+          "threshold": 0.5,
+          "predicted_positives": 16
+        },
+        "integracion_social": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 3,
+          "threshold": 0.5,
+          "predicted_positives": 1
+        },
+        "politica_migratoria": {
+          "precision": 0.689655,
+          "recall": 0.952381,
+          "f1": 0.8,
+          "support": 21,
+          "threshold": 0.45,
+          "predicted_positives": 29
+        },
+        "empleo_economia": {
+          "precision": 0.8,
+          "recall": 0.4,
+          "f1": 0.533333,
+          "support": 10,
+          "threshold": 0.5,
+          "predicted_positives": 5
+        },
+        "otros": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 2,
+          "threshold": 0.5,
+          "predicted_positives": 0
+        }
+      },
+      "macro_precision": 0.394028,
+      "macro_recall": 0.448016,
+      "macro_f1": 0.392857,
+      "micro_f1": 0.580153,
+      "support": 31
+    }
+  },
+  "thresholds_validation_meta": {
+    "acceso_servicios": {
+      "threshold": 0.55,
+      "fallback": false,
+      "precision_validacion": 1.0,
+      "f1_validacion": 0.25,
+      "support": 7
+    },
+    "transito_migratorio": {
+      "threshold": 0.6,
+      "fallback": false,
+      "precision_validacion": 0.538462,
+      "f1_validacion": 0.608696,
+      "support": 10
+    },
+    "seguridad": {
+      "threshold": 0.65,
+      "fallback": false,
+      "precision_validacion": 0.6,
+      "f1_validacion": 0.5,
+      "support": 7
+    },
+    "integracion_social": {
+      "threshold": 0.45,
+      "fallback": false,
+      "precision_validacion": 0.555556,
+      "f1_validacion": 0.666667,
+      "support": 6
+    },
+    "politica_migratoria": {
+      "threshold": 0.5,
+      "fallback": false,
+      "precision_validacion": 0.6,
+      "f1_validacion": 0.75,
+      "support": 15
+    },
+    "empleo_economia": {
+      "threshold": 0.5,
+      "fallback": true,
+      "reason": "ningun_umbral_alcanza_piso_precision",
+      "precision_floor": 0.5,
+      "max_precision_observada": 0.272727,
+      "threshold_max_precision": 0.55,
+      "support": 3
+    },
+    "otros": {
+      "threshold": 0.5,
+      "fallback": true,
+      "reason": "ningun_umbral_alcanza_piso_precision",
+      "precision_floor": 0.5,
+      "max_precision_observada": 0.166667,
+      "threshold_max_precision": 0.35,
+      "support": 2
+    }
+  },
+  "baseline_thresholds_validation_meta": {
+    "acceso_servicios": {
+      "threshold": 0.5,
+      "fallback": false,
+      "precision_validacion": 0.6,
+      "f1_validacion": 0.5,
+      "support": 7
+    },
+    "transito_migratorio": {
+      "threshold": 0.55,
+      "fallback": false,
+      "precision_validacion": 0.75,
+      "f1_validacion": 0.666667,
+      "support": 10
+    },
+    "seguridad": {
+      "threshold": 0.6,
+      "fallback": false,
+      "precision_validacion": 0.5,
+      "f1_validacion": 0.222222,
+      "support": 7
+    },
+    "integracion_social": {
+      "threshold": 0.45,
+      "fallback": false,
+      "precision_validacion": 0.6,
+      "f1_validacion": 0.545455,
+      "support": 6
+    },
+    "politica_migratoria": {
+      "threshold": 0.45,
+      "fallback": false,
+      "precision_validacion": 0.625,
+      "f1_validacion": 0.769231,
+      "support": 15
+    },
+    "empleo_economia": {
+      "threshold": 0.45,
+      "fallback": false,
+      "precision_validacion": 0.5,
+      "f1_validacion": 0.571429,
+      "support": 3
+    },
+    "otros": {
+      "threshold": 0.5,
+      "fallback": true,
+      "reason": "ningun_umbral_alcanza_piso_precision",
+      "precision_floor": 0.5,
+      "max_precision_observada": 0.25,
+      "threshold_max_precision": 0.35,
+      "support": 2
+    }
+  },
+  "early_stopping": {
+    "sentiment_best_val_macro_f1": 0.339781,
+    "frames_best_val_macro_f1_at_0.5": 0.571898
+  }
+}

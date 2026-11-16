@@ -1,8 +1,8 @@
 import json
 import pandas as pd
 
-NDJSON_PATH = "Transformation/LandingStage/labels.ndjson"
-CSV_PATH = "Transformation/LandingStage/labels.csv"
+NDJSON_PATH = "transformation/LandingStage/labels.ndjson"
+CSV_PATH = "transformation/LandingStage/labels.csv"
 
 # =====================================================
 # PASO 1: Descubrir automáticamente todos los encuadres

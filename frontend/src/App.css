@@ -1,0 +1,31 @@
+/* Minimal Custom Animations (Everything else is pure TailwindCSS utility classes) */
+@keyframes pulseScale {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+    filter: drop-shadow(0 0 14px #f97316);
+  }
+}
+
+.animate-pulse-brain {
+  animation: pulseScale 1.4s ease-in-out infinite;
+}
+
+@keyframes enterFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-enter {
+  animation: enterFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

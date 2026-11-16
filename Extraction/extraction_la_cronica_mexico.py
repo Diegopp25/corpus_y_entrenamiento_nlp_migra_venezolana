@@ -14,6 +14,8 @@ from playwright.sync_api import (
     sync_playwright
 )
 
+
+ROOT_DIR = "C:/Users/diego/ScrappingPI2"
 # ======================================================
 # CONFIG
 # ======================================================
