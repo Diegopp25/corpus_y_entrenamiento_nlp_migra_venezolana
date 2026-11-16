@@ -376,7 +376,7 @@ def parse_article(
 # GOOGLE CSE
 # ======================================================
 
-def get_search_results():
+def get_search_results(limite=None):
 
     resultados = []
 
@@ -477,9 +477,15 @@ def get_search_results():
                         }
                     )
 
+                    if limite is not None and len(resultados) >= limite:
+                        break
+
                 except Exception:
 
                     continue
+
+            if limite is not None and len(resultados) >= limite:
+                break
 
             next_button = page.locator(
                 ".gsc-cursor-page"
@@ -520,8 +526,15 @@ def extraer_cronica_mexico(
     limite=None
 ):
 
+    if limite is not None and (
+        isinstance(limite, bool)
+        or not isinstance(limite, int)
+        or limite < 1
+    ):
+        raise ValueError("limite debe ser un entero positivo.")
+
     resultados = (
-        get_search_results()
+        get_search_results(limite)
     )
 
     print(
