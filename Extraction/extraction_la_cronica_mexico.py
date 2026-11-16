@@ -517,7 +517,7 @@ def get_search_results():
 # ======================================================
 
 def extraer_cronica_mexico(
-    limite=None
+    limite=5
 ):
 
     resultados = (
@@ -609,7 +609,7 @@ if __name__ == "__main__":
     )
 
     df.to_csv(
-        ROOT_DIR + "/Data/cronica_mexico.csv",
+        "cronica_mexico.csv",
         index=False,
         encoding="utf-8-sig"
     )
