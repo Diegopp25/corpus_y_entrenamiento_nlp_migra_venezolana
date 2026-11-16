@@ -702,7 +702,7 @@ def test_analyze_url_blocks_private_networks(tmp_path: Path):
                 json={"url": "http://127.0.0.1:8080/noticia"},
             )
         assert response.status_code == 422
-        assert response.json()["error"]["code"] == "url_blocked"
+        assert response.json()["error"]["code"] == "domain_not_allowed"
     finally:
         fetcher = getattr(app.state, "fetcher", None)
         if fetcher is not None:
