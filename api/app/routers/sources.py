@@ -37,7 +37,7 @@ from ..services.analysis import normalize_country
 from ..services.fetching import FetchError
 from ..services.jobs import TOTAL_STEPS, get_jobs_manager, get_scraper
 from ..services.scraper import RobotsDeniedError, ScraperError
-from ..services.site_catalog import KNOWN_SITES
+from ..services.site_catalog import KNOWN_SITES, allowed_source_message, is_allowed_source
 
 logger = logging.getLogger(__name__)
 
@@ -167,6 +167,13 @@ async def scan_site(payload: ScrapeRequest, request: Request) -> ScrapeAccepted:
             "scraper_disabled",
             "La ingesta de noticias está deshabilitada en este servidor (NLP_SCRAPER_ENABLED=false).",
         )
+    if not is_allowed_source(payload.url):
+        raise APIError(
+            422,
+            "domain_not_allowed",
+            allowed_source_message(),
+            {"url": payload.url},
+        )
     max_articles = min(payload.max_articles, settings.scraper_max_articles, 10)
     if max_articles < 1:
         raise APIError(
@@ -228,6 +235,13 @@ async def analyze_url(payload: ScrapeRequest, request: Request) -> NewsArticle:
             503,
             "scraper_disabled",
             "La ingesta de noticias está deshabilitada en este servidor (NLP_SCRAPER_ENABLED=false).",
+        )
+    if not is_allowed_source(payload.url):
+        raise APIError(
+            422,
+            "domain_not_allowed",
+            allowed_source_message(),
+            {"url": payload.url},
         )
     scraper = await run_in_threadpool(get_scraper, request.app)
     analysis = get_analysis_service(request)

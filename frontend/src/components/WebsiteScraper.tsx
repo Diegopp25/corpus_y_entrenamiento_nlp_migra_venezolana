@@ -60,7 +60,7 @@ const STATUS_LABELS: Record<ScrapingProgress["status"], string> = {
 const TOTAL_STEPS = 5
 
 export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer }) => {
-  const [urlInput, setUrlInput] = useState<string>("eltiempo.com")
+  const [urlInput, setUrlInput] = useState<string>("semana.com")
   const [maxArticles, setMaxArticles] = useState<number>(3)
   const [isScraping, setIsScraping] = useState<boolean>(false)
   const [progress, setProgress] = useState<ScrapingProgress | null>(null)
@@ -206,7 +206,7 @@ export const WebsiteScraper: React.FC<WebsiteScraperProps> = ({ onSendToAnalyzer
               className="flex-1 bg-transparent border-none text-white pl-1.5 text-[14.5px] outline-none"
               value={urlInput}
               onChange={e => setUrlInput(e.target.value)}
-              placeholder="eltiempo.com, semana.com, eluniversal.com.mx..."
+              placeholder="semana.com, milenio.com, cronica.com.mx..."
               disabled={isScraping}
               onKeyDown={e => {
                 if (e.key === "Enter") void handleStartScrape()

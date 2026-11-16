@@ -1,4 +1,4 @@
-"""Catálogo de medios conocidos (compartido por análisis y scraper)."""
+"""Catálogo de medios permitidos para la ingesta (compartido por análisis y scraper)."""
 
 from __future__ import annotations
 
@@ -25,22 +25,8 @@ class KnownSite:
         return asdict(self)
 
 
-# Medios usados por el dashboard del frontend + algunos de referencia.
+# Únicos medios autorizados para scraping/análisis vía API.
 KNOWN_SITES: list[KnownSite] = [
-    KnownSite(
-        id="el-tiempo",
-        name="El Tiempo",
-        domain="eltiempo.com",
-        country=COLOMBIA,
-        category="Prensa Escrita",
-        description=(
-            "Diario de mayor circulación en Colombia. Cobertura nacional con "
-            "énfasis en políticas públicas, frontera y convivencia urbana."
-        ),
-        flag="🇨🇴",
-        logo_text="EL TIEMPO",
-        accent_color="#1e40af",
-    ),
     KnownSite(
         id="semana",
         name="Revista Semana",
@@ -48,40 +34,13 @@ KNOWN_SITES: list[KnownSite] = [
         country=COLOMBIA,
         category="Medio Digital",
         description=(
-            "Medio de análisis político y judicial. Tiende a priorizar encuadres "
-            "de seguridad ciudadana, crimen organizado y orden público."
+            "Medio colombiano de análisis político y actualidad. En este proyecto "
+            "se utiliza como fuente autorizada para la extracción y el análisis de "
+            "noticias sobre migración venezolana."
         ),
         flag="🇨🇴",
         logo_text="SEMANA",
         accent_color="#dc2626",
-    ),
-    KnownSite(
-        id="el-espectador",
-        name="El Espectador",
-        domain="elespectador.com",
-        country=COLOMBIA,
-        category="Prensa Escrita",
-        description=(
-            "Diario colombiano con cobertura de derechos humanos, migración y "
-            "política pública."
-        ),
-        flag="🇨🇴",
-        logo_text="EL ESPECTADOR",
-        accent_color="#0f766e",
-    ),
-    KnownSite(
-        id="el-universal-mx",
-        name="El Universal",
-        domain="eluniversal.com.mx",
-        country=MEXICO,
-        category="Prensa Escrita",
-        description=(
-            "Diario mexicano con amplia cobertura de migración en tránsito y "
-            "política migratoria de EE. UU."
-        ),
-        flag="🇲🇽",
-        logo_text="EL UNIVERSAL",
-        accent_color="#b91c1c",
     ),
     KnownSite(
         id="milenio",
@@ -90,48 +49,28 @@ KNOWN_SITES: list[KnownSite] = [
         country=MEXICO,
         category="Medio Digital",
         description=(
-            "Medio digital mexicano con cobertura de frontera, empleo y "
-            "economía regional."
+            "Medio mexicano con cobertura nacional y regional. En este proyecto se "
+            "utiliza como fuente autorizada para la extracción y el análisis de "
+            "noticias sobre migración venezolana."
         ),
         flag="🇲🇽",
         logo_text="MILENIO",
         accent_color="#1d4ed8",
     ),
     KnownSite(
-        id="reforma",
-        name="Reforma",
-        domain="reforma.com",
+        id="la-cronica",
+        name="La Crónica",
+        domain="cronica.com.mx",
         country=MEXICO,
-        category="Prensa Escrita",
+        category="Medio Digital",
         description=(
-            "Diario mexicano de referencia nacional; cobertura económica y de "
-            "política migratoria."
+            "Medio mexicano (La Crónica de Hoy) con cobertura informativa. En este "
+            "proyecto se utiliza como fuente autorizada para la extracción y el "
+            "análisis de noticias sobre migración venezolana."
         ),
         flag="🇲🇽",
-        logo_text="REFORMA",
-        accent_color="#15803d",
-    ),
-    KnownSite(
-        id="el-heraldo-co",
-        name="El Heraldo",
-        domain="elheraldo.co",
-        country=COLOMBIA,
-        category="Prensa Escrita",
-        description="Diario del Caribe colombiano con cobertura de frontera y migración.",
-        flag="🇨🇴",
-        logo_text="EL HERALDO",
-        accent_color="#b45309",
-    ),
-    KnownSite(
-        id="la-jornada",
-        name="La Jornada",
-        domain="jornada.com.mx",
-        country=MEXICO,
-        category="Prensa Escrita",
-        description="Diario mexicano con énfasis en derechos humanos y movilidad.",
-        flag="🇲🇽",
-        logo_text="LA JORNADA",
-        accent_color="#7c3aed",
+        logo_text="LA CRÓNICA",
+        accent_color="#0f766e",
     ),
 ]
 
@@ -161,6 +100,16 @@ def known_site_for(url_or_domain: str | None) -> KnownSite | None:
         if domain.endswith(f".{known_domain}") or known_domain.endswith(f".{domain}"):
             return site
     return None
+
+
+def is_allowed_source(url_or_domain: str | None) -> bool:
+    """Indica si la URL/dominio pertenece a un medio autorizado para ingesta."""
+    return known_site_for(url_or_domain) is not None
+
+
+def allowed_source_message() -> str:
+    names = ", ".join(f"{site.name} ({site.country})" for site in KNOWN_SITES)
+    return f"Solo se permiten los medios autorizados: {names}."
 
 
 def infer_country(*, url: str | None = None, media_name: str | None = None) -> str:

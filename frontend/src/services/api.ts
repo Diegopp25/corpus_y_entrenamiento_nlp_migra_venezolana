@@ -114,7 +114,9 @@ const FRIENDLY_CODES: Record<string, string> = {
   invalid_text: "El texto está vacío o no se puede analizar.",
   rate_limited: "El API recibió demasiadas peticiones. Espera unos segundos y reintenta.",
   engine_error: "El motor de análisis BETO falló al procesar la noticia.",
-  invalid_url: "La URL no es válida. Usa el dominio del medio (p. ej. eltiempo.com).",
+  invalid_url: "La URL no es válida. Usa el dominio del medio (p. ej. semana.com).",
+  domain_not_allowed:
+    "Solo se permiten los medios autorizados: Revista Semana (Colombia), Milenio (México) y La Crónica (México).",
   url_blocked: "La URL no está permitida por el API (restricción SSRF).",
   unresolvable_host: "No se pudo resolver el dominio del medio.",
   robots_denied: "robots.txt del sitio prohíbe el rastreo automático.",

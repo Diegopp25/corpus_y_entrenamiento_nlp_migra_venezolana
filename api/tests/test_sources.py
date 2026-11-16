@@ -1,8 +1,7 @@
 """Pruebas de la ingesta de noticias sin acceso real a la red.
 
-Se usa un ``FakeFetcher`` (inyectado como ``app.state.fetcher`` o pasado al
-``NewsScraper``) y ``httpx.MockTransport`` para la capa HTTP, de modo que
-robots.txt, RSS, sitemaps, artículos, SSRF, jobs y endpoints se prueban de
+Se usa un ``FakeFetcher`` y ``httpx.MockTransport`` para que robots.txt, RSS,
+sitemaps, artículos, SSRF, allowlist de medios, jobs y endpoints se prueben de
 forma determinista y offline.
 """
 
@@ -31,16 +30,18 @@ from tests.conftest import FakeEngine, build_settings
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
-SITE = "https://eltiempo.com"
+SITE = "https://semana.com"
 ARTICLE_URL = f"{SITE}/2026/11/08/venezolanos-en-la-frontera-afrontan-nuevos-controles"
 ARTICLE_URL_2 = f"{SITE}/2026/11/07/migracion-venezolana-cifras-del-exodo"
 SHORT_URL = f"{SITE}/2026/11/06/nota-corta"
+NO_DATE_URL = f"{SITE}/2026/11/05/noticia-sin-fecha-en-la-pagina"
 MEXICO_SITE = "https://milenio.com"
 MEXICO_URL = f"{MEXICO_SITE}/2026/11/07/venezolanos-empleo-norte-mexico"
+CRONICA_SITE = "https://cronica.com.mx"
+CRONICA_URL = f"{CRONICA_SITE}/2026/11/08/migracion-venezolana-en-mexico"
 SITEMAP_ARTICLE = f"{SITE}/2026/11/08/venezolanos-llegan-a-bogota-tras-cruce"
-
-
-NO_DATE_URL = f"{SITE}/2026/11/05/noticia-sin-fecha-en-la-pagina"
+DISALLOWED_SITE = "https://eltiempo.com"
+DISALLOWED_ARTICLE = f"{DISALLOWED_SITE}/2026/11/08/noticia-no-autorizada"
 
 
 def fixture_text(name: str) -> str:
@@ -90,7 +91,7 @@ class FakeFetcher:
 
 
 def site_pages(*, robots: str = "robots_allow.txt", home: str = "home.html") -> dict[str, str]:
-    """Páginas de un sitio colombiano con feed y dos noticias."""
+    """Páginas de un sitio colombiano autorizado con feed y dos noticias."""
     return {
         f"{SITE}/robots.txt": fixture_text(robots),
         SITE: fixture_text(home),
@@ -229,14 +230,70 @@ def test_fetch_maps_connection_errors(tmp_path: Path):
 
 
 # ---------------------------------------------------------------------------
+# Allowlist de medios autorizados
+# ---------------------------------------------------------------------------
+def test_presets_only_allowed_media(client):
+    response = client.get("/v1/sources/presets")
+    assert response.status_code == 200
+    presets = response.json()
+    assert len(presets) == len(KNOWN_SITES) == 3
+    assert {
+        "id",
+        "name",
+        "domain",
+        "country",
+        "category",
+        "description",
+        "flag",
+        "logoText",
+        "accentColor",
+    } <= set(presets[0])
+    assert {preset["id"] for preset in presets} == {"semana", "milenio", "la-cronica"}
+    assert {preset["domain"] for preset in presets} == {
+        "semana.com",
+        "milenio.com",
+        "cronica.com.mx",
+    }
+    by_id = {preset["id"]: preset for preset in presets}
+    assert by_id["semana"]["country"] == "Colombia"
+    assert by_id["milenio"]["country"] == "México"
+    assert by_id["la-cronica"]["country"] == "México"
+
+
+def test_scan_rejects_disallowed_domain(tmp_path: Path):
+    app = build_sources_app(tmp_path, FakeFetcher(site_pages()))
+    try:
+        with TestClient(app) as client:
+            response = client.post("/v1/sources/scan", json={"url": DISALLOWED_SITE})
+        assert response.status_code == 422
+        assert response.json()["error"]["code"] == "domain_not_allowed"
+        assert "Semana" in response.json()["error"]["message"]
+    finally:
+        close_app_resources(app)
+
+
+def test_analyze_url_rejects_disallowed_domain(tmp_path: Path):
+    app = build_sources_app(tmp_path, FakeFetcher(site_pages()))
+    try:
+        with TestClient(app) as client:
+            response = client.post(
+                "/v1/sources/analyze-url", json={"url": DISALLOWED_ARTICLE}
+            )
+        assert response.status_code == 422
+        assert response.json()["error"]["code"] == "domain_not_allowed"
+    finally:
+        close_app_resources(app)
+
+
+# ---------------------------------------------------------------------------
 # Robots.txt
 # ---------------------------------------------------------------------------
 def test_robots_allows_discovery(settings):
     scraper = NewsScraper(settings, fetcher=FakeFetcher(site_pages()))
     discovery = scraper.discover(SITE, max_articles=2)
     assert discovery.source == "rss"
-    assert discovery.site_name == "El Tiempo"
-    assert discovery.domain == "eltiempo.com"
+    assert discovery.site_name == "Revista Semana"
+    assert discovery.domain == "semana.com"
     assert discovery.country == "Colombia"
     urls = [entry.url for entry in discovery.entries]
     assert ARTICLE_URL in urls
@@ -253,7 +310,7 @@ def test_robots_denied_raises_clear_error(settings):
     assert excinfo.value.code == "robots_denied"
     message = str(excinfo.value)
     assert "robots.txt" in message
-    assert "eltiempo.com" in message
+    assert "semana.com" in message
 
 
 def test_robots_can_be_ignored_per_request(settings):
@@ -315,7 +372,7 @@ def test_article_extraction(settings):
     assert article.title == "Venezolanos en la frontera afrontan nuevos controles"
     assert article.author == "María Fernanda Rojas"
     assert article.date == "2026-11-08"
-    assert article.media == "El Tiempo"
+    assert article.media == "Revista Semana"
     assert article.country == "Colombia"
     assert article.category == "Migración"
     assert article.canonical_url == ARTICLE_URL
@@ -392,29 +449,8 @@ def test_parse_atom_feed():
 
 
 # ---------------------------------------------------------------------------
-# Endpoints: presets, jobs y analyze-url
+# Endpoints: jobs y analyze-url
 # ---------------------------------------------------------------------------
-def test_presets(client):
-    response = client.get("/v1/sources/presets")
-    assert response.status_code == 200
-    presets = response.json()
-    assert len(presets) == len(KNOWN_SITES)
-    assert {
-        "id",
-        "name",
-        "domain",
-        "country",
-        "category",
-        "description",
-        "flag",
-        "logoText",
-        "accentColor",
-    } <= set(presets[0])
-    assert {preset["country"] for preset in presets} <= {"Colombia", "México"}
-    assert {"el-tiempo", "milenio", "reforma"} <= {preset["id"] for preset in presets}
-    assert presets[0]["flag"] in {"🇨🇴", "🇲🇽"}
-
-
 def test_scan_disabled_returns_503(client):
     response = client.post("/v1/sources/scan", json={"url": SITE})
     assert response.status_code == 503
@@ -460,8 +496,8 @@ def test_scan_job_completes_with_summary(tmp_path: Path):
     assert job["steps"][0]["totalSteps"] == 5
 
     summary = job["summary"]
-    assert summary["siteName"] == "El Tiempo"
-    assert summary["domain"] == "eltiempo.com"
+    assert summary["siteName"] == "Revista Semana"
+    assert summary["domain"] == "semana.com"
     assert summary["country"] == "Colombia"
     assert summary["totalAnalyzed"] == 2
     assert set(summary["averageSentiment"]) == {"negativo", "neutro", "positivo"}
@@ -514,7 +550,7 @@ def test_jobs_listing_is_summarized(tmp_path: Path):
         "updatedAt",
     }
     assert rows[0]["id"] == accepted["jobId"]
-    assert rows[0]["domain"] == "eltiempo.com"
+    assert rows[0]["domain"] == "semana.com"
     assert rows[0]["status"] == "completed"
 
 
@@ -589,7 +625,7 @@ def test_analyze_url_returns_article_with_analysis(tmp_path: Path):
     assert article["title"] == "Venezolanos en la frontera afrontan nuevos controles"
     assert article["url"] == ARTICLE_URL
     assert article["country"] == "Colombia"
-    assert article["media"] == "El Tiempo"
+    assert article["media"] == "Revista Semana"
     assert article["date"] == "2026-11-08"
     assert article["author"] == "María Fernanda Rojas"
     assert count_words(article["fullText"]) >= MIN_BODY_WORDS

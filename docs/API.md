@@ -406,40 +406,61 @@ sobrevive a reinicios del API.
 
 ### 4.1 `GET /v1/sources/presets`
 
-Catálogo de medios conocidos (`site_catalog.KNOWN_SITES`): 8 medios de Colombia
-y México. Response `200` — `SourcePreset[]`:
+Catálogo de medios autorizados para la ingesta (`site_catalog.KNOWN_SITES`): **3 medios** permitidos (Revista Semana, Milenio y La Crónica). Response `200` — `SourcePreset[]`:
 
 ```json
 [
   {
-    "id": "el-tiempo",
-    "name": "El Tiempo",
-    "domain": "eltiempo.com",
+    "id": "semana",
+    "name": "Revista Semana",
+    "domain": "semana.com",
     "country": "Colombia",
-    "category": "Prensa Escrita",
-    "description": "Diario de mayor circulación en Colombia. Cobertura nacional con énfasis en políticas públicas, frontera y convivencia urbana.",
+    "category": "Medio Digital",
+    "description": "Medio colombiano de análisis político y actualidad. En este proyecto se utiliza como fuente autorizada para la extracción y el análisis de noticias sobre migración venezolana.",
     "flag": "🇨🇴",
-    "logoText": "EL TIEMPO",
-    "accentColor": "#1e40af"
+    "logoText": "SEMANA",
+    "accentColor": "#dc2626"
+  },
+  {
+    "id": "milenio",
+    "name": "Milenio",
+    "domain": "milenio.com",
+    "country": "México",
+    "category": "Medio Digital",
+    "description": "Medio mexicano con cobertura nacional y regional. En este proyecto se utiliza como fuente autorizada para la extracción y el análisis de noticias sobre migración venezolana.",
+    "flag": "🇲🇽",
+    "logoText": "MILENIO",
+    "accentColor": "#1d4ed8"
+  },
+  {
+    "id": "la-cronica",
+    "name": "La Crónica",
+    "domain": "cronica.com.mx",
+    "country": "México",
+    "category": "Medio Digital",
+    "description": "Medio mexicano (La Crónica de Hoy) con cobertura informativa. En este proyecto se utiliza como fuente autorizada para la extracción y el análisis de noticias sobre migración venezolana.",
+    "flag": "🇲🇽",
+    "logoText": "LA CRÓNICA",
+    "accentColor": "#0f766e"
   }
 ]
 ```
 
 | Campo | Tipo | Descripción |
 | --- | --- | --- |
-| `id` | string | Identificador estable (`el-tiempo`, `semana`, `el-espectador`, `el-universal-mx`, `milenio`, `reforma`, `el-heraldo-co`, `la-jornada`). |
+| `id` | string | Identificador estable (`semana`, `milenio`, `la-cronica`). |
 | `name` | string | Nombre del medio. |
-| `domain` | string | Dominio (sin `www.`). |
+| `domain` | string | Dominio autorizado (sin `www.`). |
 | `country` | string | `Colombia` \| `México`. |
 | `category` | string | `Prensa Escrita` \| `Medio Digital` (mismas cadenas que el tipo `NewsSitePreset` del frontend). |
 | `description` | string | Texto descriptivo. |
 | `flag` | string | Emoji de bandera del país (`🇨🇴`/`🇲🇽`). |
-| `logoText` | string | Texto corto para el logo (p. ej. `"EL TIEMPO"`). |
-| `accentColor` | string | Color de acento en hex (p. ej. `"#1e40af"`). |
+| `logoText` | string | Texto corto para el logo. |
+| `accentColor` | string | Color de acento en hex. |
 
 > El único campo de `NewsSitePreset` que el API **no** envía es `articles`: los
 > artículos se obtienen de un escaneo real (`POST /v1/sources/scan`) o de
-> `POST /v1/sources/analyze-url`.
+> `POST /v1/sources/analyze-url`. La ingesta solo acepta URLs de los medios autorizados.
 
 ### 4.2 `POST /v1/sources/scan` → `202`
 
@@ -460,7 +481,7 @@ corre en un hilo del servidor.
 ```bash
 curl -s -X POST http://localhost:8000/v1/sources/scan \
   -H "Content-Type: application/json" \
-  -d '{"url":"https://www.eltiempo.com","maxArticles":4,"keywords":["migración","venezolanos"]}'
+  -d '{"url":"https://www.semana.com","maxArticles":4,"keywords":["migración","venezolanos"]}'
 ```
 
 #### Response `202` — `ScrapeAccepted`
@@ -474,7 +495,7 @@ curl -s -X POST http://localhost:8000/v1/sources/scan \
 }
 ```
 
-Códigos: `202`; `401`; `422` (`validation_error`, `invalid_max_articles`);
+Códigos: `202`; `401`; `422` (`validation_error`, `invalid_max_articles`, `domain_not_allowed` si la URL no pertenece a un medio autorizado);
 `429`; `503` (`scraper_disabled`).
 
 ### 4.3 `GET /v1/sources/jobs/{job_id}`
@@ -570,7 +591,7 @@ línea. Body: mismo `ScrapeRequest` de `/scan`, pero solo se usan `url`,
 ```bash
 curl -s -X POST http://localhost:8000/v1/sources/analyze-url \
   -H "Content-Type: application/json" \
-  -d '{"url":"https://www.eltiempo.com/colombia/seguridad-frontera"}'
+  -d '{"url":"https://www.semana.com/nacion/ejemplo-noticia-migracion"}'
 ```
 
 Response `200` — `NewsArticle` (con `preAnalyzedResult`):
@@ -608,7 +629,7 @@ Response `200` — `NewsArticle` (con `preAnalyzedResult`):
 | `preAnalyzedResult` | `TextAnalysisResult` \| null | Análisis completo (mismo contrato de `/v1/analyze`; `meta.source="scraper"`). |
 
 Códigos: `200`; `401`; `403` (`robots_denied`); `404` (`not_found` si la página
-remota devuelve 404); `422` (`invalid_url`, `url_blocked` — SSRF a IP
+remota devuelve 404); `422` (`invalid_url`, `domain_not_allowed` — URL fuera de los medios autorizados, `url_blocked` — SSRF a IP
 privada/loopback/link-local/metadata, `unresolvable_host`, `extraction_failed`
 —cuerpo con menos de 80 palabras o página sin texto—, `invalid_content`,
 `invalid_text`, `validation_error`); `429`; `503` (`scraper_disabled`,
@@ -1151,19 +1172,19 @@ curl -s -X POST http://localhost:8000/v1/analyze/batch \
   -H "Content-Type: application/json" \
   -d '{"items":[{"text":"La inseguridad preocupa."},{"text":"El empleo crece."}]}'
 
-# Presets y escaneo de un sitio
+# Presets y escaneo de un sitio (solo medios autorizados)
 curl -s http://localhost:8000/v1/sources/presets
 curl -s -X POST http://localhost:8000/v1/sources/scan \
   -H "Content-Type: application/json" \
-  -d '{"url":"https://www.eltiempo.com","maxArticles":4}'
+  -d '{"url":"https://www.semana.com","maxArticles":4}'
 
 # Polling del job (repetir hasta status completed/error)
 curl -s http://localhost:8000/v1/sources/jobs/job-3f2b9c1a77de
 
-# Una noticia concreta
+# Una noticia concreta (medio autorizado)
 curl -s -X POST http://localhost:8000/v1/sources/analyze-url \
   -H "Content-Type: application/json" \
-  -d '{"url":"https://www.eltiempo.com/colombia/seguridad-frontera"}'
+  -d '{"url":"https://www.semana.com/nacion/ejemplo-noticia-migracion"}'
 
 # Dashboard y monitoreo
 curl -s http://localhost:8000/v1/dashboard/overview
