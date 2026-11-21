@@ -32,3 +32,5 @@ api/.tmp_*.py
 
 api/api-*/
 api/tmp*
+
+api/torchinductor_*/

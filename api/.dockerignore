@@ -5,8 +5,10 @@ venv/
 
 # Datos y artefactos locales (se montan como volúmenes en docker-compose)
 data/
-artifacts/
 models/
+
+# Artefactos sí se incluyen en la imagen (evaluation.json y thresholds.json
+# alimentan /v1/dashboard/models sin necesidad de volúmenes).
 
 # Pruebas y cachés
 tests/
@@ -39,3 +41,6 @@ requirements-dev.txt
 README.md
 docker-compose.yml
 .dockerignore
+
+torchinductor_*/
+pytest-of-*/

@@ -9,7 +9,8 @@
 #
 #   docker build --build-arg INSTALL_MODELS=1 -t migra-nlp-api:models .
 #
-# Los pesos NO se copian en la imagen: se montan como volumen (ver docker-compose.yml).
+# Los pesos NO se copian en la imagen: se descargan al arrancar desde
+# NLP_MODELS_ARCHIVE_URL (Railway) o se montan como volumen (docker-compose).
 # =============================================================================
 
 ARG PYTHON_VERSION=3.12
@@ -46,7 +47,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     NLP_ENVIRONMENT=prod \
     NLP_DATABASE_PATH=/app/data/api.db \
     NLP_ARTIFACTS_DIR=/app/artifacts \
-    NLP_CORPUS_CSV_PATH=/app/corpus/dataset_migracion_venezolana_labeled.csv
+    NLP_CORPUS_CSV_PATH=/app/app/resources/corpus_labeled.csv \
+    NLP_MODELS_DIR=/app/models \
+    PORT=8000
 
 # Usuario sin privilegios (la imagen slim ya trae `useradd`).
 RUN groupadd --system app \
@@ -56,8 +59,9 @@ WORKDIR /app
 
 COPY --from=builder /opt/venv /opt/venv
 COPY app ./app
+COPY scripts ./scripts
 
-# Carpetas de escritura (SQLite, artefactos, pesos montados).
+# Carpetas de escritura (SQLite, artefactos, pesos montados/descargados).
 RUN mkdir -p /app/data /app/artifacts /app/models \
     && chown -R app:app /app
 
@@ -66,7 +70,10 @@ USER app
 EXPOSE 8000
 
 # `curl` no existe en python:*-slim: se usa la stdlib para el healthcheck.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-    CMD ["python", "-c", "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/v1/health', timeout=3).status == 200 else 1)"]
+# El puerto se lee de PORT para funcionar igual en local y en Railway/Render.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD ["python", "-c", "import os, sys, urllib.request; port=os.environ.get('PORT','8000'); sys.exit(0 if urllib.request.urlopen(f'http://127.0.0.1:{port}/v1/health', timeout=3).status == 200 else 1)"]
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# start.py descarga los pesos (si NLP_MODELS_ARCHIVE_URL está definida) y luego
+# arranca uvicorn honrando la variable PORT del proveedor.
+CMD ["python", "scripts/start.py"]

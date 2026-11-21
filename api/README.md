@@ -419,3 +419,14 @@ api/
 â”œâ”€â”€ Dockerfile / docker-compose.yml / .dockerignore
 â””â”€â”€ .env.example
 ```
+
+## Despliegue en la nube
+
+La API está preparada para desplegarse con Docker (Railway, Render, Hugging
+Face Spaces, Fly, etc.). Guía paso a paso: [docs/DEPLOY_RAILWAY.md](../docs/DEPLOY_RAILWAY.md)
+y alternativa gratis con BETO real: [docs/DEPLOY_HF_SPACES.md](../docs/DEPLOY_HF_SPACES.md).
+
+Modo rápido sin modelos: python scripts/start.py arranca el API con el motor
+léxico (siempre funciona). Modo BETO real: usar Dockerfile.models y
+NLP_MODELS_ARCHIVE_URL con el ZIP de los pesos.
+
