@@ -1,0 +1,7 @@
+# Dependencias para correr inferencia real con los modelos BETO.
+# Instalar con:  pip install -r api/requirements-models.txt
+# (CPU o GPU según el build de torch que corresponda a tu equipo)
+-r requirements.txt
+
+torch>=2.2
+transformers>=5.0,<6

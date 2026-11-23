@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: migra-venezuela-api
+    runtime: docker
+    dockerfilePath: ./src/cultural_bias/api/Dockerfile
+    dockerContext: ./src/cultural_bias/api
+    plan: free
+    region: oregon
+    healthCheckPath: /v1/health
+    autoDeploy: true
+    envVars:
+      - key: NLP_ENVIRONMENT
+        value: prod
+      - key: NLP_ENGINE
+        value: lexicon
+      - key: NLP_CORS_ORIGINS
+        value: '["*"]'
+      - key: NLP_DATABASE_PATH
+        value: /app/data/api.db
+      - key: NLP_LOG_LEVEL
+        value: INFO

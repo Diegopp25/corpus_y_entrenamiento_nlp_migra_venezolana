@@ -1,5 +1,23 @@
-urllib.robotparser
-argparse
-html
+# Extracción web
+requests
+beautifulsoup4
+playwright
+
+# Datos, preprocesamiento y modelado
+numpy
 pandas
+scikit-learn
 spacy
+torch
+transformers
+tqdm
+
+# Aplicación, etiquetado y notebooks
+gradio
+labelbox
+python-dotenv
+matplotlib
+ipykernel
+
+# Pruebas
+pytest

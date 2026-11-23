@@ -1,0 +1,9 @@
+{
+  "acceso_servicios": 0.65,
+  "transito_migratorio": 0.5,
+  "seguridad": 0.65,
+  "integracion_social": 0.5,
+  "politica_migratoria": 0.5,
+  "empleo_economia": 0.6,
+  "otros": 0.5
+}

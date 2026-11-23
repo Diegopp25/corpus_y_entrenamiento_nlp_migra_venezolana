@@ -1,0 +1,46 @@
+# Contexto de build = carpeta api/ (ver Dockerfile y docker-compose.yml)
+.venv/
+.venv*/
+venv/
+
+# Datos y artefactos locales (se montan como volúmenes en docker-compose)
+data/
+models/
+
+# Artefactos sí se incluyen en la imagen (evaluation.json y thresholds.json
+# alimentan /v1/dashboard/models sin necesidad de volúmenes).
+
+# Pruebas y cachés
+tests/
+.pytest_cache/
+pytest-of-diego/
+**/__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Basura de instalaciones locales de pip
+pip-*/
+pip-*.whl
+pip-unpack-*/
+pip-build-tracker-*/
+pip-ephem-wheel-cache-*/
+
+# Herramientas y metadatos del repo que no se necesitan en la imagen
+.git/
+.github/
+scripts/run_dev.ps1
+pyproject.toml
+requirements-dev.txt
+*.md
+README.md
+docker-compose.yml
+.dockerignore
+
+torchinductor_*/
+pytest-of-*/

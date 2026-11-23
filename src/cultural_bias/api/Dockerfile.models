@@ -1,0 +1,67 @@
+# =============================================================================
+# Variante con torch + transformers para desplegar los modelos BETO reales.
+#
+#   docker build -f Dockerfile.models -t migra-nlp-api:models .
+#
+# En Railway:
+#   1. Plan Hobby (o superior): los dos BETO en CPU necesitan ~2 GB de RAM.
+#   2. Variable RAILWAY_DOCKERFILE_PATH=Dockerfile.models
+#   3. Variable NLP_MODELS_ARCHIVE_URL=<ZIP con los dos modelos>
+#   4. Variable NLP_MODELS_DIR=/app/models  (o /data/models si usas volumen)
+#   5. Variable NLP_REQUIRE_MODELS=true     (fallar si no hay pesos)
+#
+# Mantener en sincronía con Dockerfile (solo cambia la instalación de deps).
+# =============================================================================
+
+ARG PYTHON_VERSION=3.12
+
+FROM python:${PYTHON_VERSION}-slim AS builder
+
+ENV PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /build
+
+COPY requirements.txt requirements-models.txt ./
+
+RUN python -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install --index-url https://download.pytorch.org/whl/cpu torch \
+    && /opt/venv/bin/pip install -r requirements-models.txt
+
+FROM python:${PYTHON_VERSION}-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    NLP_ENVIRONMENT=prod \
+    NLP_DATABASE_PATH=/app/data/api.db \
+    NLP_ARTIFACTS_DIR=/app/artifacts \
+    NLP_CORPUS_CSV_PATH=/app/app/resources/corpus_labeled.csv \
+    NLP_MODELS_DIR=/app/models \
+    NLP_ENGINE=bert_pair \
+    NLP_DEVICE=cpu \
+    PORT=8000
+
+RUN groupadd --system app \
+    && useradd --system --gid app --home-dir /app --shell /usr/sbin/nologin app
+
+WORKDIR /app
+
+COPY --from=builder /opt/venv /opt/venv
+COPY app ./app
+COPY scripts ./scripts
+COPY artifacts ./artifacts
+
+RUN mkdir -p /app/data /app/artifacts /app/models \
+    && chown -R app:app /app
+
+USER app
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
+    CMD ["python", "-c", "import os, sys, urllib.request; port=os.environ.get('PORT','8000'); sys.exit(0 if urllib.request.urlopen(f'http://127.0.0.1:{port}/v1/health', timeout=5).status == 200 else 1)"]
+
+CMD ["python", "scripts/start.py"]

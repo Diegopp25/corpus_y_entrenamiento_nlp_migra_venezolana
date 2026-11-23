@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>El Tiempo - Migración</title>
+    <link>https://eltiempo.com</link>
+    <description>Noticias de migración y frontera</description>
+    <item>
+      <title>Venezolanos en la frontera afrontan nuevos controles</title>
+      <link>https://eltiempo.com/2026/11/08/venezolanos-en-la-frontera-afrontan-nuevos-controles</link>
+      <pubDate>Sun, 08 Nov 2026 10:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Migración venezolana: cifras del éxodo en Colombia</title>
+      <link>https://eltiempo.com/2026/11/07/migracion-venezolana-cifras-del-exodo</link>
+      <pubDate>Sat, 07 Nov 2026 09:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Fútbol colombiano: nueva jornada del campeonato</title>
+      <link>https://eltiempo.com/2026/11/06/futbol-colombiano-nueva-jornada</link>
+      <pubDate>Fri, 06 Nov 2026 09:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Régimen de Maduro anuncia nuevas medidas económicas</title>
+      <link>https://eltiempo.com/2026/11/05/regimen-de-maduro-anuncia-medidas</link>
+      <pubDate>Thu, 05 Nov 2026 09:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

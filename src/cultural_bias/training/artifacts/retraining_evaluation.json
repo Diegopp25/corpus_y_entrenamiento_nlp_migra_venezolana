@@ -1,0 +1,4414 @@
+{
+  "generated_at": "2026-11-09T20:34:19+00:00",
+  "elapsed_seconds": 1691.6,
+  "config": {
+    "folds": 5,
+    "epochs": 1,
+    "max_len": 256,
+    "batch_size": 8,
+    "eval_batch_size": 16,
+    "lr": 2e-05,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.1,
+    "patience": 2,
+    "max_pos_weight": 20.0,
+    "val_fraction": 0.2,
+    "seed": 42,
+    "num_threads": 8,
+    "device": "cpu",
+    "threshold_grid": {
+      "min": 0.2,
+      "max": 0.8,
+      "step": 0.05,
+      "precision_floor": 0.5
+    },
+    "sent_model_dir": "C:\\Users\\diego\\Desktop\\proyecto\\modelo_sentimiento",
+    "frames_model_dir": "C:\\Users\\diego\\Desktop\\proyecto\\modelo_encuadre",
+    "data": [
+      "C:\\Users\\diego\\Documents\\deepseek-harness\\default-workspace\\migra-nlp-training\\Data\\dataset_balanced.csv",
+      "C:\\Users\\diego\\Documents\\deepseek-harness\\default-workspace\\migra-nlp-training\\Data\\dataset_migracion_venezolana_labeled.csv"
+    ]
+  },
+  "data": {
+    "archivos": {
+      "dataset_balanced.csv": 237,
+      "dataset_migracion_venezolana_labeled.csv": 156
+    },
+    "filas_leidas": 393,
+    "duplicados_texto_eliminados": 237,
+    "grupos_duplicados_con_etiquetas_en_conflicto": 0,
+    "articulos_unicos": 156,
+    "muestra_por_archivo_tras_dedup": {
+      "dataset_balanced": 116,
+      "dataset_migracion_venezolana_labeled": 40
+    },
+    "sentimiento": {
+      "Negativo": 44,
+      "Neutro": 79,
+      "Positivo": 33
+    },
+    "por_pais": {
+      "México": 79,
+      "Colombia": 77
+    },
+    "sentimiento_por_pais": {
+      "Negativo": {
+        "Colombia": 16,
+        "México": 28
+      },
+      "Neutro": {
+        "Colombia": 34,
+        "México": 45
+      },
+      "Positivo": {
+        "Colombia": 27,
+        "México": 6
+      }
+    },
+    "encuadres_soporte": {
+      "acceso_servicios": 45,
+      "transito_migratorio": 53,
+      "seguridad": 40,
+      "integracion_social": 27,
+      "politica_migratoria": 98,
+      "empleo_economia": 29,
+      "otros": 12
+    },
+    "encuadres_porcentaje": {
+      "acceso_servicios": 28.85,
+      "transito_migratorio": 33.97,
+      "seguridad": 25.64,
+      "integracion_social": 17.31,
+      "politica_migratoria": 62.82,
+      "empleo_economia": 18.59,
+      "otros": 7.69
+    },
+    "encuadres_por_articulo": {
+      "1": 55,
+      "2": 63,
+      "3": 30,
+      "4": 7,
+      "5": 1
+    }
+  },
+  "procedimiento": {
+    "corpus": "Se cargan los CSV con utf-8-sig, se validan etiquetas y se deduplica por texto. dataset_balanced.csv solo aporta 116 artículos únicos (79/79/79 es oversampling con reemplazo); el corpus único final es de 156 artículos.",
+    "cv": "StratifiedKFold por sentimiento. De cada fold se aparta un test intacto; el resto se divide train/validación (estratificado). El early stopping usa macro-F1 de validación y los umbrales de encuadres se eligen SOLO con validación; las métricas reportadas salen del test de cada fold.",
+    "balanceo": "sentimiento: CrossEntropyLoss ponderada (class_weight='balanced'); encuadres: BCEWithLogitsLoss con pos_weight=negativos/positivos por etiqueta (topado en max_pos_weight).",
+    "baseline": "Los checkpoints actuales de Desktop se evalúan en los mismos folds de test y con el mismo max_len que los reentrenados. Sus umbrales también se eligen con la validación de cada fold.",
+    "limitacion_principal": "Los checkpoints base ya fueron entrenados con este corpus, así que los pesos iniciales están contaminados: la CV mide la ganancia de reajustar/balancear, no el rendimiento de un modelo entrenado desde cero. El baseline tiene la misma contaminación, por lo que el delta sigue siendo comparable."
+  },
+  "cv": {
+    "n_folds": 5,
+    "sentiment": {
+      "accuracy": {
+        "mean": 0.551008,
+        "std": 0.10813,
+        "n": 5
+      },
+      "macro_f1": {
+        "mean": 0.530534,
+        "std": 0.091851,
+        "n": 5
+      },
+      "macro_precision": {
+        "mean": 0.594908,
+        "std": 0.080741,
+        "n": 5
+      },
+      "macro_recall": {
+        "mean": 0.575,
+        "std": 0.083753,
+        "n": 5
+      },
+      "per_class": {
+        "Negativo": {
+          "precision": {
+            "mean": 0.567216,
+            "std": 0.169621,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.475,
+            "std": 0.207963,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.499724,
+            "std": 0.149607,
+            "n": 5
+          }
+        },
+        "Neutro": {
+          "precision": {
+            "mean": 0.837222,
+            "std": 0.141361,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.516667,
+            "std": 0.222634,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.604297,
+            "std": 0.150033,
+            "n": 5
+          }
+        },
+        "Positivo": {
+          "precision": {
+            "mean": 0.380284,
+            "std": 0.088786,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.733333,
+            "std": 0.179284,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.487583,
+            "std": 0.091562,
+            "n": 5
+          }
+        }
+      },
+      "confusion_matrix_sum": {
+        "labels": [
+          "Negativo",
+          "Neutro",
+          "Positivo"
+        ],
+        "matrix": [
+          [
+            21,
+            7,
+            16
+          ],
+          [
+            12,
+            41,
+            26
+          ],
+          [
+            5,
+            4,
+            24
+          ]
+        ]
+      }
+    },
+    "sentiment_baseline": {
+      "accuracy": {
+        "mean": 0.635081,
+        "std": 0.042911,
+        "n": 5
+      },
+      "macro_f1": {
+        "mean": 0.589998,
+        "std": 0.051237,
+        "n": 5
+      },
+      "macro_precision": {
+        "mean": 0.684364,
+        "std": 0.099477,
+        "n": 5
+      },
+      "macro_recall": {
+        "mean": 0.611389,
+        "std": 0.04309,
+        "n": 5
+      },
+      "per_class": {
+        "Negativo": {
+          "precision": {
+            "mean": 0.494118,
+            "std": 0.013153,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.866667,
+            "std": 0.121716,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.626551,
+            "std": 0.026204,
+            "n": 5
+          }
+        },
+        "Neutro": {
+          "precision": {
+            "mean": 0.808974,
+            "std": 0.083629,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.634167,
+            "std": 0.061689,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.710746,
+            "std": 0.069661,
+            "n": 5
+          }
+        },
+        "Positivo": {
+          "precision": {
+            "mean": 0.75,
+            "std": 0.259808,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.333333,
+            "std": 0.131492,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.432698,
+            "std": 0.126624,
+            "n": 5
+          }
+        }
+      },
+      "confusion_matrix_sum": {
+        "labels": [
+          "Negativo",
+          "Neutro",
+          "Positivo"
+        ],
+        "matrix": [
+          [
+            38,
+            5,
+            1
+          ],
+          [
+            24,
+            50,
+            5
+          ],
+          [
+            15,
+            7,
+            11
+          ]
+        ]
+      }
+    },
+    "frames": {
+      "acceso_servicios": {
+        "support_mean": {
+          "mean": 9.0,
+          "std": 0.707107,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.539091,
+            "std": 0.12935,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.457222,
+            "std": 0.275348,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.44303,
+            "std": 0.162883,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.609679,
+            "std": 0.267416,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.523889,
+            "std": 0.278191,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.458974,
+            "std": 0.15344,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.5,
+          "std": 0.035355,
+          "n": 5
+        },
+        "threshold_values": [
+          0.5,
+          0.55,
+          0.45,
+          0.5,
+          0.5
+        ]
+      },
+      "transito_migratorio": {
+        "support_mean": {
+          "mean": 10.6,
+          "std": 2.607681,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.470308,
+            "std": 0.164386,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.732857,
+            "std": 0.268005,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.541955,
+            "std": 0.177602,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.476422,
+            "std": 0.132788,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.755714,
+            "std": 0.179028,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.563914,
+            "std": 0.076732,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.5,
+          "std": 0.079057,
+          "n": 5
+        },
+        "threshold_values": [
+          0.55,
+          0.6,
+          0.45,
+          0.4,
+          0.5
+        ]
+      },
+      "seguridad": {
+        "support_mean": {
+          "mean": 8.0,
+          "std": 2.54951,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.344805,
+            "std": 0.223182,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.549242,
+            "std": 0.343091,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.402107,
+            "std": 0.238256,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.404444,
+            "std": 0.379213,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.370707,
+            "std": 0.383033,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.367675,
+            "std": 0.340163,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.55,
+          "std": 0.079057,
+          "n": 5
+        },
+        "threshold_values": [
+          0.45,
+          0.65,
+          0.6,
+          0.55,
+          0.5
+        ]
+      },
+      "integracion_social": {
+        "support_mean": {
+          "mean": 5.4,
+          "std": 1.81659,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.412302,
+            "std": 0.234145,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.655,
+            "std": 0.209795,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.442445,
+            "std": 0.137203,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.185635,
+            "std": 0.109623,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.655,
+            "std": 0.393859,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.28689,
+            "std": 0.167104,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.5,
+          "std": 0.035355,
+          "n": 5
+        },
+        "threshold_values": [
+          0.5,
+          0.45,
+          0.55,
+          0.5,
+          0.5
+        ]
+      },
+      "politica_migratoria": {
+        "support_mean": {
+          "mean": 19.6,
+          "std": 2.880972,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.66263,
+            "std": 0.096496,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.972727,
+            "std": 0.060984,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.78276,
+            "std": 0.06116,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.67512,
+            "std": 0.094785,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.947727,
+            "std": 0.055438,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.784656,
+            "std": 0.067163,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.52,
+          "std": 0.057009,
+          "n": 5
+        },
+        "threshold_values": [
+          0.55,
+          0.5,
+          0.5,
+          0.45,
+          0.6
+        ]
+      },
+      "empleo_economia": {
+        "support_mean": {
+          "mean": 5.8,
+          "std": 2.774887,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.267838,
+            "std": 0.049121,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.79,
+            "std": 0.31305,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.384604,
+            "std": 0.096346,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.238095,
+            "std": 0.137034,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.483333,
+            "std": 0.356682,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.310451,
+            "std": 0.192776,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.54,
+          "std": 0.041833,
+          "n": 5
+        },
+        "threshold_values": [
+          0.5,
+          0.5,
+          0.6,
+          0.55,
+          0.55
+        ]
+      },
+      "otros": {
+        "support_mean": {
+          "mean": 2.4,
+          "std": 0.894427,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.165476,
+            "std": 0.168169,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.533333,
+            "std": 0.505525,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.246234,
+            "std": 0.242898,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.165476,
+            "std": 0.168169,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.533333,
+            "std": 0.505525,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.246234,
+            "std": 0.242898,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.49,
+          "std": 0.022361,
+          "n": 5
+        },
+        "threshold_values": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.45
+        ]
+      }
+    },
+    "frames_baseline": {
+      "acceso_servicios": {
+        "support_mean": {
+          "mean": 9.0,
+          "std": 0.707107,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.57873,
+            "std": 0.061184,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.439444,
+            "std": 0.150519,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.483492,
+            "std": 0.105598,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.525397,
+            "std": 0.078999,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.572778,
+            "std": 0.197832,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.52717,
+            "std": 0.065522,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.49,
+          "std": 0.022361,
+          "n": 5
+        }
+      },
+      "transito_migratorio": {
+        "support_mean": {
+          "mean": 10.6,
+          "std": 2.607681,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.457922,
+            "std": 0.066539,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.715714,
+            "std": 0.020454,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.556746,
+            "std": 0.053704,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.449088,
+            "std": 0.087269,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.648571,
+            "std": 0.187519,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.512275,
+            "std": 0.064412,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.51,
+          "std": 0.041833,
+          "n": 5
+        }
+      },
+      "seguridad": {
+        "support_mean": {
+          "mean": 8.0,
+          "std": 2.54951,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.347696,
+            "std": 0.144235,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.657828,
+            "std": 0.111054,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.445788,
+            "std": 0.155305,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.453333,
+            "std": 0.287325,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.389646,
+            "std": 0.319751,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.384091,
+            "std": 0.270904,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.56,
+          "std": 0.041833,
+          "n": 5
+        }
+      },
+      "integracion_social": {
+        "support_mean": {
+          "mean": 5.4,
+          "std": 1.81659,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.2,
+            "std": 0.298142,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.105,
+            "std": 0.173566,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.136364,
+            "std": 0.217992,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.18381,
+            "std": 0.168682,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.278333,
+            "std": 0.328908,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.196364,
+            "std": 0.200165,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.49,
+          "std": 0.041833,
+          "n": 5
+        }
+      },
+      "politica_migratoria": {
+        "support_mean": {
+          "mean": 19.6,
+          "std": 2.880972,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.712438,
+            "std": 0.063834,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.83884,
+            "std": 0.051685,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.76771,
+            "std": 0.033571,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.671106,
+            "std": 0.098476,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.972294,
+            "std": 0.025307,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.789564,
+            "std": 0.062203,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.44,
+          "std": 0.022361,
+          "n": 5
+        }
+      },
+      "empleo_economia": {
+        "support_mean": {
+          "mean": 5.8,
+          "std": 2.774887,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.36,
+            "std": 0.497996,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.12,
+            "std": 0.178885,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.173333,
+            "std": 0.247656,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.263333,
+            "std": 0.282941,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.333333,
+            "std": 0.319722,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.287854,
+            "std": 0.286909,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.46,
+          "std": 0.022361,
+          "n": 5
+        }
+      },
+      "otros": {
+        "support_mean": {
+          "mean": 2.4,
+          "std": 0.894427,
+          "n": 5
+        },
+        "at_0.5": {
+          "precision": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 5
+          }
+        },
+        "tuned": {
+          "precision": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 5
+          },
+          "recall": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 5
+          },
+          "f1": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 5
+          }
+        },
+        "threshold_fold": {
+          "mean": 0.48,
+          "std": 0.044721,
+          "n": 5
+        }
+      }
+    },
+    "frames_macro": {
+      "at_0.5": {
+        "precision": {
+          "mean": 0.408921,
+          "std": 0.075034,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.670055,
+          "std": 0.048882,
+          "n": 5
+        },
+        "f1": {
+          "mean": 0.463305,
+          "std": 0.049812,
+          "n": 5
+        }
+      },
+      "tuned": {
+        "precision": {
+          "mean": 0.393553,
+          "std": 0.128598,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.609958,
+          "std": 0.066437,
+          "n": 5
+        },
+        "f1": {
+          "mean": 0.431256,
+          "std": 0.09912,
+          "n": 5
+        }
+      }
+    },
+    "frames_macro_baseline": {
+      "at_0.5": {
+        "precision": {
+          "mean": 0.379541,
+          "std": 0.0673,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.410975,
+          "std": 0.032883,
+          "n": 5
+        },
+        "f1": {
+          "mean": 0.366205,
+          "std": 0.047514,
+          "n": 5
+        }
+      },
+      "tuned": {
+        "precision": {
+          "mean": 0.363724,
+          "std": 0.080972,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.456422,
+          "std": 0.056943,
+          "n": 5
+        },
+        "f1": {
+          "mean": 0.385331,
+          "std": 0.071475,
+          "n": 5
+        }
+      }
+    },
+    "delta": {
+      "sentiment_accuracy": {
+        "metric": "accuracy",
+        "mean_delta": {
+          "mean": -0.084073,
+          "std": 0.130012,
+          "n": 5
+        },
+        "folds_improved": 2,
+        "folds_total": 5,
+        "per_fold": [
+          0.03125,
+          -0.225806,
+          0.064516,
+          -0.096774,
+          -0.193548
+        ]
+      },
+      "sentiment_macro_f1": {
+        "metric": "macro_f1",
+        "mean_delta": {
+          "mean": -0.059464,
+          "std": 0.126956,
+          "n": 5
+        },
+        "folds_improved": 2,
+        "folds_total": 5,
+        "per_fold": [
+          0.045971,
+          -0.186688,
+          0.057186,
+          -0.009266,
+          -0.204523
+        ]
+      },
+      "frames_macro_f1_at_0.5": {
+        "metric": "frames_macro_f1@0.5",
+        "mean_delta": {
+          "mean": 0.0971,
+          "std": 0.05253,
+          "n": 5
+        },
+        "folds_improved": 5,
+        "folds_total": 5,
+        "per_fold": [
+          0.08709,
+          0.051811,
+          0.179988,
+          0.111902,
+          0.05471
+        ]
+      },
+      "frames_macro_f1_tuned": {
+        "metric": "frames_macro_f1_umbrales",
+        "mean_delta": {
+          "mean": 0.045925,
+          "std": 0.078981,
+          "n": 5
+        },
+        "folds_improved": 4,
+        "folds_total": 5,
+        "per_fold": [
+          0.117546,
+          -0.054878,
+          0.004767,
+          0.133504,
+          0.028687
+        ]
+      }
+    }
+  },
+  "final_thresholds": {
+    "acceso_servicios": 0.5,
+    "transito_migratorio": 0.5,
+    "seguridad": 0.5,
+    "integracion_social": 0.5,
+    "politica_migratoria": 0.5,
+    "empleo_economia": 0.5,
+    "otros": 0.5
+  },
+  "final_thresholds_validation_meta": {
+    "acceso_servicios": {
+      "threshold": 0.65,
+      "fallback": false,
+      "precision_validacion": 1.0,
+      "f1_validacion": 0.102564,
+      "support": 37
+    },
+    "transito_migratorio": {
+      "threshold": 0.5,
+      "fallback": false,
+      "precision_validacion": 0.584615,
+      "f1_validacion": 0.655172,
+      "support": 51
+    },
+    "seguridad": {
+      "threshold": 0.65,
+      "fallback": false,
+      "precision_validacion": 0.666667,
+      "f1_validacion": 0.228571,
+      "support": 29
+    },
+    "integracion_social": {
+      "threshold": 0.5,
+      "fallback": true,
+      "reason": "ningun_umbral_alcanza_piso_precision",
+      "precision_floor": 0.5,
+      "max_precision_observada": 0.219512,
+      "threshold_max_precision": 0.45,
+      "support": 20
+    },
+    "politica_migratoria": {
+      "threshold": 0.5,
+      "fallback": false,
+      "precision_validacion": 0.672269,
+      "f1_validacion": 0.8,
+      "support": 81
+    },
+    "empleo_economia": {
+      "threshold": 0.6,
+      "fallback": false,
+      "precision_validacion": 0.75,
+      "f1_validacion": 0.363636,
+      "support": 25
+    },
+    "otros": {
+      "threshold": 0.5,
+      "fallback": true,
+      "reason": "ningun_umbral_alcanza_piso_precision",
+      "precision_floor": 0.5,
+      "max_precision_observada": 0.176471,
+      "threshold_max_precision": 0.5,
+      "support": 9
+    }
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "n_train": 99,
+      "n_val": 25,
+      "n_test": 32,
+      "sentiment_test": {
+        "accuracy": 0.59375,
+        "macro_f1": 0.566877,
+        "macro_precision": 0.584656,
+        "macro_recall": 0.557209,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.714286,
+            "recall": 0.555556,
+            "f1": 0.625,
+            "support": 9
+          },
+          "Neutro": {
+            "precision": 0.611111,
+            "recall": 0.6875,
+            "f1": 0.647059,
+            "support": 16
+          },
+          "Positivo": {
+            "precision": 0.428571,
+            "recall": 0.428571,
+            "f1": 0.428571,
+            "support": 7
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              5,
+              4,
+              0
+            ],
+            [
+              1,
+              11,
+              4
+            ],
+            [
+              1,
+              3,
+              3
+            ]
+          ]
+        },
+        "support": 32
+      },
+      "sentiment_test_baseline": {
+        "accuracy": 0.5625,
+        "macro_f1": 0.520906,
+        "macro_precision": 0.530769,
+        "macro_recall": 0.541997,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.5,
+            "recall": 0.777778,
+            "f1": 0.608696,
+            "support": 9
+          },
+          "Neutro": {
+            "precision": 0.692308,
+            "recall": 0.5625,
+            "f1": 0.62069,
+            "support": 16
+          },
+          "Positivo": {
+            "precision": 0.4,
+            "recall": 0.285714,
+            "f1": 0.333333,
+            "support": 7
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              7,
+              2,
+              0
+            ],
+            [
+              4,
+              9,
+              3
+            ],
+            [
+              3,
+              2,
+              2
+            ]
+          ]
+        },
+        "support": 32
+      },
+      "frames_test_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.75,
+            "recall": 0.375,
+            "f1": 0.5,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 4
+          },
+          "transito_migratorio": {
+            "precision": 0.588235,
+            "recall": 0.714286,
+            "f1": 0.645161,
+            "support": 14,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "seguridad": {
+            "precision": 0.5,
+            "recall": 0.454545,
+            "f1": 0.47619,
+            "support": 11,
+            "threshold": 0.5,
+            "predicted_positives": 10
+          },
+          "integracion_social": {
+            "precision": 0.222222,
+            "recall": 0.8,
+            "f1": 0.347826,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 18
+          },
+          "politica_migratoria": {
+            "precision": 0.733333,
+            "recall": 1.0,
+            "f1": 0.846154,
+            "support": 22,
+            "threshold": 0.5,
+            "predicted_positives": 30
+          },
+          "empleo_economia": {
+            "precision": 0.25,
+            "recall": 0.25,
+            "f1": 0.25,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 4
+          },
+          "otros": {
+            "precision": 0.285714,
+            "recall": 0.666667,
+            "f1": 0.4,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 7
+          }
+        },
+        "macro_precision": 0.475644,
+        "macro_recall": 0.608643,
+        "macro_f1": 0.495047,
+        "micro_f1": 0.598726,
+        "support": 32
+      },
+      "frames_test_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.75,
+            "recall": 0.375,
+            "f1": 0.5,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 4
+          },
+          "transito_migratorio": {
+            "precision": 0.666667,
+            "recall": 0.571429,
+            "f1": 0.615385,
+            "support": 14,
+            "threshold": 0.55,
+            "predicted_positives": 12
+          },
+          "seguridad": {
+            "precision": 0.555556,
+            "recall": 0.909091,
+            "f1": 0.689655,
+            "support": 11,
+            "threshold": 0.45,
+            "predicted_positives": 18
+          },
+          "integracion_social": {
+            "precision": 0.222222,
+            "recall": 0.8,
+            "f1": 0.347826,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 18
+          },
+          "politica_migratoria": {
+            "precision": 0.740741,
+            "recall": 0.909091,
+            "f1": 0.816327,
+            "support": 22,
+            "threshold": 0.55,
+            "predicted_positives": 27
+          },
+          "empleo_economia": {
+            "precision": 0.25,
+            "recall": 0.25,
+            "f1": 0.25,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 4
+          },
+          "otros": {
+            "precision": 0.285714,
+            "recall": 0.666667,
+            "f1": 0.4,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 7
+          }
+        },
+        "macro_precision": 0.495843,
+        "macro_recall": 0.640182,
+        "macro_f1": 0.517027,
+        "micro_f1": 0.611465,
+        "support": 32
+      },
+      "frames_test_baseline_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.5,
+            "recall": 0.375,
+            "f1": 0.428571,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 6
+          },
+          "transito_migratorio": {
+            "precision": 0.526316,
+            "recall": 0.714286,
+            "f1": 0.606061,
+            "support": 14,
+            "threshold": 0.5,
+            "predicted_positives": 19
+          },
+          "seguridad": {
+            "precision": 0.466667,
+            "recall": 0.636364,
+            "f1": 0.538462,
+            "support": 11,
+            "threshold": 0.5,
+            "predicted_positives": 15
+          },
+          "integracion_social": {
+            "precision": 0.666667,
+            "recall": 0.4,
+            "f1": 0.5,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.75,
+            "recall": 0.818182,
+            "f1": 0.782609,
+            "support": 22,
+            "threshold": 0.5,
+            "predicted_positives": 24
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.415664,
+        "macro_recall": 0.420547,
+        "macro_f1": 0.407957,
+        "micro_f1": 0.597015,
+        "support": 32
+      },
+      "frames_test_baseline_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.5,
+            "recall": 0.375,
+            "f1": 0.428571,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 6
+          },
+          "transito_migratorio": {
+            "precision": 0.526316,
+            "recall": 0.714286,
+            "f1": 0.606061,
+            "support": 14,
+            "threshold": 0.5,
+            "predicted_positives": 19
+          },
+          "seguridad": {
+            "precision": 0.5,
+            "recall": 0.545455,
+            "f1": 0.521739,
+            "support": 11,
+            "threshold": 0.55,
+            "predicted_positives": 12
+          },
+          "integracion_social": {
+            "precision": 0.3,
+            "recall": 0.6,
+            "f1": 0.4,
+            "support": 5,
+            "threshold": 0.45,
+            "predicted_positives": 10
+          },
+          "politica_migratoria": {
+            "precision": 0.75,
+            "recall": 0.954545,
+            "f1": 0.84,
+            "support": 22,
+            "threshold": 0.45,
+            "predicted_positives": 28
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 4,
+            "threshold": 0.45,
+            "predicted_positives": 4
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.368045,
+        "macro_recall": 0.455612,
+        "macro_f1": 0.399482,
+        "micro_f1": 0.589041,
+        "support": 32
+      },
+      "frames_test_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.75,
+            "recall": 0.375,
+            "f1": 0.5,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 4
+          },
+          "transito_migratorio": {
+            "precision": 0.588235,
+            "recall": 0.714286,
+            "f1": 0.645161,
+            "support": 14,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "seguridad": {
+            "precision": 0.5,
+            "recall": 0.454545,
+            "f1": 0.47619,
+            "support": 11,
+            "threshold": 0.5,
+            "predicted_positives": 10
+          },
+          "integracion_social": {
+            "precision": 0.222222,
+            "recall": 0.8,
+            "f1": 0.347826,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 18
+          },
+          "politica_migratoria": {
+            "precision": 0.733333,
+            "recall": 1.0,
+            "f1": 0.846154,
+            "support": 22,
+            "threshold": 0.45,
+            "predicted_positives": 30
+          },
+          "empleo_economia": {
+            "precision": 0.25,
+            "recall": 0.25,
+            "f1": 0.25,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 4
+          },
+          "otros": {
+            "precision": 0.285714,
+            "recall": 0.666667,
+            "f1": 0.4,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 7
+          }
+        },
+        "macro_precision": 0.475644,
+        "macro_recall": 0.608643,
+        "macro_f1": 0.495047,
+        "micro_f1": 0.598726,
+        "support": 32
+      },
+      "frames_test_baseline_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.5,
+            "recall": 0.375,
+            "f1": 0.428571,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 6
+          },
+          "transito_migratorio": {
+            "precision": 0.526316,
+            "recall": 0.714286,
+            "f1": 0.606061,
+            "support": 14,
+            "threshold": 0.5,
+            "predicted_positives": 19
+          },
+          "seguridad": {
+            "precision": 0.466667,
+            "recall": 0.636364,
+            "f1": 0.538462,
+            "support": 11,
+            "threshold": 0.5,
+            "predicted_positives": 15
+          },
+          "integracion_social": {
+            "precision": 0.666667,
+            "recall": 0.4,
+            "f1": 0.5,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.75,
+            "recall": 0.954545,
+            "f1": 0.84,
+            "support": 22,
+            "threshold": 0.45,
+            "predicted_positives": 28
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.415664,
+        "macro_recall": 0.440028,
+        "macro_f1": 0.416156,
+        "micro_f1": 0.623188,
+        "support": 32
+      },
+      "thresholds_validation": {
+        "acceso_servicios": 0.5,
+        "transito_migratorio": 0.55,
+        "seguridad": 0.45,
+        "integracion_social": 0.5,
+        "politica_migratoria": 0.55,
+        "empleo_economia": 0.5,
+        "otros": 0.5
+      },
+      "baseline_thresholds_validation": {
+        "acceso_servicios": 0.5,
+        "transito_migratorio": 0.5,
+        "seguridad": 0.55,
+        "integracion_social": 0.45,
+        "politica_migratoria": 0.45,
+        "empleo_economia": 0.45,
+        "otros": 0.5
+      },
+      "early_stopping": {
+        "sentiment_best_val_macro_f1": 0.747824,
+        "frames_best_val_macro_f1_at_0.5": 0.632867
+      }
+    },
+    {
+      "fold": 2,
+      "n_train": 100,
+      "n_val": 25,
+      "n_test": 31,
+      "sentiment_test": {
+        "accuracy": 0.451613,
+        "macro_f1": 0.454482,
+        "macro_precision": 0.542484,
+        "macro_recall": 0.497354,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.5,
+            "recall": 0.444444,
+            "f1": 0.470588,
+            "support": 9
+          },
+          "Neutro": {
+            "precision": 0.833333,
+            "recall": 0.333333,
+            "f1": 0.47619,
+            "support": 15
+          },
+          "Positivo": {
+            "precision": 0.294118,
+            "recall": 0.714286,
+            "f1": 0.416667,
+            "support": 7
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              4,
+              1,
+              4
+            ],
+            [
+              2,
+              5,
+              8
+            ],
+            [
+              2,
+              0,
+              5
+            ]
+          ]
+        },
+        "support": 31
+      },
+      "sentiment_test_baseline": {
+        "accuracy": 0.677419,
+        "macro_f1": 0.64117,
+        "macro_precision": 0.672222,
+        "macro_recall": 0.646561,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.5,
+            "recall": 0.777778,
+            "f1": 0.608696,
+            "support": 9
+          },
+          "Neutro": {
+            "precision": 0.916667,
+            "recall": 0.733333,
+            "f1": 0.814815,
+            "support": 15
+          },
+          "Positivo": {
+            "precision": 0.6,
+            "recall": 0.428571,
+            "f1": 0.5,
+            "support": 7
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              7,
+              1,
+              1
+            ],
+            [
+              3,
+              11,
+              1
+            ],
+            [
+              4,
+              0,
+              3
+            ]
+          ]
+        },
+        "support": 31
+      },
+      "frames_test_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.5,
+            "recall": 0.333333,
+            "f1": 0.4,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 6
+          },
+          "transito_migratorio": {
+            "precision": 0.225806,
+            "recall": 1.0,
+            "f1": 0.368421,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 31
+          },
+          "seguridad": {
+            "precision": 0.25,
+            "recall": 0.875,
+            "f1": 0.388889,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 28
+          },
+          "integracion_social": {
+            "precision": 0.666667,
+            "recall": 0.666667,
+            "f1": 0.666667,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.7,
+            "recall": 1.0,
+            "f1": 0.823529,
+            "support": 21,
+            "threshold": 0.5,
+            "predicted_positives": 30
+          },
+          "empleo_economia": {
+            "precision": 0.321429,
+            "recall": 0.9,
+            "f1": 0.473684,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 28
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 2,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.380557,
+        "macro_recall": 0.682143,
+        "macro_f1": 0.445884,
+        "micro_f1": 0.526882,
+        "support": 31
+      },
+      "frames_test_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 1.0,
+            "recall": 0.111111,
+            "f1": 0.2,
+            "support": 9,
+            "threshold": 0.55,
+            "predicted_positives": 1
+          },
+          "transito_migratorio": {
+            "precision": 0.4,
+            "recall": 0.857143,
+            "f1": 0.545455,
+            "support": 7,
+            "threshold": 0.6,
+            "predicted_positives": 15
+          },
+          "seguridad": {
+            "precision": 0.8,
+            "recall": 0.5,
+            "f1": 0.615385,
+            "support": 8,
+            "threshold": 0.65,
+            "predicted_positives": 5
+          },
+          "integracion_social": {
+            "precision": 0.2,
+            "recall": 1.0,
+            "f1": 0.333333,
+            "support": 3,
+            "threshold": 0.45,
+            "predicted_positives": 15
+          },
+          "politica_migratoria": {
+            "precision": 0.7,
+            "recall": 1.0,
+            "f1": 0.823529,
+            "support": 21,
+            "threshold": 0.5,
+            "predicted_positives": 30
+          },
+          "empleo_economia": {
+            "precision": 0.321429,
+            "recall": 0.9,
+            "f1": 0.473684,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 28
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 2,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.488776,
+        "macro_recall": 0.624036,
+        "macro_f1": 0.427341,
+        "micro_f1": 0.571429,
+        "support": 31
+      },
+      "frames_test_baseline_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.571429,
+            "recall": 0.444444,
+            "f1": 0.5,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 7
+          },
+          "transito_migratorio": {
+            "precision": 0.384615,
+            "recall": 0.714286,
+            "f1": 0.5,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 13
+          },
+          "seguridad": {
+            "precision": 0.3125,
+            "recall": 0.625,
+            "f1": 0.416667,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 1
+          },
+          "politica_migratoria": {
+            "precision": 0.730769,
+            "recall": 0.904762,
+            "f1": 0.808511,
+            "support": 21,
+            "threshold": 0.5,
+            "predicted_positives": 26
+          },
+          "empleo_economia": {
+            "precision": 0.8,
+            "recall": 0.4,
+            "f1": 0.533333,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 5
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 2,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.399902,
+        "macro_recall": 0.441213,
+        "macro_f1": 0.394073,
+        "micro_f1": 0.578125,
+        "support": 31
+      },
+      "frames_test_baseline_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.571429,
+            "recall": 0.444444,
+            "f1": 0.5,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 7
+          },
+          "transito_migratorio": {
+            "precision": 0.428571,
+            "recall": 0.428571,
+            "f1": 0.428571,
+            "support": 7,
+            "threshold": 0.55,
+            "predicted_positives": 7
+          },
+          "seguridad": {
+            "precision": 0.8,
+            "recall": 0.5,
+            "f1": 0.615385,
+            "support": 8,
+            "threshold": 0.6,
+            "predicted_positives": 5
+          },
+          "integracion_social": {
+            "precision": 0.285714,
+            "recall": 0.666667,
+            "f1": 0.4,
+            "support": 3,
+            "threshold": 0.45,
+            "predicted_positives": 7
+          },
+          "politica_migratoria": {
+            "precision": 0.689655,
+            "recall": 0.952381,
+            "f1": 0.8,
+            "support": 21,
+            "threshold": 0.45,
+            "predicted_positives": 29
+          },
+          "empleo_economia": {
+            "precision": 0.666667,
+            "recall": 0.6,
+            "f1": 0.631579,
+            "support": 10,
+            "threshold": 0.45,
+            "predicted_positives": 9
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 2,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.491719,
+        "macro_recall": 0.513152,
+        "macro_f1": 0.482219,
+        "micro_f1": 0.629032,
+        "support": 31
+      },
+      "frames_test_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.5,
+            "recall": 0.333333,
+            "f1": 0.4,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 6
+          },
+          "transito_migratorio": {
+            "precision": 0.225806,
+            "recall": 1.0,
+            "f1": 0.368421,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 31
+          },
+          "seguridad": {
+            "precision": 0.25,
+            "recall": 0.875,
+            "f1": 0.388889,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 28
+          },
+          "integracion_social": {
+            "precision": 0.666667,
+            "recall": 0.666667,
+            "f1": 0.666667,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.7,
+            "recall": 1.0,
+            "f1": 0.823529,
+            "support": 21,
+            "threshold": 0.45,
+            "predicted_positives": 30
+          },
+          "empleo_economia": {
+            "precision": 0.321429,
+            "recall": 0.9,
+            "f1": 0.473684,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 28
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 2,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.380557,
+        "macro_recall": 0.682143,
+        "macro_f1": 0.445884,
+        "micro_f1": 0.526882,
+        "support": 31
+      },
+      "frames_test_baseline_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.571429,
+            "recall": 0.444444,
+            "f1": 0.5,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 7
+          },
+          "transito_migratorio": {
+            "precision": 0.384615,
+            "recall": 0.714286,
+            "f1": 0.5,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 13
+          },
+          "seguridad": {
+            "precision": 0.3125,
+            "recall": 0.625,
+            "f1": 0.416667,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 1
+          },
+          "politica_migratoria": {
+            "precision": 0.689655,
+            "recall": 0.952381,
+            "f1": 0.8,
+            "support": 21,
+            "threshold": 0.45,
+            "predicted_positives": 29
+          },
+          "empleo_economia": {
+            "precision": 0.8,
+            "recall": 0.4,
+            "f1": 0.533333,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 5
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 2,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.394028,
+        "macro_recall": 0.448016,
+        "macro_f1": 0.392857,
+        "micro_f1": 0.580153,
+        "support": 31
+      },
+      "thresholds_validation": {
+        "acceso_servicios": 0.55,
+        "transito_migratorio": 0.6,
+        "seguridad": 0.65,
+        "integracion_social": 0.45,
+        "politica_migratoria": 0.5,
+        "empleo_economia": 0.5,
+        "otros": 0.5
+      },
+      "baseline_thresholds_validation": {
+        "acceso_servicios": 0.5,
+        "transito_migratorio": 0.55,
+        "seguridad": 0.6,
+        "integracion_social": 0.45,
+        "politica_migratoria": 0.45,
+        "empleo_economia": 0.45,
+        "otros": 0.5
+      },
+      "early_stopping": {
+        "sentiment_best_val_macro_f1": 0.339781,
+        "frames_best_val_macro_f1_at_0.5": 0.571898
+      }
+    },
+    {
+      "fold": 3,
+      "n_train": 100,
+      "n_val": 25,
+      "n_test": 31,
+      "sentiment_test": {
+        "accuracy": 0.709677,
+        "macro_f1": 0.656763,
+        "macro_precision": 0.705556,
+        "macro_recall": 0.681548,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.75,
+            "recall": 0.375,
+            "f1": 0.5,
+            "support": 8
+          },
+          "Neutro": {
+            "precision": 0.866667,
+            "recall": 0.8125,
+            "f1": 0.83871,
+            "support": 16
+          },
+          "Positivo": {
+            "precision": 0.5,
+            "recall": 0.857143,
+            "f1": 0.631579,
+            "support": 7
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              3,
+              1,
+              4
+            ],
+            [
+              1,
+              13,
+              2
+            ],
+            [
+              0,
+              1,
+              6
+            ]
+          ]
+        },
+        "support": 31
+      },
+      "sentiment_test_baseline": {
+        "accuracy": 0.645161,
+        "macro_f1": 0.599577,
+        "macro_precision": 0.767974,
+        "macro_recall": 0.636905,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.470588,
+            "recall": 1.0,
+            "f1": 0.64,
+            "support": 8
+          },
+          "Neutro": {
+            "precision": 0.833333,
+            "recall": 0.625,
+            "f1": 0.714286,
+            "support": 16
+          },
+          "Positivo": {
+            "precision": 1.0,
+            "recall": 0.285714,
+            "f1": 0.444444,
+            "support": 7
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              8,
+              0,
+              0
+            ],
+            [
+              6,
+              10,
+              0
+            ],
+            [
+              3,
+              2,
+              2
+            ]
+          ]
+        },
+        "support": 31
+      },
+      "frames_test_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.5,
+            "recall": 0.111111,
+            "f1": 0.181818,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 2
+          },
+          "transito_migratorio": {
+            "precision": 0.6,
+            "recall": 0.9,
+            "f1": 0.72,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 15
+          },
+          "seguridad": {
+            "precision": 0.428571,
+            "recall": 0.75,
+            "f1": 0.545455,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 14
+          },
+          "integracion_social": {
+            "precision": 0.666667,
+            "recall": 0.333333,
+            "f1": 0.444444,
+            "support": 6,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.548387,
+            "recall": 1.0,
+            "f1": 0.708333,
+            "support": 17,
+            "threshold": 0.5,
+            "predicted_positives": 31
+          },
+          "empleo_economia": {
+            "precision": 0.318182,
+            "recall": 1.0,
+            "f1": 0.482759,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 22
+          },
+          "otros": {
+            "precision": 0.166667,
+            "recall": 1.0,
+            "f1": 0.285714,
+            "support": 1,
+            "threshold": 0.5,
+            "predicted_positives": 6
+          }
+        },
+        "macro_precision": 0.461211,
+        "macro_recall": 0.727778,
+        "macro_f1": 0.481218,
+        "micro_f1": 0.569536,
+        "support": 31
+      },
+      "frames_test_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.352941,
+            "recall": 0.666667,
+            "f1": 0.461538,
+            "support": 9,
+            "threshold": 0.45,
+            "predicted_positives": 17
+          },
+          "transito_migratorio": {
+            "precision": 0.4,
+            "recall": 1.0,
+            "f1": 0.571429,
+            "support": 10,
+            "threshold": 0.45,
+            "predicted_positives": 25
+          },
+          "seguridad": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 8,
+            "threshold": 0.6,
+            "predicted_positives": 1
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 6,
+            "threshold": 0.55,
+            "predicted_positives": 0
+          },
+          "politica_migratoria": {
+            "precision": 0.548387,
+            "recall": 1.0,
+            "f1": 0.708333,
+            "support": 17,
+            "threshold": 0.5,
+            "predicted_positives": 31
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 7,
+            "threshold": 0.6,
+            "predicted_positives": 0
+          },
+          "otros": {
+            "precision": 0.166667,
+            "recall": 1.0,
+            "f1": 0.285714,
+            "support": 1,
+            "threshold": 0.5,
+            "predicted_positives": 6
+          }
+        },
+        "macro_precision": 0.209714,
+        "macro_recall": 0.52381,
+        "macro_f1": 0.289574,
+        "micro_f1": 0.492754,
+        "support": 31
+      },
+      "frames_test_baseline_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.666667,
+            "recall": 0.222222,
+            "f1": 0.333333,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "transito_migratorio": {
+            "precision": 0.411765,
+            "recall": 0.7,
+            "f1": 0.518519,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "seguridad": {
+            "precision": 0.375,
+            "recall": 0.75,
+            "f1": 0.5,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 6,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "politica_migratoria": {
+            "precision": 0.7,
+            "recall": 0.823529,
+            "f1": 0.756757,
+            "support": 17,
+            "threshold": 0.5,
+            "predicted_positives": 20
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.307633,
+        "macro_recall": 0.356536,
+        "macro_f1": 0.30123,
+        "micro_f1": 0.508772,
+        "support": 31
+      },
+      "frames_test_baseline_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.4,
+            "recall": 0.888889,
+            "f1": 0.551724,
+            "support": 9,
+            "threshold": 0.45,
+            "predicted_positives": 20
+          },
+          "transito_migratorio": {
+            "precision": 0.411765,
+            "recall": 0.7,
+            "f1": 0.518519,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "seguridad": {
+            "precision": 0.5,
+            "recall": 0.125,
+            "f1": 0.2,
+            "support": 8,
+            "threshold": 0.6,
+            "predicted_positives": 2
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 6,
+            "threshold": 0.55,
+            "predicted_positives": 0
+          },
+          "politica_migratoria": {
+            "precision": 0.566667,
+            "recall": 1.0,
+            "f1": 0.723404,
+            "support": 17,
+            "threshold": 0.45,
+            "predicted_positives": 30
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.268347,
+        "macro_recall": 0.387698,
+        "macro_f1": 0.284807,
+        "micro_f1": 0.519685,
+        "support": 31
+      },
+      "frames_test_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.5,
+            "recall": 0.111111,
+            "f1": 0.181818,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 2
+          },
+          "transito_migratorio": {
+            "precision": 0.6,
+            "recall": 0.9,
+            "f1": 0.72,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 15
+          },
+          "seguridad": {
+            "precision": 0.428571,
+            "recall": 0.75,
+            "f1": 0.545455,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 14
+          },
+          "integracion_social": {
+            "precision": 0.666667,
+            "recall": 0.333333,
+            "f1": 0.444444,
+            "support": 6,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.548387,
+            "recall": 1.0,
+            "f1": 0.708333,
+            "support": 17,
+            "threshold": 0.45,
+            "predicted_positives": 31
+          },
+          "empleo_economia": {
+            "precision": 0.318182,
+            "recall": 1.0,
+            "f1": 0.482759,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 22
+          },
+          "otros": {
+            "precision": 0.166667,
+            "recall": 1.0,
+            "f1": 0.285714,
+            "support": 1,
+            "threshold": 0.5,
+            "predicted_positives": 6
+          }
+        },
+        "macro_precision": 0.461211,
+        "macro_recall": 0.727778,
+        "macro_f1": 0.481218,
+        "micro_f1": 0.569536,
+        "support": 31
+      },
+      "frames_test_baseline_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.666667,
+            "recall": 0.222222,
+            "f1": 0.333333,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "transito_migratorio": {
+            "precision": 0.411765,
+            "recall": 0.7,
+            "f1": 0.518519,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "seguridad": {
+            "precision": 0.375,
+            "recall": 0.75,
+            "f1": 0.5,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 6,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "politica_migratoria": {
+            "precision": 0.566667,
+            "recall": 1.0,
+            "f1": 0.723404,
+            "support": 17,
+            "threshold": 0.45,
+            "predicted_positives": 30
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 7,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.288585,
+        "macro_recall": 0.381746,
+        "macro_f1": 0.296465,
+        "micro_f1": 0.516129,
+        "support": 31
+      },
+      "thresholds_validation": {
+        "acceso_servicios": 0.45,
+        "transito_migratorio": 0.45,
+        "seguridad": 0.6,
+        "integracion_social": 0.55,
+        "politica_migratoria": 0.5,
+        "empleo_economia": 0.6,
+        "otros": 0.5
+      },
+      "baseline_thresholds_validation": {
+        "acceso_servicios": 0.45,
+        "transito_migratorio": 0.5,
+        "seguridad": 0.6,
+        "integracion_social": 0.55,
+        "politica_migratoria": 0.45,
+        "empleo_economia": 0.5,
+        "otros": 0.5
+      },
+      "early_stopping": {
+        "sentiment_best_val_macro_f1": 0.388889,
+        "frames_best_val_macro_f1_at_0.5": 0.697221
+      }
+    },
+    {
+      "fold": 4,
+      "n_train": 100,
+      "n_val": 25,
+      "n_test": 31,
+      "sentiment_test": {
+        "accuracy": 0.548387,
+        "macro_f1": 0.54629,
+        "macro_precision": 0.641026,
+        "macro_recall": 0.641204,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.538462,
+            "recall": 0.777778,
+            "f1": 0.636364,
+            "support": 9
+          },
+          "Neutro": {
+            "precision": 1.0,
+            "recall": 0.3125,
+            "f1": 0.47619,
+            "support": 16
+          },
+          "Positivo": {
+            "precision": 0.384615,
+            "recall": 0.833333,
+            "f1": 0.526316,
+            "support": 6
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              7,
+              0,
+              2
+            ],
+            [
+              5,
+              5,
+              6
+            ],
+            [
+              1,
+              0,
+              5
+            ]
+          ]
+        },
+        "support": 31
+      },
+      "sentiment_test_baseline": {
+        "accuracy": 0.645161,
+        "macro_f1": 0.555556,
+        "macro_precision": 0.777778,
+        "macro_recall": 0.597222,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.5,
+            "recall": 1.0,
+            "f1": 0.666667,
+            "support": 9
+          },
+          "Neutro": {
+            "precision": 0.833333,
+            "recall": 0.625,
+            "f1": 0.714286,
+            "support": 16
+          },
+          "Positivo": {
+            "precision": 1.0,
+            "recall": 0.166667,
+            "f1": 0.285714,
+            "support": 6
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              9,
+              0,
+              0
+            ],
+            [
+              6,
+              10,
+              0
+            ],
+            [
+              3,
+              2,
+              1
+            ]
+          ]
+        },
+        "support": 31
+      },
+      "frames_test_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.545455,
+            "recall": 0.666667,
+            "f1": 0.6,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 11
+          },
+          "transito_migratorio": {
+            "precision": 0.375,
+            "recall": 0.3,
+            "f1": 0.333333,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 8
+          },
+          "seguridad": {
+            "precision": 0.545455,
+            "recall": 0.666667,
+            "f1": 0.6,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 11
+          },
+          "integracion_social": {
+            "precision": 0.214286,
+            "recall": 0.6,
+            "f1": 0.315789,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 14
+          },
+          "politica_migratoria": {
+            "precision": 0.76,
+            "recall": 0.863636,
+            "f1": 0.808511,
+            "support": 22,
+            "threshold": 0.5,
+            "predicted_positives": 25
+          },
+          "empleo_economia": {
+            "precision": 0.235294,
+            "recall": 0.8,
+            "f1": 0.363636,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "otros": {
+            "precision": 0.375,
+            "recall": 1.0,
+            "f1": 0.545455,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 8
+          }
+        },
+        "macro_precision": 0.435784,
+        "macro_recall": 0.699567,
+        "macro_f1": 0.509532,
+        "micro_f1": 0.56051,
+        "support": 31
+      },
+      "frames_test_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.545455,
+            "recall": 0.666667,
+            "f1": 0.6,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 11
+          },
+          "transito_migratorio": {
+            "precision": 0.352941,
+            "recall": 0.6,
+            "f1": 0.444444,
+            "support": 10,
+            "threshold": 0.4,
+            "predicted_positives": 17
+          },
+          "seguridad": {
+            "precision": 0.666667,
+            "recall": 0.444444,
+            "f1": 0.533333,
+            "support": 9,
+            "threshold": 0.55,
+            "predicted_positives": 6
+          },
+          "integracion_social": {
+            "precision": 0.214286,
+            "recall": 0.6,
+            "f1": 0.315789,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 14
+          },
+          "politica_migratoria": {
+            "precision": 0.777778,
+            "recall": 0.954545,
+            "f1": 0.857143,
+            "support": 22,
+            "threshold": 0.45,
+            "predicted_positives": 27
+          },
+          "empleo_economia": {
+            "precision": 0.333333,
+            "recall": 0.6,
+            "f1": 0.428571,
+            "support": 5,
+            "threshold": 0.55,
+            "predicted_positives": 9
+          },
+          "otros": {
+            "precision": 0.375,
+            "recall": 1.0,
+            "f1": 0.545455,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 8
+          }
+        },
+        "macro_precision": 0.466494,
+        "macro_recall": 0.695094,
+        "macro_f1": 0.532105,
+        "micro_f1": 0.593548,
+        "support": 31
+      },
+      "frames_test_baseline_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.555556,
+            "recall": 0.555556,
+            "f1": 0.555556,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 9
+          },
+          "transito_migratorio": {
+            "precision": 0.4375,
+            "recall": 0.7,
+            "f1": 0.538462,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "seguridad": {
+            "precision": 0.466667,
+            "recall": 0.777778,
+            "f1": 0.583333,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 15
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "politica_migratoria": {
+            "precision": 0.772727,
+            "recall": 0.772727,
+            "f1": 0.772727,
+            "support": 22,
+            "threshold": 0.5,
+            "predicted_positives": 22
+          },
+          "empleo_economia": {
+            "precision": 1.0,
+            "recall": 0.2,
+            "f1": 0.333333,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 1
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.461778,
+        "macro_recall": 0.429437,
+        "macro_f1": 0.39763,
+        "micro_f1": 0.587302,
+        "support": 31
+      },
+      "frames_test_baseline_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.555556,
+            "recall": 0.555556,
+            "f1": 0.555556,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 9
+          },
+          "transito_migratorio": {
+            "precision": 0.333333,
+            "recall": 0.9,
+            "f1": 0.486486,
+            "support": 10,
+            "threshold": 0.45,
+            "predicted_positives": 27
+          },
+          "seguridad": {
+            "precision": 0.466667,
+            "recall": 0.777778,
+            "f1": 0.583333,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 15
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "politica_migratoria": {
+            "precision": 0.777778,
+            "recall": 0.954545,
+            "f1": 0.857143,
+            "support": 22,
+            "threshold": 0.45,
+            "predicted_positives": 27
+          },
+          "empleo_economia": {
+            "precision": 0.25,
+            "recall": 0.4,
+            "f1": 0.307692,
+            "support": 5,
+            "threshold": 0.45,
+            "predicted_positives": 8
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.4,
+            "predicted_positives": 3
+          }
+        },
+        "macro_precision": 0.340476,
+        "macro_recall": 0.512554,
+        "macro_f1": 0.398602,
+        "micro_f1": 0.578947,
+        "support": 31
+      },
+      "frames_test_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.545455,
+            "recall": 0.666667,
+            "f1": 0.6,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 11
+          },
+          "transito_migratorio": {
+            "precision": 0.375,
+            "recall": 0.3,
+            "f1": 0.333333,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 8
+          },
+          "seguridad": {
+            "precision": 0.545455,
+            "recall": 0.666667,
+            "f1": 0.6,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 11
+          },
+          "integracion_social": {
+            "precision": 0.214286,
+            "recall": 0.6,
+            "f1": 0.315789,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 14
+          },
+          "politica_migratoria": {
+            "precision": 0.777778,
+            "recall": 0.954545,
+            "f1": 0.857143,
+            "support": 22,
+            "threshold": 0.45,
+            "predicted_positives": 27
+          },
+          "empleo_economia": {
+            "precision": 0.235294,
+            "recall": 0.8,
+            "f1": 0.363636,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "otros": {
+            "precision": 0.375,
+            "recall": 1.0,
+            "f1": 0.545455,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 8
+          }
+        },
+        "macro_precision": 0.438324,
+        "macro_recall": 0.712554,
+        "macro_f1": 0.51648,
+        "micro_f1": 0.578616,
+        "support": 31
+      },
+      "frames_test_baseline_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.555556,
+            "recall": 0.555556,
+            "f1": 0.555556,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 9
+          },
+          "transito_migratorio": {
+            "precision": 0.4375,
+            "recall": 0.7,
+            "f1": 0.538462,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "seguridad": {
+            "precision": 0.466667,
+            "recall": 0.777778,
+            "f1": 0.583333,
+            "support": 9,
+            "threshold": 0.5,
+            "predicted_positives": 15
+          },
+          "integracion_social": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "politica_migratoria": {
+            "precision": 0.777778,
+            "recall": 0.954545,
+            "f1": 0.857143,
+            "support": 22,
+            "threshold": 0.45,
+            "predicted_positives": 27
+          },
+          "empleo_economia": {
+            "precision": 1.0,
+            "recall": 0.2,
+            "f1": 0.333333,
+            "support": 5,
+            "threshold": 0.5,
+            "predicted_positives": 1
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.4625,
+        "macro_recall": 0.455411,
+        "macro_f1": 0.40969,
+        "micro_f1": 0.625954,
+        "support": 31
+      },
+      "thresholds_validation": {
+        "acceso_servicios": 0.5,
+        "transito_migratorio": 0.4,
+        "seguridad": 0.55,
+        "integracion_social": 0.5,
+        "politica_migratoria": 0.45,
+        "empleo_economia": 0.55,
+        "otros": 0.5
+      },
+      "baseline_thresholds_validation": {
+        "acceso_servicios": 0.5,
+        "transito_migratorio": 0.45,
+        "seguridad": 0.5,
+        "integracion_social": 0.5,
+        "politica_migratoria": 0.45,
+        "empleo_economia": 0.45,
+        "otros": 0.4
+      },
+      "early_stopping": {
+        "sentiment_best_val_macro_f1": 0.504545,
+        "frames_best_val_macro_f1_at_0.5": 0.682701
+      }
+    },
+    {
+      "fold": 5,
+      "n_train": 100,
+      "n_val": 25,
+      "n_test": 31,
+      "sentiment_test": {
+        "accuracy": 0.451613,
+        "macro_f1": 0.428261,
+        "macro_precision": 0.500817,
+        "macro_recall": 0.497685,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.333333,
+            "recall": 0.222222,
+            "f1": 0.266667,
+            "support": 9
+          },
+          "Neutro": {
+            "precision": 0.875,
+            "recall": 0.4375,
+            "f1": 0.583333,
+            "support": 16
+          },
+          "Positivo": {
+            "precision": 0.294118,
+            "recall": 0.833333,
+            "f1": 0.434783,
+            "support": 6
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              2,
+              1,
+              6
+            ],
+            [
+              3,
+              7,
+              6
+            ],
+            [
+              1,
+              0,
+              5
+            ]
+          ]
+        },
+        "support": 31
+      },
+      "sentiment_test_baseline": {
+        "accuracy": 0.645161,
+        "macro_f1": 0.632784,
+        "macro_precision": 0.673077,
+        "macro_recall": 0.634259,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.5,
+            "recall": 0.777778,
+            "f1": 0.608696,
+            "support": 9
+          },
+          "Neutro": {
+            "precision": 0.769231,
+            "recall": 0.625,
+            "f1": 0.689655,
+            "support": 16
+          },
+          "Positivo": {
+            "precision": 0.75,
+            "recall": 0.5,
+            "f1": 0.6,
+            "support": 6
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              7,
+              2,
+              0
+            ],
+            [
+              5,
+              10,
+              1
+            ],
+            [
+              2,
+              1,
+              3
+            ]
+          ]
+        },
+        "support": 31
+      },
+      "frames_test_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.4,
+            "recall": 0.8,
+            "f1": 0.533333,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 20
+          },
+          "transito_migratorio": {
+            "precision": 0.5625,
+            "recall": 0.75,
+            "f1": 0.642857,
+            "support": 12,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "seguridad": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 5
+          },
+          "integracion_social": {
+            "precision": 0.291667,
+            "recall": 0.875,
+            "f1": 0.4375,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 24
+          },
+          "politica_migratoria": {
+            "precision": 0.571429,
+            "recall": 1.0,
+            "f1": 0.727273,
+            "support": 16,
+            "threshold": 0.5,
+            "predicted_positives": 28
+          },
+          "empleo_economia": {
+            "precision": 0.214286,
+            "recall": 1.0,
+            "f1": 0.352941,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 14
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 1
+          }
+        },
+        "macro_precision": 0.291412,
+        "macro_recall": 0.632143,
+        "macro_f1": 0.384843,
+        "micro_f1": 0.52439,
+        "support": 31
+      },
+      "frames_test_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.4,
+            "recall": 0.8,
+            "f1": 0.533333,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 20
+          },
+          "transito_migratorio": {
+            "precision": 0.5625,
+            "recall": 0.75,
+            "f1": 0.642857,
+            "support": 12,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "seguridad": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 5
+          },
+          "integracion_social": {
+            "precision": 0.291667,
+            "recall": 0.875,
+            "f1": 0.4375,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 24
+          },
+          "politica_migratoria": {
+            "precision": 0.608696,
+            "recall": 0.875,
+            "f1": 0.717949,
+            "support": 16,
+            "threshold": 0.6,
+            "predicted_positives": 23
+          },
+          "empleo_economia": {
+            "precision": 0.285714,
+            "recall": 0.666667,
+            "f1": 0.4,
+            "support": 3,
+            "threshold": 0.55,
+            "predicted_positives": 7
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.45,
+            "predicted_positives": 1
+          }
+        },
+        "macro_precision": 0.30694,
+        "macro_recall": 0.566667,
+        "macro_f1": 0.390234,
+        "micro_f1": 0.526316,
+        "support": 31
+      },
+      "frames_test_baseline_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.6,
+            "recall": 0.6,
+            "f1": 0.6,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 10
+          },
+          "transito_migratorio": {
+            "precision": 0.529412,
+            "recall": 0.75,
+            "f1": 0.62069,
+            "support": 12,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "seguridad": {
+            "precision": 0.117647,
+            "recall": 0.5,
+            "f1": 0.190476,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "integracion_social": {
+            "precision": 0.333333,
+            "recall": 0.125,
+            "f1": 0.181818,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.608696,
+            "recall": 0.875,
+            "f1": 0.717949,
+            "support": 16,
+            "threshold": 0.5,
+            "predicted_positives": 23
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.312727,
+        "macro_recall": 0.407143,
+        "macro_f1": 0.330133,
+        "micro_f1": 0.507937,
+        "support": 31
+      },
+      "frames_test_baseline_tuned": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.6,
+            "recall": 0.6,
+            "f1": 0.6,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 10
+          },
+          "transito_migratorio": {
+            "precision": 0.545455,
+            "recall": 0.5,
+            "f1": 0.521739,
+            "support": 12,
+            "threshold": 0.55,
+            "predicted_positives": 11
+          },
+          "seguridad": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 4,
+            "threshold": 0.55,
+            "predicted_positives": 3
+          },
+          "integracion_social": {
+            "precision": 0.333333,
+            "recall": 0.125,
+            "f1": 0.181818,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.571429,
+            "recall": 1.0,
+            "f1": 0.727273,
+            "support": 16,
+            "threshold": 0.4,
+            "predicted_positives": 28
+          },
+          "empleo_economia": {
+            "precision": 0.4,
+            "recall": 0.666667,
+            "f1": 0.5,
+            "support": 3,
+            "threshold": 0.45,
+            "predicted_positives": 5
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.350031,
+        "macro_recall": 0.413095,
+        "macro_f1": 0.361547,
+        "micro_f1": 0.534483,
+        "support": 31
+      },
+      "frames_test_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.4,
+            "recall": 0.8,
+            "f1": 0.533333,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 20
+          },
+          "transito_migratorio": {
+            "precision": 0.5625,
+            "recall": 0.75,
+            "f1": 0.642857,
+            "support": 12,
+            "threshold": 0.5,
+            "predicted_positives": 16
+          },
+          "seguridad": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 5
+          },
+          "integracion_social": {
+            "precision": 0.291667,
+            "recall": 0.875,
+            "f1": 0.4375,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 24
+          },
+          "politica_migratoria": {
+            "precision": 0.533333,
+            "recall": 1.0,
+            "f1": 0.695652,
+            "support": 16,
+            "threshold": 0.45,
+            "predicted_positives": 30
+          },
+          "empleo_economia": {
+            "precision": 0.214286,
+            "recall": 1.0,
+            "f1": 0.352941,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 14
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 1
+          }
+        },
+        "macro_precision": 0.285969,
+        "macro_recall": 0.632143,
+        "macro_f1": 0.380326,
+        "micro_f1": 0.518072,
+        "support": 31
+      },
+      "frames_test_baseline_production_thresholds": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.6,
+            "recall": 0.6,
+            "f1": 0.6,
+            "support": 10,
+            "threshold": 0.5,
+            "predicted_positives": 10
+          },
+          "transito_migratorio": {
+            "precision": 0.529412,
+            "recall": 0.75,
+            "f1": 0.62069,
+            "support": 12,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "seguridad": {
+            "precision": 0.117647,
+            "recall": 0.5,
+            "f1": 0.190476,
+            "support": 4,
+            "threshold": 0.5,
+            "predicted_positives": 17
+          },
+          "integracion_social": {
+            "precision": 0.333333,
+            "recall": 0.125,
+            "f1": 0.181818,
+            "support": 8,
+            "threshold": 0.5,
+            "predicted_positives": 3
+          },
+          "politica_migratoria": {
+            "precision": 0.615385,
+            "recall": 1.0,
+            "f1": 0.761905,
+            "support": 16,
+            "threshold": 0.45,
+            "predicted_positives": 26
+          },
+          "empleo_economia": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          },
+          "otros": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3,
+            "threshold": 0.5,
+            "predicted_positives": 0
+          }
+        },
+        "macro_precision": 0.313682,
+        "macro_recall": 0.425,
+        "macro_f1": 0.336413,
+        "micro_f1": 0.527132,
+        "support": 31
+      },
+      "thresholds_validation": {
+        "acceso_servicios": 0.5,
+        "transito_migratorio": 0.5,
+        "seguridad": 0.5,
+        "integracion_social": 0.5,
+        "politica_migratoria": 0.6,
+        "empleo_economia": 0.55,
+        "otros": 0.45
+      },
+      "baseline_thresholds_validation": {
+        "acceso_servicios": 0.5,
+        "transito_migratorio": 0.55,
+        "seguridad": 0.55,
+        "integracion_social": 0.5,
+        "politica_migratoria": 0.4,
+        "empleo_economia": 0.45,
+        "otros": 0.5
+      },
+      "early_stopping": {
+        "sentiment_best_val_macro_f1": 0.487573,
+        "frames_best_val_macro_f1_at_0.5": 0.637755
+      }
+    }
+  ],
+  "final_models": {
+    "sentiment_dir": "C:\\Users\\diego\\Documents\\deepseek-harness\\default-workspace\\migra-nlp-training\\training\\models\\bert-sentiment-retrained",
+    "frames_dir": "C:\\Users\\diego\\Documents\\deepseek-harness\\default-workspace\\migra-nlp-training\\training\\models\\bert-frames-retrained",
+    "in_sample": {
+      "advertencia": "Métricas IN-SAMPLE sobre los mismos datos de entrenamiento; no usar para decidir si el modelo mejora. La estimación honesta es la CV.",
+      "sentiment": {
+        "accuracy": 0.698718,
+        "macro_f1": 0.697062,
+        "macro_precision": 0.719902,
+        "macro_recall": 0.752174,
+        "per_class": {
+          "Negativo": {
+            "precision": 0.72093,
+            "recall": 0.704545,
+            "f1": 0.712644,
+            "support": 44
+          },
+          "Neutro": {
+            "precision": 0.938776,
+            "recall": 0.582278,
+            "f1": 0.71875,
+            "support": 79
+          },
+          "Positivo": {
+            "precision": 0.5,
+            "recall": 0.969697,
+            "f1": 0.659794,
+            "support": 33
+          }
+        },
+        "confusion_matrix": {
+          "labels": [
+            "Negativo",
+            "Neutro",
+            "Positivo"
+          ],
+          "matrix": [
+            [
+              31,
+              3,
+              10
+            ],
+            [
+              11,
+              46,
+              22
+            ],
+            [
+              1,
+              0,
+              32
+            ]
+          ]
+        },
+        "support": 156
+      },
+      "frames_at_0.5": {
+        "per_label": {
+          "acceso_servicios": {
+            "precision": 0.62,
+            "recall": 0.688889,
+            "f1": 0.652632,
+            "support": 45,
+            "threshold": 0.5,
+            "predicted_positives": 50
+          },
+          "transito_migratorio": {
+            "precision": 0.55,
+            "recall": 0.830189,
+            "f1": 0.661654,
+            "support": 53,
+            "threshold": 0.5,
+            "predicted_positives": 80
+          },
+          "seguridad": {
+            "precision": 0.55814,
+            "recall": 0.6,
+            "f1": 0.578313,
+            "support": 40,
+            "threshold": 0.5,
+            "predicted_positives": 43
+          },
+          "integracion_social": {
+            "precision": 0.329114,
+            "recall": 0.962963,
+            "f1": 0.490566,
+            "support": 27,
+            "threshold": 0.5,
+            "predicted_positives": 79
+          },
+          "politica_migratoria": {
+            "precision": 0.678322,
+            "recall": 0.989796,
+            "f1": 0.804979,
+            "support": 98,
+            "threshold": 0.5,
+            "predicted_positives": 143
+          },
+          "empleo_economia": {
+            "precision": 0.324324,
+            "recall": 0.827586,
+            "f1": 0.466019,
+            "support": 29,
+            "threshold": 0.5,
+            "predicted_positives": 74
+          },
+          "otros": {
+            "precision": 0.244898,
+            "recall": 1.0,
+            "f1": 0.393443,
+            "support": 12,
+            "threshold": 0.5,
+            "predicted_positives": 49
+          }
+        },
+        "macro_precision": 0.472114,
+        "macro_recall": 0.842775,
+        "macro_f1": 0.578229,
+        "micro_f1": 0.627737,
+        "support": 156
+      }
+    }
+  },
+  "production_reference": {
+    "thresholds_path": "C:\\Users\\diego\\Documents\\deepseek-harness\\default-workspace\\migra-nlp-training\\api\\artifacts\\thresholds.json",
+    "thresholds": {
+      "acceso_servicios": 0.5,
+      "transito_migratorio": 0.5,
+      "seguridad": 0.5,
+      "integracion_social": 0.5,
+      "politica_migratoria": 0.45,
+      "empleo_economia": 0.5,
+      "otros": 0.5
+    }
+  },
+  "final_thresholds_guarda_info": {
+    "acceso_servicios": {
+      "threshold_piso_precision": 0.65,
+      "f1_con_piso": 0.102564,
+      "f1_at_0.5": 0.405405,
+      "decision": "0.5 (el piso de precisión empeora el F1 en validación)"
+    },
+    "transito_migratorio": {
+      "threshold_piso_precision": 0.5,
+      "f1_con_piso": 0.655172,
+      "f1_at_0.5": 0.655172,
+      "decision": "umbral con piso de precisión"
+    },
+    "seguridad": {
+      "threshold_piso_precision": 0.65,
+      "f1_con_piso": 0.228571,
+      "f1_at_0.5": 0.415584,
+      "decision": "0.5 (el piso de precisión empeora el F1 en validación)"
+    },
+    "integracion_social": {
+      "threshold_piso_precision": 0.5,
+      "f1_con_piso": 0.266667,
+      "f1_at_0.5": 0.266667,
+      "decision": "umbral con piso de precisión"
+    },
+    "politica_migratoria": {
+      "threshold_piso_precision": 0.5,
+      "f1_con_piso": 0.8,
+      "f1_at_0.5": 0.8,
+      "decision": "umbral con piso de precisión"
+    },
+    "empleo_economia": {
+      "threshold_piso_precision": 0.6,
+      "f1_con_piso": 0.363636,
+      "f1_at_0.5": 0.478261,
+      "decision": "0.5 (el piso de precisión empeora el F1 en validación)"
+    },
+    "otros": {
+      "threshold_piso_precision": 0.5,
+      "f1_con_piso": 0.230769,
+      "f1_at_0.5": 0.230769,
+      "decision": "umbral con piso de precisión"
+    }
+  },
+  "final_thresholds_precision_floor_estricto": {
+    "acceso_servicios": 0.65,
+    "transito_migratorio": 0.5,
+    "seguridad": 0.65,
+    "integracion_social": 0.5,
+    "politica_migratoria": 0.5,
+    "empleo_economia": 0.6,
+    "otros": 0.5
+  },
+  "final_thresholds_alt_max_f1": {
+    "acceso_servicios": 0.45,
+    "transito_migratorio": 0.5,
+    "seguridad": 0.55,
+    "integracion_social": 0.45,
+    "politica_migratoria": 0.5,
+    "empleo_economia": 0.5,
+    "otros": 0.5
+  },
+  "pooled_validation_thresholds": {
+    "n": 125,
+    "at_0.5": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 0.405405,
+          "recall": 0.405405,
+          "f1": 0.405405,
+          "support": 37,
+          "threshold": 0.5,
+          "predicted_positives": 37
+        },
+        "transito_migratorio": {
+          "precision": 0.584615,
+          "recall": 0.745098,
+          "f1": 0.655172,
+          "support": 51,
+          "threshold": 0.5,
+          "predicted_positives": 65
+        },
+        "seguridad": {
+          "precision": 0.333333,
+          "recall": 0.551724,
+          "f1": 0.415584,
+          "support": 29,
+          "threshold": 0.5,
+          "predicted_positives": 48
+        },
+        "integracion_social": {
+          "precision": 0.181818,
+          "recall": 0.5,
+          "f1": 0.266667,
+          "support": 20,
+          "threshold": 0.5,
+          "predicted_positives": 55
+        },
+        "politica_migratoria": {
+          "precision": 0.672269,
+          "recall": 0.987654,
+          "f1": 0.8,
+          "support": 81,
+          "threshold": 0.5,
+          "predicted_positives": 119
+        },
+        "empleo_economia": {
+          "precision": 0.328358,
+          "recall": 0.88,
+          "f1": 0.478261,
+          "support": 25,
+          "threshold": 0.5,
+          "predicted_positives": 67
+        },
+        "otros": {
+          "precision": 0.176471,
+          "recall": 0.333333,
+          "f1": 0.230769,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 17
+        }
+      },
+      "macro_precision": 0.383181,
+      "macro_recall": 0.629031,
+      "macro_f1": 0.464551,
+      "micro_f1": 0.557576,
+      "support": 125
+    },
+    "con_piso_precision_estricto": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 1.0,
+          "recall": 0.054054,
+          "f1": 0.102564,
+          "support": 37,
+          "threshold": 0.65,
+          "predicted_positives": 2
+        },
+        "transito_migratorio": {
+          "precision": 0.584615,
+          "recall": 0.745098,
+          "f1": 0.655172,
+          "support": 51,
+          "threshold": 0.5,
+          "predicted_positives": 65
+        },
+        "seguridad": {
+          "precision": 0.666667,
+          "recall": 0.137931,
+          "f1": 0.228571,
+          "support": 29,
+          "threshold": 0.65,
+          "predicted_positives": 6
+        },
+        "integracion_social": {
+          "precision": 0.181818,
+          "recall": 0.5,
+          "f1": 0.266667,
+          "support": 20,
+          "threshold": 0.5,
+          "predicted_positives": 55
+        },
+        "politica_migratoria": {
+          "precision": 0.672269,
+          "recall": 0.987654,
+          "f1": 0.8,
+          "support": 81,
+          "threshold": 0.5,
+          "predicted_positives": 119
+        },
+        "empleo_economia": {
+          "precision": 0.75,
+          "recall": 0.24,
+          "f1": 0.363636,
+          "support": 25,
+          "threshold": 0.6,
+          "predicted_positives": 8
+        },
+        "otros": {
+          "precision": 0.176471,
+          "recall": 0.333333,
+          "f1": 0.230769,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 17
+        }
+      },
+      "macro_precision": 0.575977,
+      "macro_recall": 0.428296,
+      "macro_f1": 0.378197,
+      "micro_f1": 0.545802,
+      "support": 125
+    },
+    "finales_con_guarda": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 0.405405,
+          "recall": 0.405405,
+          "f1": 0.405405,
+          "support": 37,
+          "threshold": 0.5,
+          "predicted_positives": 37
+        },
+        "transito_migratorio": {
+          "precision": 0.584615,
+          "recall": 0.745098,
+          "f1": 0.655172,
+          "support": 51,
+          "threshold": 0.5,
+          "predicted_positives": 65
+        },
+        "seguridad": {
+          "precision": 0.333333,
+          "recall": 0.551724,
+          "f1": 0.415584,
+          "support": 29,
+          "threshold": 0.5,
+          "predicted_positives": 48
+        },
+        "integracion_social": {
+          "precision": 0.181818,
+          "recall": 0.5,
+          "f1": 0.266667,
+          "support": 20,
+          "threshold": 0.5,
+          "predicted_positives": 55
+        },
+        "politica_migratoria": {
+          "precision": 0.672269,
+          "recall": 0.987654,
+          "f1": 0.8,
+          "support": 81,
+          "threshold": 0.5,
+          "predicted_positives": 119
+        },
+        "empleo_economia": {
+          "precision": 0.328358,
+          "recall": 0.88,
+          "f1": 0.478261,
+          "support": 25,
+          "threshold": 0.5,
+          "predicted_positives": 67
+        },
+        "otros": {
+          "precision": 0.176471,
+          "recall": 0.333333,
+          "f1": 0.230769,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 17
+        }
+      },
+      "macro_precision": 0.383181,
+      "macro_recall": 0.629031,
+      "macro_f1": 0.464551,
+      "micro_f1": 0.557576,
+      "support": 125
+    },
+    "alt_max_f1": {
+      "per_label": {
+        "acceso_servicios": {
+          "precision": 0.353535,
+          "recall": 0.945946,
+          "f1": 0.514706,
+          "support": 37,
+          "threshold": 0.45,
+          "predicted_positives": 99
+        },
+        "transito_migratorio": {
+          "precision": 0.584615,
+          "recall": 0.745098,
+          "f1": 0.655172,
+          "support": 51,
+          "threshold": 0.5,
+          "predicted_positives": 65
+        },
+        "seguridad": {
+          "precision": 0.448276,
+          "recall": 0.448276,
+          "f1": 0.448276,
+          "support": 29,
+          "threshold": 0.55,
+          "predicted_positives": 29
+        },
+        "integracion_social": {
+          "precision": 0.219512,
+          "recall": 0.9,
+          "f1": 0.352941,
+          "support": 20,
+          "threshold": 0.45,
+          "predicted_positives": 82
+        },
+        "politica_migratoria": {
+          "precision": 0.672269,
+          "recall": 0.987654,
+          "f1": 0.8,
+          "support": 81,
+          "threshold": 0.5,
+          "predicted_positives": 119
+        },
+        "empleo_economia": {
+          "precision": 0.328358,
+          "recall": 0.88,
+          "f1": 0.478261,
+          "support": 25,
+          "threshold": 0.5,
+          "predicted_positives": 67
+        },
+        "otros": {
+          "precision": 0.176471,
+          "recall": 0.333333,
+          "f1": 0.230769,
+          "support": 9,
+          "threshold": 0.5,
+          "predicted_positives": 17
+        }
+      },
+      "macro_precision": 0.397577,
+      "macro_recall": 0.748615,
+      "macro_f1": 0.497161,
+      "micro_f1": 0.572603,
+      "support": 125
+    }
+  },
+  "guarded_thresholds_cv": {
+    "per_fold_macro_f1": [
+      0.495047,
+      0.445884,
+      0.481218,
+      0.509532,
+      0.384843
+    ],
+    "macro_f1": {
+      "mean": 0.463305,
+      "std": 0.049812,
+      "n": 5
+    },
+    "macro_precision": {
+      "mean": 0.408921,
+      "std": 0.075034,
+      "n": 5
+    },
+    "macro_recall": {
+      "mean": 0.670055,
+      "std": 0.048882,
+      "n": 5
+    },
+    "per_label": {
+      "acceso_servicios": {
+        "f1": {
+          "mean": 0.44303,
+          "std": 0.162883,
+          "n": 5
+        },
+        "precision": {
+          "mean": 0.539091,
+          "std": 0.12935,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.457222,
+          "std": 0.275348,
+          "n": 5
+        }
+      },
+      "transito_migratorio": {
+        "f1": {
+          "mean": 0.541955,
+          "std": 0.177602,
+          "n": 5
+        },
+        "precision": {
+          "mean": 0.470308,
+          "std": 0.164386,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.732857,
+          "std": 0.268005,
+          "n": 5
+        }
+      },
+      "seguridad": {
+        "f1": {
+          "mean": 0.402107,
+          "std": 0.238256,
+          "n": 5
+        },
+        "precision": {
+          "mean": 0.344805,
+          "std": 0.223182,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.549242,
+          "std": 0.343091,
+          "n": 5
+        }
+      },
+      "integracion_social": {
+        "f1": {
+          "mean": 0.442445,
+          "std": 0.137203,
+          "n": 5
+        },
+        "precision": {
+          "mean": 0.412302,
+          "std": 0.234145,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.655,
+          "std": 0.209795,
+          "n": 5
+        }
+      },
+      "politica_migratoria": {
+        "f1": {
+          "mean": 0.78276,
+          "std": 0.06116,
+          "n": 5
+        },
+        "precision": {
+          "mean": 0.66263,
+          "std": 0.096496,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.972727,
+          "std": 0.060984,
+          "n": 5
+        }
+      },
+      "empleo_economia": {
+        "f1": {
+          "mean": 0.384604,
+          "std": 0.096346,
+          "n": 5
+        },
+        "precision": {
+          "mean": 0.267838,
+          "std": 0.049121,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.79,
+          "std": 0.31305,
+          "n": 5
+        }
+      },
+      "otros": {
+        "f1": {
+          "mean": 0.246234,
+          "std": 0.242898,
+          "n": 5
+        },
+        "precision": {
+          "mean": 0.165476,
+          "std": 0.168169,
+          "n": 5
+        },
+        "recall": {
+          "mean": 0.533333,
+          "std": 0.505525,
+          "n": 5
+        }
+      }
+    }
+  },
+  "thresholds_postprocesado": true,
+  "thresholds_postproceso_info": "Umbrales finales recalculados de artifacts/cv_folds/fold_*.json con training/recompute_thresholds.py: se aplicó la salvaguarda de conservar 0.5 cuando el umbral con piso de precisión empeora el F1 en la misma validación. Las variantes estrictas quedan en artefactos aparte."
+}

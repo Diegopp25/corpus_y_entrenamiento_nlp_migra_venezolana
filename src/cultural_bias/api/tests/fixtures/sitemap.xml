@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://eltiempo.com/2026/11/08/venezolanos-llegan-a-bogota-tras-cruce</loc>
+    <news:news>
+      <news:publication_date>2026-11-08T08:30:00+00:00</news:publication_date>
+      <news:title>Venezolanos llegan a Bogotá tras cruce de frontera</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://eltiempo.com/2026/11/07/migracion-venezolana-nuevo-informe</loc>
+    <news:news>
+      <news:publication_date>2026-11-07T12:00:00+00:00</news:publication_date>
+      <news:title>Migración venezolana: nuevo informe de frontera</news:title>
+    </news:news>
+  </url>
+</urlset>

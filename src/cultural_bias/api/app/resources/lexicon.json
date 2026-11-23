@@ -1,0 +1,1425 @@
+{
+ "meta": {
+  "generated_at": "2026-11-09T18:58:44+00:00",
+  "source_csv": "Data\\dataset_migracion_venezolana_labeled.csv",
+  "rows": 156,
+  "vocabulary": 8537,
+  "method": "log-odds con suavizado de Laplace (alpha=0.5), df>=2, sin genéricos"
+ },
+ "sentiment": {
+  "Negativo": {
+   "incendio": 2.5,
+   "guatemaltecos": 2.5,
+   "blancas": 2.5,
+   "piedras": 2.5,
+   "formalizacion": 2.5,
+   "madres": 2.5,
+   "vacunacion": 2.5,
+   "reto": 2.5,
+   "tachira": 2.5,
+   "baja": 2.5,
+   "motivos": 2.5,
+   "ayudas": 2.5,
+   "decia": 2.5,
+   "criterios": 2.5,
+   "incrementado": 2.5,
+   "poblacional": 2.5,
+   "avila": 2.5,
+   "sobreviviente": 2.5,
+   "suman": 2.5,
+   "motivo": 2.5,
+   "azules": 2.5,
+   "sos": 2.5,
+   "animales": 2.5,
+   "negras": 2.5,
+   "riohacha": 2.5,
+   "duermen": 2.5,
+   "whatsapp": 2.5,
+   "reunieron": 2.5,
+   "habilitado": 2.5,
+   "playeras": 2.5,
+   "trimestre": 2.5,
+   "desesperados": 2.5,
+   "llegamos": 2.5,
+   "rivas": 2.5,
+   "peor": 2.5,
+   "explican": 2.5,
+   "sucesos": 2.5,
+   "expedicion": 2.5,
+   "aceptar": 2.5,
+   "comenzando": 2.31,
+   "moviendo": 2.31,
+   "llenos": 2.31,
+   "noroeste": 2.31,
+   "rebasados": 2.31,
+   "especializada": 2.31,
+   "vigilantes": 2.31,
+   "escuchaban": 2.31,
+   "fomento": 2.31,
+   "atravesando": 2.31,
+   "quedara": 2.31,
+   "capitales": 2.31,
+   "sucede": 2.31,
+   "desarrollar": 2.31,
+   "detectados": 2.31,
+   "potable": 2.31,
+   "responden": 2.31,
+   "alemana": 2.31,
+   "deseo": 2.31,
+   "encima": 2.31,
+   "descansaban": 2.31,
+   "trasladar": 2.31,
+   "necesitamos": 2.31,
+   "senor": 2.31,
+   "reaccion": 2.31,
+   "imposibles": 2.31,
+   "fuego": 2.31,
+   "caracterizacion": 2.31,
+   "sandalias": 2.31,
+   "expuestos": 2.31,
+   "pepff": 2.31,
+   "web": 2.31,
+   "salario": 2.31,
+   "identificado": 2.31,
+   "igualmente": 2.31,
+   "presentando": 2.31,
+   "internacion": 2.31,
+   "electorales": 2.31,
+   "podian": 2.31,
+   "obtencion": 2.31,
+   "complejidad": 2.31,
+   "lee": 2.31,
+   "seguras": 2.31,
+   "abandonan": 2.31,
+   "recepcion": 2.31,
+   "preocupaciones": 2.31,
+   "comentaron": 2.31,
+   "pongan": 2.31,
+   "truncado": 2.31,
+   "desorientados": 2.31,
+   "colocan": 2.31,
+   "lanzada": 2.31,
+   "sobrevivir": 2.31,
+   "similares": 2.31,
+   "esperaban": 2.31,
+   "extranjeria": 2.31,
+   "ebrard": 2.31,
+   "informes": 2.31,
+   "anonimato": 2.31,
+   "ejecutiva": 2.31,
+   "jugar": 2.31,
+   "certificar": 2.31,
+   "temen": 2.31,
+   "duran": 2.31,
+   "aliviar": 2.31,
+   "buscaba": 2.31,
+   "contratacion": 2.31,
+   "impulsaron": 2.31,
+   "miras": 2.31,
+   "informalidad": 2.31,
+   "imagenes": 2.31,
+   "recogidos": 2.31,
+   "asiaticos": 2.31,
+   "chofer": 2.31,
+   "transporto": 2.31,
+   "fundamento": 2.31,
+   "obliga": 2.31,
+   "marcelo": 2.31,
+   "homologo": 2.31,
+   "base": 2.226,
+   "municipales": 2.167
+  },
+  "Neutro": {
+   "tps": 2.5,
+   "york": 2.5,
+   "suprema": 2.5,
+   "aclu": 2.5,
+   "dhs": 2.5,
+   "plaza": 2.5,
+   "intentar": 2.5,
+   "caribeno": 2.5,
+   "borde": 2.5,
+   "secuestro": 2.5,
+   "toma": 2.5,
+   "funcionaria": 2.5,
+   "antonio": 2.5,
+   "historias": 2.5,
+   "luisa": 2.5,
+   "tampico": 2.5,
+   "negociaciones": 2.5,
+   "chevron": 2.5,
+   "pidiendo": 2.5,
+   "controles": 2.5,
+   "autorizacion": 2.5,
+   "rostro": 2.5,
+   "gabriel": 2.5,
+   "procedentes": 2.5,
+   "pacifica": 2.5,
+   "juicio": 2.5,
+   "futbol": 2.5,
+   "disparos": 2.5,
+   "balas": 2.5,
+   "goma": 2.36,
+   "procedimientos": 2.36,
+   "cultural": 2.36,
+   "colegio": 2.36,
+   "avanzar": 2.36,
+   "felicidad": 2.36,
+   "new": 2.36,
+   "energetico": 2.36,
+   "latinoamericano": 2.36,
+   "regresado": 2.36,
+   "supremo": 2.36,
+   "listado": 2.36,
+   "anunciaron": 2.36,
+   "encontro": 2.36,
+   "acordar": 2.36,
+   "permiten": 2.36,
+   "reeleccion": 2.36,
+   "gim": 2.36,
+   "area": 2.36,
+   "caravana": 2.36,
+   "media": 2.36,
+   "cecot": 2.36,
+   "lluvia": 2.36,
+   "plena": 2.36,
+   "sngz": 2.36,
+   "cumbre": 2.36,
+   "dolor": 2.36,
+   "aliados": 2.36,
+   "aterrizo": 2.36,
+   "inteligencia": 2.36,
+   "concretas": 2.36,
+   "democrata": 2.36,
+   "terceros": 2.36,
+   "florida": 2.36,
+   "asesoria": 2.36,
+   "miami": 2.36,
+   "kast": 2.36,
+   "simbolo": 2.36,
+   "afueras": 2.36,
+   "libre": 2.36,
+   "acercamiento": 2.36,
+   "regresen": 2.36,
+   "moverse": 2.36,
+   "cayo": 2.36,
+   "salvador": 2.267,
+   "vazquez": 2.109,
+   "chinos": 2.109,
+   "interceptado": 2.109,
+   "abandonaron": 2.109,
+   "anoto": 2.109,
+   "estaria": 2.109,
+   "inicios": 2.109,
+   "preliminarmente": 2.109,
+   "resalto": 2.109,
+   "ubicada": 2.109,
+   "have": 2.109,
+   "originarias": 2.109,
+   "estructura": 2.109,
+   "haiti": 2.109,
+   "exiliados": 2.109,
+   "estimo": 2.109,
+   "integridad": 2.109,
+   "acepta": 2.109,
+   "amparo": 2.109,
+   "gestiones": 2.109,
+   "retomaron": 2.109,
+   "objetivos": 2.109,
+   "libertades": 2.109,
+   "portavoz": 2.109,
+   "activo": 2.109,
+   "interceptados": 2.109,
+   "senalado": 2.109,
+   "diferencias": 2.109,
+   "caravanas": 2.109,
+   "estrellas": 2.109,
+   "tuxtla": 2.109,
+   "asistir": 2.109,
+   "jefa": 2.109,
+   "posibles": 2.109,
+   "precedentes": 2.109,
+   "destacado": 2.109,
+   "iniciativas": 2.109,
+   "informa": 2.109,
+   "reunir": 2.109,
+   "respeto": 2.109,
+   "jurisdiccion": 2.109,
+   "ejecutivo": 2.109,
+   "consiguio": 2.109,
+   "entren": 2.109,
+   "fallo": 2.109,
+   "proyectos": 2.109
+  },
+  "Positivo": {
+   "subsidio": 2.5,
+   "existen": 2.5,
+   "bastante": 2.5,
+   "superadas": 2.5,
+   "deseen": 2.5,
+   "formulacion": 2.5,
+   "trompetero": 2.5,
+   "investigadora": 2.5,
+   "gerencia": 2.5,
+   "narrativa": 2.5,
+   "convirtieron": 2.5,
+   "bielefeld": 2.5,
+   "cambiar": 2.5,
+   "secuestrados": 2.5,
+   "impulsar": 2.5,
+   "tendencia": 2.5,
+   "digital": 2.5,
+   "alemania": 2.5,
+   "pendiente": 2.5,
+   "policiales": 2.5,
+   "mirar": 2.5,
+   "ubica": 2.5,
+   "impuestos": 2.5,
+   "muertes": 2.5,
+   "pobre": 2.5,
+   "justificacion": 2.5,
+   "incorporacion": 2.5,
+   "relevantes": 2.5,
+   "gabriela": 2.5,
+   "texto": 2.5,
+   "invirtiendo": 2.468,
+   "giro": 2.468,
+   "acogido": 2.468,
+   "regir": 2.468,
+   "oficializo": 2.468,
+   "diplomatica": 2.468,
+   "apuntan": 2.468,
+   "accesibles": 2.468,
+   "derivado": 2.468,
+   "estable": 2.468,
+   "cedulas": 2.468,
+   "ciertas": 2.468,
+   "expiatorios": 2.468,
+   "inscribir": 2.468,
+   "restablecieron": 2.468,
+   "israel": 2.468,
+   "optaron": 2.468,
+   "firmado": 2.468,
+   "fenomenos": 2.468,
+   "impactos": 2.468,
+   "tajante": 2.468,
+   "expertos": 2.468,
+   "cumpla": 2.468,
+   "bala": 2.468,
+   "haciendose": 2.468,
+   "ayudado": 2.468,
+   "chivos": 2.468,
+   "exitoso": 2.468,
+   "visito": 2.468,
+   "alejando": 2.468,
+   "beneficiado": 2.468,
+   "asia": 2.468,
+   "estrecha": 2.468,
+   "residiendo": 2.468,
+   "normalmente": 2.468,
+   "accidental": 2.468,
+   "pronuncio": 2.468,
+   "propiedad": 2.468,
+   "plazos": 2.468,
+   "cambia": 2.468,
+   "verificar": 2.468,
+   "describio": 2.468,
+   "sacarlo": 2.468,
+   "venta": 2.468,
+   "presentaran": 2.468,
+   "usan": 2.468,
+   "francia": 2.468,
+   "mencionado": 2.468,
+   "portar": 2.468,
+   "avances": 2.468,
+   "africa": 2.468,
+   "empezaria": 2.468,
+   "certificado": 2.468,
+   "presente": 2.468,
+   "omar": 2.468,
+   "cerro": 2.468,
+   "sesion": 2.468,
+   "mafias": 2.468,
+   "fotografias": 2.468,
+   "ligada": 2.468,
+   "implementadas": 2.468,
+   "sumo": 2.468,
+   "abiertamente": 2.468,
+   "nacimiento": 2.468,
+   "derogaria": 2.468,
+   "pudiera": 2.468,
+   "quince": 2.468,
+   "exilio": 2.468,
+   "desmintio": 2.468,
+   "tome": 2.468,
+   "titulos": 2.468,
+   "resolucion": 2.347,
+   "huyeron": 2.325,
+   "desempleo": 2.194,
+   "padres": 2.158,
+   "comisionado": 2.158,
+   "equivalente": 2.158,
+   "decada": 2.158,
+   "vivienda": 2.096,
+   "borrador": 2.049,
+   "hambre": 1.958,
+   "cierto": 1.958,
+   "aplicar": 1.958,
+   "mostro": 1.958,
+   "gomez": 1.958,
+   "parece": 1.958,
+   "sacar": 1.958,
+   "vencido": 1.958,
+   "vivian": 1.958,
+   "escuela": 1.815
+  }
+ },
+ "frames": {
+  "acceso_servicios": {
+   "subsidio": 2.5,
+   "ramirez": 2.5,
+   "sanitaria": 2.5,
+   "italia": 2.5,
+   "new": 2.5,
+   "trompetero": 2.5,
+   "puerta": 2.5,
+   "fuentes": 2.5,
+   "investigadora": 2.5,
+   "lucia": 2.5,
+   "aceptaron": 2.5,
+   "isla": 2.5,
+   "barco": 2.5,
+   "suspension": 2.5,
+   "coespo": 2.5,
+   "temperaturas": 2.5,
+   "asignado": 2.5,
+   "bielefeld": 2.5,
+   "objetivos": 2.5,
+   "narcotrafico": 2.5,
+   "animales": 2.5,
+   "subsidios": 2.5,
+   "alemania": 2.5,
+   "banos": 2.5,
+   "desconfianza": 2.5,
+   "hospital": 2.5,
+   "electo": 2.5,
+   "hiperinflacion": 2.5,
+   "estadia": 2.5,
+   "bolivia": 2.5,
+   "muertes": 2.5,
+   "habilitado": 2.5,
+   "orgullo": 2.5,
+   "llegamos": 2.5,
+   "peor": 2.5,
+   "empleos": 2.5,
+   "caim": 2.5,
+   "enteras": 2.5,
+   "vivienda": 2.5,
+   "viendo": 2.5,
+   "gabriela": 2.5,
+   "sentir": 2.5,
+   "recogidas": 2.5,
+   "acudieron": 2.5,
+   "atender": 2.442,
+   "puedo": 2.317,
+   "nota": 2.317,
+   "diplomatica": 2.317,
+   "llenos": 2.317,
+   "rebasados": 2.317,
+   "organizados": 2.317,
+   "reconociendo": 2.317,
+   "desmentir": 2.317,
+   "visados": 2.317,
+   "coordinadas": 2.317,
+   "logica": 2.317,
+   "contribuye": 2.317,
+   "marca": 2.317,
+   "instalado": 2.317,
+   "acerca": 2.317,
+   "estilo": 2.317,
+   "cocina": 2.317,
+   "enganados": 2.317,
+   "depende": 2.317,
+   "ciertas": 2.317,
+   "certeza": 2.317,
+   "convertir": 2.317,
+   "inscribir": 2.317,
+   "produce": 2.317,
+   "organo": 2.317
+  },
+  "empleo_economia": {
+   "cierto": 2.5,
+   "firmara": 2.5,
+   "descoordinacion": 2.5,
+   "exigira": 2.5,
+   "anthony": 2.5,
+   "forero": 2.5,
+   "advierten": 2.5,
+   "policiales": 2.5,
+   "bolivia": 2.5,
+   "roja": 2.5,
+   "aereo": 2.5,
+   "denunciar": 2.5,
+   "ecuador": 2.5,
+   "respondiendo": 2.5,
+   "entran": 2.5,
+   "derivado": 2.5,
+   "propiedades": 2.5,
+   "designado": 2.5,
+   "farc": 2.5,
+   "tipos": 2.5,
+   "ciertas": 2.5,
+   "sabiendo": 2.5,
+   "brindan": 2.5,
+   "firmado": 2.5,
+   "visibilidad": 2.5,
+   "referirse": 2.5,
+   "desnutricion": 2.5,
+   "tajante": 2.5,
+   "democratico": 2.5,
+   "desautorizo": 2.5,
+   "normas": 2.5,
+   "exitoso": 2.5,
+   "mentira": 2.5,
+   "alejando": 2.5,
+   "asia": 2.5,
+   "desarrollando": 2.5,
+   "enfermeria": 2.5,
+   "residiendo": 2.5,
+   "pico": 2.5,
+   "verificar": 2.5,
+   "instalarse": 2.5,
+   "presentaran": 2.5,
+   "instrumentos": 2.5,
+   "hablaba": 2.5,
+   "condeno": 2.5,
+   "africa": 2.5,
+   "reportar": 2.5,
+   "evidenciar": 2.5,
+   "fotografias": 2.5,
+   "sumo": 2.5,
+   "sumando": 2.5,
+   "respectivamente": 2.5,
+   "radiografia": 2.5,
+   "esperabamos": 2.5,
+   "enfasis": 2.5,
+   "reunificacion": 2.5,
+   "pudiera": 2.5,
+   "desmintio": 2.5,
+   "facilitarles": 2.5,
+   "desempleo": 2.276,
+   "padres": 2.24,
+   "oim": 2.24,
+   "supuestamente": 2.24,
+   "aplicar": 2.04,
+   "registrados": 2.04,
+   "entender": 2.04,
+   "desaparecidos": 2.04,
+   "desaparicion": 2.04,
+   "conoce": 2.04,
+   "decreto": 1.977
+  },
+  "integracion_social": {
+   "subsidio": 2.5,
+   "existen": 2.5,
+   "cambiar": 2.5,
+   "atacados": 2.5,
+   "digital": 2.5,
+   "pendiente": 2.5,
+   "muertes": 2.5,
+   "roja": 2.5,
+   "incorporacion": 2.5,
+   "cambiado": 2.5,
+   "refugiadas": 2.5,
+   "guerrillas": 2.5,
+   "porcentaje": 2.5,
+   "apuntan": 2.5,
+   "beneficiando": 2.5,
+   "investigador": 2.5,
+   "ocuparse": 2.5,
+   "rincon": 2.5,
+   "brindan": 2.5,
+   "impactos": 2.5,
+   "protegerlos": 2.5,
+   "expertos": 2.5,
+   "cumpla": 2.5,
+   "bala": 2.5,
+   "amazonas": 2.5,
+   "suelen": 2.5,
+   "conjuntamente": 2.5,
+   "beneficiado": 2.5,
+   "abandonan": 2.5,
+   "presionar": 2.5,
+   "normalmente": 2.5,
+   "pronuncio": 2.5,
+   "verificar": 2.5,
+   "merece": 2.5,
+   "sacarlo": 2.5,
+   "presentaran": 2.5,
+   "usan": 2.5,
+   "claman": 2.5,
+   "omar": 2.5,
+   "transitado": 2.5,
+   "evidenciar": 2.5,
+   "mafias": 2.5,
+   "sumando": 2.5,
+   "movil": 2.5,
+   "exilio": 2.5,
+   "vivienda": 2.5,
+   "desempleo": 2.464,
+   "huir": 2.428,
+   "yendri": 2.228,
+   "ocurre": 2.228,
+   "desaparecidos": 2.228,
+   "vivian": 2.228,
+   "compania": 2.128,
+   "dinamica": 2.085,
+   "desplazamiento": 1.976,
+   "mensual": 1.976,
+   "vocero": 1.976,
+   "receptores": 1.976,
+   "establecerse": 1.976,
+   "pasa": 1.976,
+   "interesados": 1.976,
+   "cambios": 1.976,
+   "responsable": 1.976,
+   "mulino": 1.917,
+   "sanitaria": 1.917,
+   "alvarez": 1.891,
+   "espinosa": 1.748,
+   "medellin": 1.717,
+   "demas": 1.717,
+   "zambrano": 1.717
+  },
+  "otros": {
+   "miraflores": 2.5,
+   "rubio": 2.5,
+   "reuters": 2.5,
+   "logramos": 2.5,
+   "asesinos": 2.5,
+   "gritar": 2.5,
+   "pensar": 2.5,
+   "secreto": 2.5,
+   "estabamos": 2.5,
+   "sacarlo": 2.5,
+   "institucionalidad": 2.5,
+   "pertenezcan": 2.5,
+   "represion": 2.5,
+   "siquiera": 2.343,
+   "eduardo": 2.343,
+   "bandas": 2.343,
+   "expedira": 2.343,
+   "habria": 2.114,
+   "residentes": 2.083,
+   "dicen": 2.083,
+   "comicios": 2.006,
+   "hubiese": 2.006,
+   "forzada": 2.006,
+   "refugiado": 2.006,
+   "cometidos": 2.006,
+   "error": 2.006,
+   "seguido": 2.006,
+   "detectaron": 2.006,
+   "presidenciales": 2.006,
+   "foraneos": 2.006,
+   "criticas": 2.006,
+   "nacido": 2.006,
+   "pudieron": 2.006,
+   "lucha": 2.006,
+   "sentimiento": 2.006,
+   "amnistia": 2.006,
+   "auxilio": 2.006,
+   "aportes": 2.006,
+   "amenazas": 2.006,
+   "premio": 1.863,
+   "polemica": 1.832,
+   "voces": 1.832,
+   "pudieran": 1.832,
+   "fraude": 1.747,
+   "embajada": 1.607,
+   "complementario": 1.495,
+   "colegio": 1.495,
+   "sede": 1.495,
+   "incidente": 1.495,
+   "corina": 1.495,
+   "podra": 1.495,
+   "vocero": 1.495,
+   "teniendo": 1.495,
+   "cabeza": 1.495,
+   "expresidente": 1.495,
+   "ayudarlos": 1.495,
+   "pruebas": 1.495,
+   "completamente": 1.495,
+   "nego": 1.495,
+   "contempla": 1.495,
+   "tension": 1.495,
+   "llamada": 1.495,
+   "quiero": 1.495,
+   "inteligencia": 1.495,
+   "gritos": 1.495,
+   "investigaciones": 1.495,
+   "duro": 1.495,
+   "interesados": 1.495,
+   "anunciada": 1.495,
+   "impulsadas": 1.495
+  },
+  "politica_migratoria": {
+   "avion": 2.5,
+   "canciller": 2.5,
+   "pep": 2.5,
+   "regular": 2.5,
+   "traslado": 2.5,
+   "expulsion": 2.5,
+   "visas": 2.5,
+   "plan": 2.5,
+   "hayan": 2.5,
+   "desempleo": 2.5,
+   "suprema": 2.5,
+   "fronterizos": 2.462,
+   "temas": 2.462,
+   "expulsar": 2.462,
+   "orientacion": 2.462,
+   "febrero": 2.462,
+   "barranquilla": 2.462,
+   "aclu": 2.462,
+   "abrir": 2.362,
+   "entidades": 2.362,
+   "mexicanas": 2.362,
+   "cuba": 2.362,
+   "espinosa": 2.362,
+   "aeropuerto": 2.362,
+   "guantanamo": 2.251,
+   "presentaron": 2.251,
+   "actividades": 2.251,
+   "caribeno": 2.251,
+   "borde": 2.251,
+   "ramirez": 2.251,
+   "abogados": 2.251,
+   "murillo": 2.251,
+   "europa": 2.251,
+   "dinamica": 2.251,
+   "intencion": 2.251,
+   "extranjero": 2.251,
+   "dignidad": 2.126,
+   "patrocinador": 2.126,
+   "efecto": 2.126,
+   "toma": 2.126,
+   "consecuencia": 2.126,
+   "mantener": 2.126,
+   "antonio": 2.126,
+   "fase": 2.126,
+   "enemigos": 2.126,
+   "fundamental": 2.126,
+   "ingles": 2.126,
+   "aerolinea": 2.126,
+   "migraciones": 2.126,
+   "juridica": 2.126,
+   "documentacion": 2.126,
+   "agenda": 2.126,
+   "haya": 2.126,
+   "obstaculos": 2.126,
+   "salvador": 2.081,
+   "permanencia": 2.043,
+   "exteriores": 2.033,
+   "proyecto": 1.983,
+   "elegibles": 1.983,
+   "presentan": 1.983,
+   "implementacion": 1.983,
+   "medellin": 1.983,
+   "curso": 1.983,
+   "administrativos": 1.983,
+   "conviasa": 1.983,
+   "oim": 1.983,
+   "genera": 1.983,
+   "ingresaron": 1.983,
+   "arenas": 1.983,
+   "humana": 1.983
+  },
+  "seguridad": {
+   "aclu": 2.5,
+   "brownsville": 2.5,
+   "cruzado": 2.5,
+   "balas": 2.5,
+   "goma": 2.5,
+   "madres": 2.5,
+   "periodista": 2.5,
+   "centroamericano": 2.5,
+   "abogado": 2.5,
+   "reglamento": 2.5,
+   "protocolos": 2.5,
+   "ayudas": 2.5,
+   "gobernador": 2.5,
+   "criterios": 2.5,
+   "have": 2.5,
+   "sjhn": 2.5,
+   "sobreviviente": 2.5,
+   "chaves": 2.5,
+   "motivo": 2.5,
+   "libertades": 2.5,
+   "limites": 2.5,
+   "fallo": 2.5,
+   "presuntos": 2.5,
+   "reunieron": 2.5,
+   "reina": 2.5,
+   "diego": 2.5,
+   "maicao": 2.5,
+   "prision": 2.5,
+   "sucesos": 2.5,
+   "been": 2.5,
+   "presos": 2.5,
+   "sujetos": 2.5,
+   "noroeste": 2.5,
+   "alguien": 2.5,
+   "oriundo": 2.5,
+   "vigilantes": 2.5,
+   "anade": 2.5,
+   "gloria": 2.5,
+   "quedara": 2.5,
+   "desarrollar": 2.5,
+   "grande": 2.5,
+   "sisben": 2.5,
+   "alemana": 2.5,
+   "senor": 2.5,
+   "judicial": 2.5,
+   "impugnar": 2.5,
+   "caos": 2.5,
+   "sostener": 2.5,
+   "senalamientos": 2.5,
+   "cortes": 2.5,
+   "reitero": 2.5,
+   "identificado": 2.5,
+   "igualmente": 2.5,
+   "puertos": 2.5,
+   "viajes": 2.5,
+   "tratan": 2.5,
+   "recoger": 2.5,
+   "teniamos": 2.5,
+   "quejas": 2.5,
+   "are": 2.5,
+   "pegaron": 2.5,
+   "injustamente": 2.5,
+   "episodios": 2.5,
+   "pongan": 2.5,
+   "accesos": 2.5,
+   "similares": 2.5,
+   "vivieron": 2.5,
+   "esperaban": 2.5,
+   "rotas": 2.5,
+   "viceministro": 2.5
+  },
+  "transito_migratorio": {
+   "guatemala": 2.5,
+   "brownsville": 2.5,
+   "detenciones": 2.5,
+   "chiapas": 2.5,
+   "blancas": 2.5,
+   "guatemalteco": 2.5,
+   "tampico": 2.5,
+   "pasaron": 2.5,
+   "viaja": 2.5,
+   "detuvieron": 2.5,
+   "hondureno": 2.5,
+   "cruzado": 2.5,
+   "darle": 2.5,
+   "ahorros": 2.5,
+   "incidente": 2.5,
+   "veintena": 2.5,
+   "caravana": 2.5,
+   "dolor": 2.5,
+   "luz": 2.5,
+   "vienen": 2.5,
+   "originarios": 2.5,
+   "moverse": 2.5,
+   "subir": 2.5,
+   "gobernador": 2.5,
+   "encuesta": 2.5,
+   "preliminarmente": 2.5,
+   "acepta": 2.5,
+   "sorpresa": 2.5,
+   "chaves": 2.5,
+   "azules": 2.5,
+   "restricciones": 2.5,
+   "finalidad": 2.5,
+   "animales": 2.5,
+   "caravanas": 2.5,
+   "posterior": 2.5,
+   "inmensa": 2.5,
+   "negras": 2.5,
+   "representacion": 2.5,
+   "riohacha": 2.5,
+   "presentado": 2.5,
+   "rosa": 2.5,
+   "reunir": 2.5,
+   "entren": 2.5,
+   "centroamerica": 2.5,
+   "durango": 2.5,
+   "leon": 2.5,
+   "trimestre": 2.5,
+   "expulsara": 2.5,
+   "llegamos": 2.5,
+   "explican": 2.5,
+   "entregado": 2.5,
+   "sola": 2.5,
+   "estadunidenses": 2.5,
+   "sueno": 2.492,
+   "matamoros": 2.45,
+   "devueltos": 2.45,
+   "financiero": 2.45,
+   "autobus": 2.339,
+   "dhs": 2.339,
+   "americano": 2.291,
+   "comenzando": 2.214,
+   "dejaran": 2.214,
+   "noroeste": 2.214,
+   "verdad": 2.214,
+   "guantanamo": 2.214,
+   "centroamericanos": 2.214,
+   "carro": 2.214,
+   "atravesando": 2.214,
+   "exigen": 2.214,
+   "confianza": 2.214
+  }
+ },
+ "bias_terms": {
+  "subsidio": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "ramirez": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "sanitaria": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "italia": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "new": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "trompetero": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "puerta": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "fuentes": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "investigadora": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "lucia": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "aceptaron": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "isla": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "barco": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "suspension": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "coespo": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "temperaturas": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "asignado": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "bielefeld": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "objetivos": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "narcotrafico": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "cierto": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "firmara": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "descoordinacion": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "exigira": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "anthony": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "forero": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "advierten": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "policiales": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "bolivia": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "roja": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "aereo": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "denunciar": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "ecuador": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "respondiendo": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "entran": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "derivado": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "propiedades": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "designado": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "farc": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "tipos": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "existen": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "cambiar": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "atacados": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "digital": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "pendiente": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "muertes": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "incorporacion": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "cambiado": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "refugiadas": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "guerrillas": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "porcentaje": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "apuntan": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "beneficiando": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "investigador": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "ocuparse": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "rincon": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "brindan": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "impactos": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "miraflores": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "rubio": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "reuters": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "logramos": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "asesinos": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "gritar": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "pensar": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "secreto": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "estabamos": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "sacarlo": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "institucionalidad": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "pertenezcan": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "represion": {
+   "bias_type": "positive",
+   "weight": 5.75
+  },
+  "siquiera": {
+   "bias_type": "positive",
+   "weight": 5.51
+  },
+  "eduardo": {
+   "bias_type": "positive",
+   "weight": 5.51
+  },
+  "bandas": {
+   "bias_type": "positive",
+   "weight": 5.51
+  },
+  "expedira": {
+   "bias_type": "positive",
+   "weight": 5.51
+  },
+  "habria": {
+   "bias_type": "positive",
+   "weight": 5.17
+  },
+  "residentes": {
+   "bias_type": "positive",
+   "weight": 5.12
+  },
+  "dicen": {
+   "bias_type": "positive",
+   "weight": 5.12
+  },
+  "avion": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "canciller": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "pep": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "regular": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "traslado": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "expulsion": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "visas": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "plan": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "hayan": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "desempleo": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "suprema": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "fronterizos": {
+   "bias_type": "colombia",
+   "weight": 5.69
+  },
+  "temas": {
+   "bias_type": "colombia",
+   "weight": 5.69
+  },
+  "expulsar": {
+   "bias_type": "colombia",
+   "weight": 5.69
+  },
+  "orientacion": {
+   "bias_type": "colombia",
+   "weight": 5.69
+  },
+  "febrero": {
+   "bias_type": "colombia",
+   "weight": 5.69
+  },
+  "barranquilla": {
+   "bias_type": "colombia",
+   "weight": 5.69
+  },
+  "aclu": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "abrir": {
+   "bias_type": "colombia",
+   "weight": 5.54
+  },
+  "entidades": {
+   "bias_type": "colombia",
+   "weight": 5.54
+  },
+  "brownsville": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "cruzado": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "balas": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "goma": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "madres": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "periodista": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "centroamericano": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "abogado": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "reglamento": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "protocolos": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "ayudas": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "gobernador": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "criterios": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "have": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "sjhn": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "sobreviviente": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "chaves": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "motivo": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "libertades": {
+   "bias_type": "colombia",
+   "weight": 5.75
+  },
+  "guatemala": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "detenciones": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "chiapas": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "blancas": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "guatemalteco": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "tampico": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "pasaron": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "viaja": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "detuvieron": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "hondureno": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "darle": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "ahorros": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "incidente": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "veintena": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "caravana": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "dolor": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "luz": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  },
+  "vienen": {
+   "bias_type": "mexico",
+   "weight": 5.75
+  }
+ }
+}
