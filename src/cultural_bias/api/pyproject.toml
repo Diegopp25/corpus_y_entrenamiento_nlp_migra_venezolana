@@ -1,7 +1,7 @@
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q -m 'not real_models'"
 markers = [
     "real_models: requiere los pesos BETO reales (se omite si no están)",
     "network: requiere acceso a sitios de noticias reales",
