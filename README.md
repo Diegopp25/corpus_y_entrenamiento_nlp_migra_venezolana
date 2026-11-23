@@ -8,22 +8,23 @@ Para ello, el proyecto consiste en la recopilación, procesamiento y análisis d
 ## Estructura del repositorio
 
 ```text
-CulturalBias
-├── Extraction
-│   ├── Scrapers para fuentes colombianas
-│   ├── Scrapers para fuentes mexicanas
-│   └── full_extraction.py
-│       └── Ejecuta todos los procesos de extracción y almacena los datos en CSV
-│
-├── Transformation
-│   ├── LandindStage
-│   │   └── Archivos CSV con datos brutos y procesados
-│   └── Preparación de datos para entrenamiento
-│
-├── check_robots.py
-│   └── Verifica si los sitios web permiten extracción automatizada de contenido
-│
-├── .gitignore
+.
+├── Data/                         # Corpus y datos de trabajo
+├── docs/                         # Documentación de API, operación y despliegue
+├── src/cultural_bias/
+│   ├── api/                      # API FastAPI, motores y pruebas
+│   ├── deploy/                   # Preparación de despliegues
+│   ├── extraction/               # Scrapers y extracción de noticias
+│   ├── frontend/                 # Aplicación web React/Vite
+│   ├── integrations/             # Cliente tipado para consumir la API
+│   ├── modelling/                # Scripts y experimentos de modelado
+│   ├── models_beto/              # Checkpoint BETO multitarea
+│   ├── training/                 # Reentrenamiento y evaluación
+│   └── Transformation/           # Preprocesamiento y etiquetado
+│       └── notebooks/            # Análisis exploratorio
+├── tests/                        # Pruebas del pipeline de extracción y datos
+├── env.example
+├── requirements.txt
 ├── LICENSE.txt
 └── README.md
 ```
@@ -43,8 +44,9 @@ según el hardware.
 
 ## API (FastAPI)
 
-El repositorio incluye una API HTTP en [`api/`](api/) que expone todo el
-pipeline de análisis y lo deja listo para que un frontend lo consuma:
+La API HTTP está en [`src/cultural_bias/api/`](src/cultural_bias/api/) y el
+frontend en [`src/cultural_bias/frontend/`](src/cultural_bias/frontend/). La API
+expone:
 
 - **Análisis**: sentimiento (BETO), 7 encuadres noticiosos y sesgo cultural
   (hipótesis Colombia–México) — `POST /v1/analyze` y `POST /v1/analyze/batch`.
@@ -59,9 +61,10 @@ pipeline de análisis y lo deja listo para que un frontend lo consuma:
   del repositorio y artefactos regenerables (`thresholds.json`,
   `evaluation.json`).
 
-Arranque rápido (desde `api/`):
+Arranque rápido (desde la raíz del repositorio):
 
 ```powershell
+Set-Location .\src\cultural_bias\api
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 Copy-Item .env.example .env
@@ -70,18 +73,28 @@ Copy-Item .env.example .env
 
 Documentación:
 
-- [`api/README.md`](api/README.md) — instalación, configuración, modelos BETO,
-  ejemplos `curl` y tabla de endpoints.
+- [`src/cultural_bias/api/README.md`](src/cultural_bias/api/README.md) —
+  instalación, configuración, modelos BETO, ejemplos `curl` y endpoints.
 - [`docs/API.md`](docs/API.md) — contrato completo de cada endpoint y
   compatibilidad con los tipos del frontend.
 - [`docs/FRONTEND.md`](docs/FRONTEND.md) — cómo migrar el frontend de los datos
   simulados (`nlpAnalyzer.ts`, `newsScraperService.ts`, `modelMetrics.ts`) al API.
 - [`docs/OPERACIONES.md`](docs/OPERACIONES.md) — Docker, monitoreo Prometheus,
   backups SQLite, seguridad y troubleshooting.
-- [`integrations/frontend-api-client.ts`](integrations/frontend-api-client.ts) —
-  cliente TypeScript tipado (sin dependencias).
+- [`src/cultural_bias/integrations/frontend-api-client.ts`](src/cultural_bias/integrations/frontend-api-client.ts)
+  — cliente TypeScript tipado (sin dependencias).
 - CI: [`.github/workflows/api-tests.yml`](.github/workflows/api-tests.yml)
-  ejecuta la suite de `api/tests` en Ubuntu con Python 3.12 (sin modelos reales).
+  ejecuta la suite de `src/cultural_bias/api/tests` en Ubuntu con Python 3.12
+  (sin modelos reales).
+
+> **Integración futura del modelo:** el checkpoint BETO multitarea está en
+> `src/cultural_bias/models_beto/` y se genera desde el flujo de modelado en
+> `src/cultural_bias/modelling/`. La API todavía no recibe automáticamente ese
+> artefacto al terminar el entrenamiento. Más adelante se adaptarán el formato,
+> el cargador y la configuración para que la API reciba y use el modelo
+> entrenado inmediatamente, sin pasos manuales. También se ajustará el contrato
+> de análisis para exponer los 5 encuadres del modelo, en lugar de los 7 que
+> expone actualmente.
 
 > Nota: el corpus etiquetado real tiene **156 artículos**; las cifras de la
 > maqueta del frontend (1.420 artículos, ~89 % de accuracy) son ficticias. La
