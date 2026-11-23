@@ -51,6 +51,7 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 COPY app ./app
 COPY scripts ./scripts
+COPY artifacts ./artifacts
 
 RUN mkdir -p /app/data /app/artifacts /app/models \
     && chown -R app:app /app
