@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>API Migra Venezuela · Evidencia en vivo</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111b2e;
+      --border: #223354;
+      --text: #e8eefc;
+      --muted: #93a4c3;
+      --green: #34d399;
+      --blue: #60a5fa;
+      --amber: #fbbf24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, #16284a 0, var(--bg) 55%);
+      color: var(--text);
+      padding: 34px 42px 50px;
+    }
+    header { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; }
+    h1 { margin: 0 0 6px; font-size: 30px; letter-spacing: -0.4px; }
+    .sub { color: var(--muted); font-size: 14px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #0f2a22; color: var(--green);
+      border: 1px solid #1f5a45; border-radius: 999px;
+      padding: 7px 14px; font-size: 13px; font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); }
+    .url {
+      margin-top: 18px; font-family: ui-monospace, Consolas, monospace;
+      font-size: 13px; color: var(--blue);
+      background: #0e1728; border: 1px solid var(--border);
+      padding: 10px 14px; border-radius: 10px; display: inline-block;
+    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 24px; }
+    .card {
+      background: linear-gradient(180deg, #121d32, #0e1728);
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 20px 22px;
+    }
+    .card h2 { margin: 0 0 14px; font-size: 15px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+    .kv { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px dashed #1d2c49; font-size: 14px; }
+    .kv:last-child { border-bottom: 0; }
+    .kv span:first-child { color: var(--muted); }
+    .ok { color: var(--green); font-weight: 700; }
+    .pill { background: #16233c; border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; font-size: 12px; margin: 3px 4px 3px 0; display: inline-block; }
+    .pill.active { background: #123a2e; border-color: #1f6a50; color: #86efac; }
+    pre {
+      margin: 0; background: #0a111f; border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px; overflow: auto;
+      font-family: ui-monospace, Consolas, monospace; font-size: 12px;
+      color: #c7d6f5; max-height: 260px; white-space: pre-wrap;
+    }
+    .sentiment { font-size: 26px; font-weight: 800; margin: 4px 0 2px; }
+    .confidence { color: var(--amber); font-weight: 700; }
+    footer { margin-top: 26px; color: var(--muted); font-size: 12px; display: flex; justify-content: space-between; gap: 20px; }
+    .error { color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>API de análisis migratorio con BETO</h1>
+      <div class="sub">Evidencia de funcionamiento en producción · sentimiento + encuadres</div>
+      <div class="url">https://20-226-99-99.sslip.io</div>
+    </div>
+    <div class="badge" id="liveBadge"><span class="dot"></span> Consultando API...</div>
+  </header>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Motor y modelos</h2>
+      <div class="kv"><span>Estado</span><b id="healthStatus">...</b></div>
+      <div class="kv"><span>Motor seleccionado</span><b id="engine">...</b></div>
+      <div class="kv"><span>Degradado</span><b id="degraded">...</b></div>
+      <div class="kv"><span>Modelos cargados</span><b id="models">...</b></div>
+      <div class="kv"><span>Uptime</span><b id="uptime">...</b></div>
+    </section>
+
+    <section class="card">
+      <h2>Análisis de ejemplo (POST /v1/analyze)</h2>
+      <div class="sub" id="sampleText" style="margin-bottom:12px"></div>
+      <div class="sentiment" id="sentiment">...</div>
+      <div class="sub">Confianza: <span class="confidence" id="confidence">...</span></div>
+      <div id="frames" style="margin-top:14px"></div>
+    </section>
+
+    <section class="card">
+      <h2>Respuesta JSON real</h2>
+      <pre id="rawAnalyze">...</pre>
+    </section>
+
+    <section class="card">
+      <h2>Dashboard de modelos (GET /v1/dashboard/models)</h2>
+      <div class="kv"><span>Engine</span><b id="dashEngine">...</b></div>
+      <div class="kv"><span>Muestras etiquetadas</span><b id="sampleSize">...</b></div>
+      <div class="kv"><span>Accuracy sentimiento</span><b id="sentAcc">...</b></div>
+      <div class="kv"><span>Macro F1 sentimiento</span><b id="sentF1">...</b></div>
+      <div class="kv"><span>Accuracy encuadres</span><b id="framesAcc">...</b></div>
+    </section>
+  </div>
+
+  <footer>
+    <span id="timestamp">Cargando...</span>
+    <span>Swagger: https://20-226-99-99.sslip.io/docs · Health: https://20-226-99-99.sslip.io/v1/health</span>
+  </footer>
+
+<script>
+const BASE = "https://20-226-99-99.sslip.io";
+const SAMPLE = "El gobierno anunció un nuevo permiso de residencia para los migrantes venezolanos que llegaron este año y buscan trabajo.";
+const $ = (id) => document.getElementById(id);
+
+function setBadge(ok, text) {
+  const badge = $("liveBadge");
+  if (ok) {
+    badge.innerHTML = '<span class="dot"></span> API EN LÍNEA · ' + text;
+  } else {
+    badge.innerHTML = '<span class="dot" style="background:#f87171;box-shadow:0 0 12px #f87171"></span> ERROR · ' + text;
+    badge.style.color = "#fca5a5";
+    badge.style.borderColor = "#7f1d1d";
+    badge.style.background = "#2a0f0f";
+  }
+}
+
+async function main() {
+  try {
+    const health = await fetch(BASE + "/v1/health").then(r => r.json());
+    setBadge(true, health.engine.selected);
+    $("healthStatus").innerHTML = '<span class="ok">OK</span>';
+    $("engine").textContent = health.engine.selected;
+    $("degraded").textContent = health.engine.degraded ? "sí" : "no";
+    $("models").textContent = health.models.map(m => m.name + (m.loaded ? " ✓" : " ✗")).join(" · ");
+    $("uptime").textContent = Math.round(health.uptimeSeconds) + " s";
+
+    $("sampleText").textContent = "“" + SAMPLE + "”";
+    const analysis = await fetch(BASE + "/v1/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: SAMPLE, language: "es" })
+    }).then(r => r.json());
+
+    $("sentiment").textContent = analysis.sentiment.prediction;
+    $("confidence").textContent = analysis.sentiment.confidence + "%";
+    const active = analysis.frames.filter(f => f.isActive);
+    $("frames").innerHTML = analysis.frames
+      .map(f => `<span class="pill ${f.isActive ? "active" : ""}">${f.label} · ${f.score}%</span>`)
+      .join("");
+    $("rawAnalyze").textContent = JSON.stringify({
+      sentiment: analysis.sentiment,
+      frames: active.map(f => ({ label: f.label, score: f.score }))
+    }, null, 2);
+
+    const dash = await fetch(BASE + "/v1/dashboard/models").then(r => r.json());
+    $("dashEngine").textContent = dash.engine;
+    $("sampleSize").textContent = dash.sampleSize;
+    $("sentAcc").textContent = (dash.sentiment.accuracy * 100).toFixed(2) + "%";
+    $("sentF1").textContent = (dash.sentiment.macroF1 * 100).toFixed(2) + "%";
+    const framesModel = dash.models.find(m => m.role === "frames");
+    $("framesAcc").textContent = framesModel ? (framesModel.accuracy * 100).toFixed(2) + "%" : "—";
+
+    $("timestamp").textContent = "Capturado: " + new Date().toLocaleString("es-CO");
+  } catch (error) {
+    setBadge(false, String(error));
+    $("timestamp").textContent = "Error: " + error;
+  }
+}
+main();
+</script>
+</body>
+</html>

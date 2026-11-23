@@ -60,6 +60,7 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 COPY app ./app
 COPY scripts ./scripts
+COPY artifacts ./artifacts
 
 # Carpetas de escritura (SQLite, artefactos, pesos montados/descargados).
 RUN mkdir -p /app/data /app/artifacts /app/models \

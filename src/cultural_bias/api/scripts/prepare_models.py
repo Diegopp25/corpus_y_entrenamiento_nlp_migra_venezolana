@@ -134,22 +134,35 @@ def prepare_models() -> bool:
         log(f"modelos ya presentes en {models_dir}")
     else:
         archive_url = os.environ.get("NLP_MODELS_ARCHIVE_URL", "").strip()
-        if not archive_url:
+        archive_path_env = os.environ.get("NLP_MODELS_ARCHIVE_PATH", "").strip()
+        if not archive_url and not archive_path_env:
             log(
-                "NLP_MODELS_ARCHIVE_URL no está definida: se usará el motor "
-                "léxico (análisis degradado, el servicio arranca igual)."
+                "NLP_MODELS_ARCHIVE_URL/NLP_MODELS_ARCHIVE_PATH no están "
+                "configuradas: se usará el motor léxico (análisis degradado, el "
+                "servicio arranca igual)."
             )
             return False
         models_dir.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="beto-") as tmp:
             tmp_path = Path(tmp)
-            archive = tmp_path / "models.download"
+            if archive_path_env:
+                archive = Path(archive_path_env)
+                if not archive.exists():
+                    log(f"ERROR: no existe NLP_MODELS_ARCHIVE_PATH={archive}")
+                    return False
+                log(f"usando archivo local de pesos: {archive}")
+            else:
+                archive = tmp_path / "models.download"
+                try:
+                    download(archive_url, archive)
+                except (urllib.error.URLError, OSError) as exc:
+                    log(f"ERROR descargando modelos: {exc}")
+                    return False
+            extracted = tmp_path / "extracted"
             try:
-                download(archive_url, archive)
-                extracted = tmp_path / "extracted"
                 _safe_extract(archive, extracted)
-            except (urllib.error.URLError, OSError, RuntimeError) as exc:
-                log(f"ERROR preparando modelos: {exc}")
+            except (OSError, RuntimeError) as exc:
+                log(f"ERROR extrayendo modelos: {exc}")
                 return False
 
             sentiment_dirs = _candidate_dirs(extracted, SENTIMENT_HINTS)

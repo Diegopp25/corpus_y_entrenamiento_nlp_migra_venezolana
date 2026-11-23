@@ -34,3 +34,6 @@ api/api-*/
 api/tmp*
 
 api/torchinductor_*/
+
+hf-space-*/
+

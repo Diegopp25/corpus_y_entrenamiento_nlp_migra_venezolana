@@ -9,7 +9,41 @@ para torch + dos BERT (~2 GB).
 > y **se duerme tras un tiempo de inactividad**; el primer acceso tras dormir
 > tarda ~30–90 s en despertar y cargar los modelos.
 
-## 0. Antes de empezar
+## Despliegue automático (recomendado, un comando)
+
+El repo incluye `deploy/deploy_hf_space.py`, que crea el Space, empaqueta los
+modelos, sube todo y espera a que arranque. Solo necesitas un **token de
+Hugging Face con permiso de escritura**:
+
+1. Entra a <https://huggingface.co/settings/tokens> (si no tienes cuenta,
+   regístrate gratis, por ejemplo con GitHub).
+2. **New token → tipo Write** → copia el token.
+3. Guárdalo en un archivo (no hace falta pegarlo en el chat):
+
+   ```powershell
+   New-Item -ItemType Directory -Force "$env:USERPROFILE\.cache\huggingface" | Out-Null
+   notepad "$env:USERPROFILE\.cache\huggingface\token"
+   ```
+
+4. Ejecuta (desde la raíz del repo, con tu Python que tenga huggingface_hub; por ejemplo `.venv` o `api/.venv`):
+
+   ```powershell
+   # Con los modelos BETO de tu Escritorio (real, tarda en subir ~880 MB)
+   python src\cultural_bias\deploy\deploy_hf_space.py
+
+   # O solo el API con motor léxico (rápido, sin modelos)
+   python src\cultural_bias\deploy\deploy_hf_space.py --no-models
+   ```
+
+El script imprime la URL pública y comprueba `/v1/health`. Opciones útiles:
+`--name`, `--models-zip`, `--models-dir`, `--private`, `--prepare-only`
+(solo prepara la carpeta, no sube nada).
+
+> Si tu red es lenta, subir 880 MB puede tardar. Para una URL funcional hoy
+> mismo puedes desplegar `--no-models` (modo léxico) y añadir los modelos
+> después reemplazando el Space.
+
+## Alternativa manual (paso a paso)
 
 - Cuenta gratis en [Hugging Face](https://huggingface.co).
 - El ZIP con los dos modelos (`modelos_beto.zip`, ~880 MB) creado con:
@@ -30,7 +64,7 @@ Desde la raíz del repo:
 
 ```powershell
 # Crea una carpeta con el contenido de api/ listo para un Space Docker
-powershell -ExecutionPolicy Bypass -File deploy\prepare_hf_space.ps1
+powershell -ExecutionPolicy Bypass -File src\cultural_bias\deploy\prepare_hf_space.ps1
 ```
 
 El script deja todo en `$env:USERPROFILE\Desktop\hf-space-migra-api`:
